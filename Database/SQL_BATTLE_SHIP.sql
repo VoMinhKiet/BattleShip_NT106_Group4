@@ -1,0 +1,194 @@
+﻿CREATE DATABASE BATTLE_SHIP
+GO
+
+USE BATTLE_SHIP;
+GO
+
+CREATE TABLE NguoiDung
+(
+	Id INT IDENTITY(1,1) NOT NULL,
+	TenDangNhap VARCHAR(100) NOT NULL,
+	MatKhau VARCHAR(100) NOT NULL,
+	Email VARCHAR(100) NULL,	
+	NgayTao DATETIME NOT NULL
+		CONSTRAINT DF_NguoiDung_NgayTao DEFAULT CURRENT_TIMESTAMP,
+
+	CONSTRAINT PK_Nguoidung PRIMARY KEY (Id),
+	CONSTRAINT UQ_Nguoidung_TenDangNhap UNIQUE (TenDangNhap)
+);
+
+CREATE TABLE PhongCho
+(
+	Id INT IDENTITY(1,1) NOT NULL,
+	TenChuPhong VARCHAR(100) NOT NULL,
+	IdChuPhong INT NOT NULL,
+	TrangThai NVARCHAR(20) NOT NULL
+		CONSTRAINT DF_PhongCho_TrangThai DEFAULT N'ĐANG CHỜ'
+		CONSTRAINT CK_PhongCho_TrangThai CHECK
+			(TrangThai IN (N'ĐANG CHỜ', N'ĐANG CHƠI', N'KHÔNG TỒN TẠI')),
+
+	CONSTRAINT PK_PhongCho PRIMARY KEY (Id),
+	CONSTRAINT FK_PhongCho_NguoiDung_IdChuPhong
+		FOREIGN KEY (IdChuPhong) REFERENCES NguoiDung(Id)
+);
+
+CREATE TABLE NhanVat
+(
+	Id INT IDENTITY (1,1) NOT NULL,
+	TenNhanVat NVARCHAR(50) NOT NULL,
+	SkillNhanVat NVARCHAR(255) NOT NULL,
+
+	CONSTRAINT PK_NhanVat PRIMARY KEY (Id),
+	CONSTRAINT UQ_NhanVat_TenNhanVat UNIQUE (TenNhanVat)
+);
+
+CREATE TABLE TranDau
+(
+	Id INT IDENTITY(1,1) NOT NULL,
+	IdPlayer1 INT NOT NULL,
+	IdPlayer2 INT NOT NULL,
+	IdNhanVat1 INT NOT NULL,
+	IdNhanVat2 INT NOT NULL,
+	KichThuoc INT NOT NULL
+		CONSTRAINT CK_TranDau_KichThuoc CHECK
+			(KichThuoc IN (8, 9, 10)),
+	Winner INT NULL,
+	TimeStart DATETIME NOT NULL
+		CONSTRAINT DF_TranDau_TimeStart DEFAULT CURRENT_TIMESTAMP,
+	TimeEnd DATETIME NULL,
+	IdPhongCho INT NOT NULL,
+
+	CONSTRAINT PK_TranDau PRIMARY KEY (Id),
+	CONSTRAINT FK_TranDau_NguoiDung_Player1
+		FOREIGN KEY (IdPlayer1) REFERENCES NguoiDung(Id),
+	CONSTRAINT FK_TranDau_NguoiDung_Player2
+		FOREIGN KEY (IdPlayer2) REFERENCES NguoiDung(Id),
+	CONSTRAINT FK_TranDau_NhanVat_NhanVat1
+		FOREIGN KEY (IdNhanVat1) REFERENCES NhanVat(Id),
+	CONSTRAINT FK_TranDau_NhanVat_NhanVat2
+		FOREIGN KEY (IdNhanVat2) REFERENCES NhanVat(Id),
+	CONSTRAINT FK_TranDau_NguoiDung_Winner
+		FOREIGN KEY (Winner) REFERENCES NguoiDung(Id),
+	CONSTRAINT FK_TranDau_PhongCho_IdPhongCho
+		FOREIGN KEY (IdPhongCho) REFERENCES PhongCho(Id)
+);
+
+CREATE TABLE Tau 
+(
+	Id INT IDENTITY(1,1) NOT NULL,
+	IdTranDau INT NOT NULL,
+	IdNguoiChoi INT NOT NULL,
+	LoaiTau VARCHAR(5) NOT NULL
+		CONSTRAINT CK_Tau_LoaiTau CHECK
+			(LoaiTau IN ('2', '3.1', '3.2', '4', '5', '6')),
+	ToaDoBatDauX INT NOT NULL
+		CONSTRAINT CK_Tau_ToaDoBatDauX CHECK
+			(ToaDoBatDauX > 0 AND ToaDoBatDauX < 11),
+	ToaDoBatDauY INT NOT NULL
+		CONSTRAINT CK_Tau_ToaDoBatDauY CHECK
+			(ToaDoBatDauY > 0 AND ToaDoBatDauY < 11),
+	ToaDoKetThucX INT NOT NULL
+		CONSTRAINT CK_Tau_ToaDoKetThucX CHECK
+			(ToaDoKetThucX > 0 AND ToaDoKetThucX < 11),
+	ToaDoKetThucY INT NOT NULL
+		CONSTRAINT CK_Tau_ToaDoKetThucY CHECK
+			(ToaDoKetThucY > 0 AND ToaDoKetThucY < 11),
+
+	CONSTRAINT PK_Tau PRIMARY KEY (Id),
+	CONSTRAINT FK_Tau_TranDau_IdTranDau
+		FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id),
+	CONSTRAINT FK_Tau_NguoiDung_IdNguoiChoi
+		FOREIGN KEY (IdNguoiChoi) REFERENCES NguoiDung(Id)
+);
+
+CREATE TABLE NuocDi
+(
+	Id INT IDENTITY(1,1) NOT NULL,
+	IdTranDau INT NOT NULL,
+	IdNguoiDung INT NOT NULL,
+	ToaDoX INT NOT NULL
+		CONSTRAINT CK_NuocDi_ToaDoX CHECK
+			(ToaDoX > 0 AND ToaDoX < 11),
+	ToaDoY INT NOT NULL
+		CONSTRAINT CK_NuocDi_ToaDoY CHECK
+			(ToaDoY > 0 AND ToaDoY < 11),
+	KetQua NVARCHAR(10) NOT NULL
+		CONSTRAINT CK_NuocDi_KetQua CHECK
+			(KetQua IN (N'TRÚNG', N'TRƯỢT', N'CHÌM')),
+	ThoiGian DATETIME NOT NULL
+		CONSTRAINT DF_NuocDi_ThoiGian DEFAULT CURRENT_TIMESTAMP,
+
+	CONSTRAINT PK_NuocDi PRIMARY KEY (Id),
+	CONSTRAINT FK_NuocDi_TranDau_IdTranDau
+		FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id),
+	CONSTRAINT FK_NuocDi_NguoiDung_IdNguoiDung 
+		FOREIGN KEY (IdNguoiDung) REFERENCES NguoiDung(Id)
+);
+
+CREATE TABLE TinNhan
+(
+	Id INT IDENTITY(1,1) NOT NULL,
+	IdTranDau INT NULL,
+	IdPhongCho INT NULL,
+	IDNguoiDung INT NOT NULL,
+	NoiDung NVARCHAR(100) NOT NULL,
+	ThoiGian DATETIME NOT NULL
+		CONSTRAINT DF_TinNhan_ThoiGian DEFAULT CURRENT_TIMESTAMP,
+	
+	CONSTRAINT PK_TinNhan PRIMARY KEY (Id),
+	CONSTRAINT FK_TinNhan_TranDau_IdTranDau
+		FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id),
+	CONSTRAINT FK_TinNhan_PhongCho_IdPhongCho
+		FOREIGN KEY (IdPhongCho) REFERENCES PhongCho(Id),
+	CONSTRAINT CK_TinNhan_TonTaiViTriGui CHECK
+		(IdTranDau IS NOT NULL OR IdPhongCho IS NOT NULL),
+	CONSTRAINT FK_TinNhan_NguoiDung_IdNguoiDung
+		FOREIGN KEY (IdNguoiDung) REFERENCES NguoiDung(Id)
+);
+
+CREATE TABLE BangXepHang
+(
+	Id INT IDENTITY(1,1) NOT NULL,
+	IdNguoiDung INT NOT NULL,
+	SoTranThang INT NOT NULL
+		CONSTRAINT DF_BangXepHang_SoTranThang DEFAULT 0
+		CONSTRAINT CK_BangXepHang_SoTranThang CHECK (SoTranThang >= 0),
+	SoTranThua INT NOT NULL
+		CONSTRAINT DF_BangXepHang_SoTranThua DEFAULT 0
+		CONSTRAINT CK_BangXepHang_SoTranThua CHECK (SoTranThua >= 0),
+	BacRank NVARCHAR(20) NOT NULL
+		CONSTRAINT DF_BangXepHang_BacRank DEFAULT N'ĐỒNG'
+		CONSTRAINT CK_BangXepHang_BacRank CHECK
+			(BacRank IN (N'ĐỒNG', N'BẠC', N'VÀNG', N'BẠCH KIM', N'KIM CƯƠNG')),
+	CapSao INT NOT NULL
+		CONSTRAINT DF_BangXepHang_CapSao DEFAULT 0
+		CONSTRAINT CK_BangXepHang_CapSao CHECK (CapSao >= 0),
+
+	CONSTRAINT PK_BangXepHang PRIMARY KEY (Id),
+	CONSTRAINT FK_BangXepHang_NguoiDung_IdNguoiDung
+		FOREIGN KEY (IdNguoiDung) REFERENCES NguoiDung(Id),
+	CONSTRAINT UQ_BangXepHang_IdNguoiDung UNIQUE (IdNguoiDung)
+);
+
+CREATE TABLE BanBe 
+(
+	IdNguoi1 INT NOT NULL,
+	IdNguoi2 INT NOT NULL,
+	TrangThai VARCHAR(10) NOT NULL
+		CONSTRAINT DF_BanBe_TrangThai DEFAULT 'PENDING'
+		CONSTRAINT CK_BanBe_TrangThai CHECK
+			(TrangThai IN ('PENDING', 'ACCEPTED', 'BLOCK')),
+	IdNguoiThucHien INT NOT NULL,
+	
+	CONSTRAINT PK_BanBe PRIMARY KEY (IdNguoi1, IdNguoi2),
+	CONSTRAINT FK_BanBe_NguoiDung_IdNguoi1
+		FOREIGN KEY (IdNguoi1) REFERENCES NguoiDung(Id),
+	CONSTRAINT FK_BanBe_NguoiDung_IdNguoi2
+		FOREIGN KEY (IdNguoi2) REFERENCES NguoiDung(Id),
+	CONSTRAINT FK_BanBe_NguoiDung_IdNguoiThucHien
+		FOREIGN KEY (IdNguoiThucHien) REFERENCES NguoiDung(Id),
+	CONSTRAINT CK_BanBe_IdNguoi1_IdNguoi2 CHECK
+		(IdNguoi1 < IdNguoi2)
+);
+
+
