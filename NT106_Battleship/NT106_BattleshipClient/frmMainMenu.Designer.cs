@@ -40,13 +40,12 @@
             this.btnCaiDat = new System.Windows.Forms.Button();
             this.btnBXH = new System.Windows.Forms.Button();
             this.btnThoat = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // lblXinChao
             // 
             this.lblXinChao.AutoSize = true;
+            this.lblXinChao.BackColor = System.Drawing.Color.Transparent;
             this.lblXinChao.Font = new System.Drawing.Font("Segoe UI", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblXinChao.Location = new System.Drawing.Point(41, 39);
             this.lblXinChao.Name = "lblXinChao";
@@ -158,22 +157,12 @@
             this.btnThoat.UseVisualStyleBackColor = true;
             this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1902, 1033);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 11;
-            this.pictureBox1.TabStop = false;
-            // 
             // frmMainMenu
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1902, 1033);
             this.Controls.Add(this.btnThoat);
             this.Controls.Add(this.btnBXH);
@@ -186,11 +175,9 @@
             this.Controls.Add(this.btnHuongDanChoi);
             this.Controls.Add(this.btnHoSo);
             this.Controls.Add(this.lblXinChao);
-            this.Controls.Add(this.pictureBox1);
             this.Name = "frmMainMenu";
             this.Text = "frmMainMenu";
             this.Load += new System.EventHandler(this.frmMainMenu_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -209,7 +196,6 @@
         private System.Windows.Forms.Button btnCaiDat;
         private System.Windows.Forms.Button btnBXH;
         private System.Windows.Forms.Button btnThoat;
-        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

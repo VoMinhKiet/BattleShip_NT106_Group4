@@ -39,13 +39,12 @@
             this.lblTiLeThang = new System.Windows.Forms.Label();
             this.btnThoat = new System.Windows.Forms.Button();
             this.btnLichSuDau = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTieuDe
             // 
             this.lblTieuDe.AutoSize = true;
+            this.lblTieuDe.BackColor = System.Drawing.Color.Transparent;
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTieuDe.Location = new System.Drawing.Point(56, 29);
             this.lblTieuDe.Name = "lblTieuDe";
@@ -56,6 +55,7 @@
             // lblID
             // 
             this.lblID.AutoSize = true;
+            this.lblID.BackColor = System.Drawing.Color.Transparent;
             this.lblID.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblID.Location = new System.Drawing.Point(12, 92);
             this.lblID.Name = "lblID";
@@ -66,6 +66,7 @@
             // lblTen
             // 
             this.lblTen.AutoSize = true;
+            this.lblTen.BackColor = System.Drawing.Color.Transparent;
             this.lblTen.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTen.Location = new System.Drawing.Point(12, 153);
             this.lblTen.Name = "lblTen";
@@ -76,6 +77,7 @@
             // lblEmail
             // 
             this.lblEmail.AutoSize = true;
+            this.lblEmail.BackColor = System.Drawing.Color.Transparent;
             this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEmail.Location = new System.Drawing.Point(12, 217);
             this.lblEmail.Name = "lblEmail";
@@ -86,6 +88,7 @@
             // lblRank
             // 
             this.lblRank.AutoSize = true;
+            this.lblRank.BackColor = System.Drawing.Color.Transparent;
             this.lblRank.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRank.Location = new System.Drawing.Point(12, 280);
             this.lblRank.Name = "lblRank";
@@ -96,6 +99,7 @@
             // lblSao
             // 
             this.lblSao.AutoSize = true;
+            this.lblSao.BackColor = System.Drawing.Color.Transparent;
             this.lblSao.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSao.Location = new System.Drawing.Point(203, 280);
             this.lblSao.Name = "lblSao";
@@ -106,6 +110,7 @@
             // lblTongSoTran
             // 
             this.lblTongSoTran.AutoSize = true;
+            this.lblTongSoTran.BackColor = System.Drawing.Color.Transparent;
             this.lblTongSoTran.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTongSoTran.Location = new System.Drawing.Point(12, 346);
             this.lblTongSoTran.Name = "lblTongSoTran";
@@ -116,6 +121,7 @@
             // lblTiLeThang
             // 
             this.lblTiLeThang.AutoSize = true;
+            this.lblTiLeThang.BackColor = System.Drawing.Color.Transparent;
             this.lblTiLeThang.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTiLeThang.Location = new System.Drawing.Point(12, 409);
             this.lblTiLeThang.Name = "lblTiLeThang";
@@ -144,21 +150,12 @@
             this.btnLichSuDau.Text = "Lịch sử đấu";
             this.btnLichSuDau.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(402, 553);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 10;
-            this.pictureBox1.TabStop = false;
-            // 
             // frmUserInfo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(402, 553);
             this.Controls.Add(this.btnLichSuDau);
             this.Controls.Add(this.btnThoat);
@@ -170,12 +167,10 @@
             this.Controls.Add(this.lblTen);
             this.Controls.Add(this.lblID);
             this.Controls.Add(this.lblTieuDe);
-            this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmUserInfo";
             this.Text = "frmUserInfo";
             this.Load += new System.EventHandler(this.frmUserInfo_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,6 +188,5 @@
         private System.Windows.Forms.Label lblTiLeThang;
         private System.Windows.Forms.Button btnThoat;
         private System.Windows.Forms.Button btnLichSuDau;
-        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
