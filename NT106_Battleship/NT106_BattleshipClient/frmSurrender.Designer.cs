@@ -57,10 +57,10 @@
             this.btnHuy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnHuy.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHuy.ForeColor = System.Drawing.Color.White;
-            this.btnHuy.Location = new System.Drawing.Point(210, 5);
-            this.btnHuy.Margin = new System.Windows.Forms.Padding(35, 5, 35, 5);
+            this.btnHuy.Location = new System.Drawing.Point(210, 15);
+            this.btnHuy.Margin = new System.Windows.Forms.Padding(35, 15, 35, 15);
             this.btnHuy.Name = "btnHuy";
-            this.btnHuy.Size = new System.Drawing.Size(105, 41);
+            this.btnHuy.Size = new System.Drawing.Size(105, 38);
             this.btnHuy.TabIndex = 7;
             this.btnHuy.Text = "Hủy";
             this.btnHuy.UseVisualStyleBackColor = false;
@@ -73,10 +73,10 @@
             this.btnDauHang.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnDauHang.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnDauHang.ForeColor = System.Drawing.Color.White;
-            this.btnDauHang.Location = new System.Drawing.Point(35, 5);
-            this.btnDauHang.Margin = new System.Windows.Forms.Padding(35, 5, 35, 5);
+            this.btnDauHang.Location = new System.Drawing.Point(35, 15);
+            this.btnDauHang.Margin = new System.Windows.Forms.Padding(35, 15, 35, 15);
             this.btnDauHang.Name = "btnDauHang";
-            this.btnDauHang.Size = new System.Drawing.Size(105, 41);
+            this.btnDauHang.Size = new System.Drawing.Size(105, 38);
             this.btnDauHang.TabIndex = 6;
             this.btnDauHang.Text = "Đầu hàng";
             this.btnDauHang.UseVisualStyleBackColor = false;
@@ -88,9 +88,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.DarkBlue;
-            this.label2.Location = new System.Drawing.Point(3, 48);
+            this.label2.Location = new System.Drawing.Point(3, 42);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(344, 57);
+            this.label2.Size = new System.Drawing.Size(344, 50);
             this.label2.TabIndex = 5;
             this.label2.Text = "Bạn có chắc muốn đầu hàng không?";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -115,11 +115,11 @@
             this.tableLayoutPanel1.Controls.Add(this.btnDauHang, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnHuy, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 109);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 92);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(350, 51);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(350, 68);
             this.tableLayoutPanel1.TabIndex = 8;
             // 
             // frmSurrender
