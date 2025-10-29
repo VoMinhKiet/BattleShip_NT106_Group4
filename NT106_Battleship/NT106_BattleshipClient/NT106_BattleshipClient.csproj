@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmLeaderBoard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLeaderBoard.Designer.cs">
+      <DependentUpon>frmLeaderBoard.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmMainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -60,6 +66,15 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ucChatBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ucChatBox.Designer.cs">
+      <DependentUpon>ucChatBox.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="frmLeaderBoard.resx">
+      <DependentUpon>frmLeaderBoard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMainMenu.resx">
       <DependentUpon>frmMainMenu.cs</DependentUpon>
     </EmbeddedResource>
@@ -75,6 +90,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ucChatBox.resx">
+      <DependentUpon>ucChatBox.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

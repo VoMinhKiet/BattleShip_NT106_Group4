@@ -145,6 +145,7 @@
             this.btnBXH.TabIndex = 9;
             this.btnBXH.Text = "BXH";
             this.btnBXH.UseVisualStyleBackColor = true;
+            this.btnBXH.Click += new System.EventHandler(this.btnBXH_Click);
             // 
             // btnThoat
             // 

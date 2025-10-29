@@ -52,5 +52,16 @@ namespace NT106_BattleshipClient
                 Application.Exit(); 
             }
         }
+
+        private void btnBXH_Click(object sender, EventArgs e)
+        {
+
+            frmLeaderBoard formBXH = new frmLeaderBoard();
+
+            formBXH.Show();
+  
+
+
+        }
     }
 }

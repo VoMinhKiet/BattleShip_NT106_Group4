@@ -39,6 +39,8 @@
             this.lblTiLeThang = new System.Windows.Forms.Label();
             this.btnThoat = new System.Windows.Forms.Button();
             this.btnLichSuDau = new System.Windows.Forms.Button();
+            this.panelUserInfo = new System.Windows.Forms.Panel();
+            this.panelUserInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTieuDe
@@ -46,7 +48,7 @@
             this.lblTieuDe.AutoSize = true;
             this.lblTieuDe.BackColor = System.Drawing.Color.Transparent;
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTieuDe.Location = new System.Drawing.Point(56, 29);
+            this.lblTieuDe.Location = new System.Drawing.Point(37, 30);
             this.lblTieuDe.Name = "lblTieuDe";
             this.lblTieuDe.Size = new System.Drawing.Size(257, 38);
             this.lblTieuDe.TabIndex = 0;
@@ -57,7 +59,7 @@
             this.lblID.AutoSize = true;
             this.lblID.BackColor = System.Drawing.Color.Transparent;
             this.lblID.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblID.Location = new System.Drawing.Point(12, 92);
+            this.lblID.Location = new System.Drawing.Point(11, 83);
             this.lblID.Name = "lblID";
             this.lblID.Size = new System.Drawing.Size(161, 31);
             this.lblID.TabIndex = 1;
@@ -68,7 +70,7 @@
             this.lblTen.AutoSize = true;
             this.lblTen.BackColor = System.Drawing.Color.Transparent;
             this.lblTen.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTen.Location = new System.Drawing.Point(12, 153);
+            this.lblTen.Location = new System.Drawing.Point(11, 127);
             this.lblTen.Name = "lblTen";
             this.lblTen.Size = new System.Drawing.Size(208, 31);
             this.lblTen.TabIndex = 2;
@@ -79,7 +81,7 @@
             this.lblEmail.AutoSize = true;
             this.lblEmail.BackColor = System.Drawing.Color.Transparent;
             this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEmail.Location = new System.Drawing.Point(12, 217);
+            this.lblEmail.Location = new System.Drawing.Point(11, 168);
             this.lblEmail.Name = "lblEmail";
             this.lblEmail.Size = new System.Drawing.Size(360, 31);
             this.lblEmail.TabIndex = 3;
@@ -90,7 +92,7 @@
             this.lblRank.AutoSize = true;
             this.lblRank.BackColor = System.Drawing.Color.Transparent;
             this.lblRank.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRank.Location = new System.Drawing.Point(12, 280);
+            this.lblRank.Location = new System.Drawing.Point(11, 213);
             this.lblRank.Name = "lblRank";
             this.lblRank.Size = new System.Drawing.Size(140, 31);
             this.lblRank.TabIndex = 4;
@@ -101,7 +103,7 @@
             this.lblSao.AutoSize = true;
             this.lblSao.BackColor = System.Drawing.Color.Transparent;
             this.lblSao.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSao.Location = new System.Drawing.Point(203, 280);
+            this.lblSao.Location = new System.Drawing.Point(157, 213);
             this.lblSao.Name = "lblSao";
             this.lblSao.Size = new System.Drawing.Size(137, 31);
             this.lblSao.TabIndex = 5;
@@ -112,7 +114,7 @@
             this.lblTongSoTran.AutoSize = true;
             this.lblTongSoTran.BackColor = System.Drawing.Color.Transparent;
             this.lblTongSoTran.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTongSoTran.Location = new System.Drawing.Point(12, 346);
+            this.lblTongSoTran.Location = new System.Drawing.Point(11, 260);
             this.lblTongSoTran.Name = "lblTongSoTran";
             this.lblTongSoTran.Size = new System.Drawing.Size(213, 31);
             this.lblTongSoTran.TabIndex = 6;
@@ -123,7 +125,7 @@
             this.lblTiLeThang.AutoSize = true;
             this.lblTiLeThang.BackColor = System.Drawing.Color.Transparent;
             this.lblTiLeThang.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTiLeThang.Location = new System.Drawing.Point(12, 409);
+            this.lblTiLeThang.Location = new System.Drawing.Point(11, 303);
             this.lblTiLeThang.Name = "lblTiLeThang";
             this.lblTiLeThang.Size = new System.Drawing.Size(186, 31);
             this.lblTiLeThang.TabIndex = 7;
@@ -132,7 +134,7 @@
             // btnThoat
             // 
             this.btnThoat.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnThoat.Location = new System.Drawing.Point(247, 100);
+            this.btnThoat.Location = new System.Drawing.Point(258, 441);
             this.btnThoat.Name = "btnThoat";
             this.btnThoat.Size = new System.Drawing.Size(125, 84);
             this.btnThoat.TabIndex = 8;
@@ -143,12 +145,27 @@
             // btnLichSuDau
             // 
             this.btnLichSuDau.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLichSuDau.Location = new System.Drawing.Point(107, 479);
+            this.btnLichSuDau.Location = new System.Drawing.Point(29, 452);
             this.btnLichSuDau.Name = "btnLichSuDau";
             this.btnLichSuDau.Size = new System.Drawing.Size(180, 62);
             this.btnLichSuDau.TabIndex = 9;
             this.btnLichSuDau.Text = "Lịch sử đấu";
             this.btnLichSuDau.UseVisualStyleBackColor = true;
+            // 
+            // panelUserInfo
+            // 
+            this.panelUserInfo.Controls.Add(this.lblID);
+            this.panelUserInfo.Controls.Add(this.lblTen);
+            this.panelUserInfo.Controls.Add(this.lblEmail);
+            this.panelUserInfo.Controls.Add(this.lblTieuDe);
+            this.panelUserInfo.Controls.Add(this.lblTiLeThang);
+            this.panelUserInfo.Controls.Add(this.lblRank);
+            this.panelUserInfo.Controls.Add(this.lblTongSoTran);
+            this.panelUserInfo.Controls.Add(this.lblSao);
+            this.panelUserInfo.Location = new System.Drawing.Point(12, 12);
+            this.panelUserInfo.Name = "panelUserInfo";
+            this.panelUserInfo.Size = new System.Drawing.Size(378, 343);
+            this.panelUserInfo.TabIndex = 10;
             // 
             // frmUserInfo
             // 
@@ -157,22 +174,16 @@
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(402, 553);
+            this.Controls.Add(this.panelUserInfo);
             this.Controls.Add(this.btnLichSuDau);
             this.Controls.Add(this.btnThoat);
-            this.Controls.Add(this.lblTiLeThang);
-            this.Controls.Add(this.lblTongSoTran);
-            this.Controls.Add(this.lblSao);
-            this.Controls.Add(this.lblRank);
-            this.Controls.Add(this.lblEmail);
-            this.Controls.Add(this.lblTen);
-            this.Controls.Add(this.lblID);
-            this.Controls.Add(this.lblTieuDe);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmUserInfo";
             this.Text = "frmUserInfo";
             this.Load += new System.EventHandler(this.frmUserInfo_Load);
+            this.panelUserInfo.ResumeLayout(false);
+            this.panelUserInfo.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -188,5 +199,6 @@
         private System.Windows.Forms.Label lblTiLeThang;
         private System.Windows.Forms.Button btnThoat;
         private System.Windows.Forms.Button btnLichSuDau;
+        private System.Windows.Forms.Panel panelUserInfo;
     }
 }
