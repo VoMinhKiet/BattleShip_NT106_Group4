@@ -46,17 +46,35 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Formdemo.cs">
+    <Compile Include="frmForgotpassword.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formdemo.Designer.cs">
-      <DependentUpon>Formdemo.cs</DependentUpon>
+    <Compile Include="frmForgotpassword.Designer.cs">
+      <DependentUpon>frmForgotpassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLogin.Designer.cs">
+      <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
     <Compile Include="frmMainMenu.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMainMenu.Designer.cs">
       <DependentUpon>frmMainMenu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmResetpassword.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmResetpassword.Designer.cs">
+      <DependentUpon>frmResetpassword.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSignup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSignup.Designer.cs">
+      <DependentUpon>frmSignup.cs</DependentUpon>
     </Compile>
     <Compile Include="frmUserInfo.cs">
       <SubType>Form</SubType>
@@ -66,8 +84,20 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmForgotpassword.resx">
+      <DependentUpon>frmForgotpassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLogin.resx">
+      <DependentUpon>frmLogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMainMenu.resx">
       <DependentUpon>frmMainMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmResetpassword.resx">
+      <DependentUpon>frmResetpassword.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSignup.resx">
+      <DependentUpon>frmSignup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUserInfo.resx">
       <DependentUpon>frmUserInfo.cs</DependentUpon>
