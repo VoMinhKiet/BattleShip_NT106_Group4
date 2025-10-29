@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class Surrender : Form
+    public partial class frmSettings : Form
     {
-        public Surrender()
+        public frmSettings()
         {
             InitializeComponent();
+        }
+
+        private void frmSettings_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
