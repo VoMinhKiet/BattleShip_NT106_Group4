@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Media;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +13,9 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmMainMenu : Form
+    public partial class frmMainMenu : BaseForm
     {
+       
         public frmMainMenu()
         {
             InitializeComponent();
@@ -27,10 +30,11 @@ namespace NT106_BattleshipClient
             // Áp dụng kích thước đó cho Form
             this.Size = screen.Size;
             this.Location = new Point(0, 0); // Đặt Form ở góc trên bên trái
-
+                                             // Đường dẫn tương đối từ thư mục bin/Debug đến file
             
-        }
 
+        }
+        
         private void btnHoSo_Click(object sender, EventArgs e)
         {
             frmUserInfo MoForm = new frmUserInfo();

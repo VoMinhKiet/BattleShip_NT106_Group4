@@ -89,7 +89,8 @@
             this.lblTieuDeChinh.AutoSize = true;
             this.lblTieuDeChinh.BackColor = System.Drawing.Color.Transparent;
             this.lblTieuDeChinh.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTieuDeChinh.Location = new System.Drawing.Point(741, 186);
+            this.lblTieuDeChinh.ForeColor = System.Drawing.Color.LightGray;
+            this.lblTieuDeChinh.Location = new System.Drawing.Point(746, 186);
             this.lblTieuDeChinh.Name = "lblTieuDeChinh";
             this.lblTieuDeChinh.Size = new System.Drawing.Size(398, 81);
             this.lblTieuDeChinh.TabIndex = 4;

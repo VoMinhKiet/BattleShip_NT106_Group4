@@ -47,7 +47,7 @@
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTieuDe.Location = new System.Drawing.Point(352, 53);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(297, 46);
+            this.lblTieuDe.Size = new System.Drawing.Size(288, 45);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "BẢNG XẾP HẠNG";
             // 
@@ -64,7 +64,7 @@
             this.TiLeThang,
             this.TongSoTran});
             this.dataGridView1.GridColor = System.Drawing.Color.Black;
-            this.dataGridView1.Location = new System.Drawing.Point(101, 128);
+            this.dataGridView1.Location = new System.Drawing.Point(101, 138);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;

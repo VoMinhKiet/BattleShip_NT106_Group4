@@ -31,15 +31,15 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ucChatBox));
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.pnlNhapLieu = new System.Windows.Forms.Panel();
-            this.btnGui = new System.Windows.Forms.Button();
             this.txtTinNhan = new System.Windows.Forms.TextBox();
+            this.btnGui = new System.Windows.Forms.Button();
             this.rtbLichSuTinNhan = new System.Windows.Forms.RichTextBox();
             this.pnlNhapLieu.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlNhapLieu
             // 
-            this.pnlNhapLieu.BackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.pnlNhapLieu.BackColor = System.Drawing.Color.DimGray;
             this.pnlNhapLieu.Controls.Add(this.txtTinNhan);
             this.pnlNhapLieu.Controls.Add(this.btnGui);
             this.pnlNhapLieu.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -48,19 +48,9 @@
             this.pnlNhapLieu.Size = new System.Drawing.Size(599, 100);
             this.pnlNhapLieu.TabIndex = 0;
             // 
-            // btnGui
-            // 
-            this.btnGui.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGui.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnGui.Location = new System.Drawing.Point(454, 21);
-            this.btnGui.Name = "btnGui";
-            this.btnGui.Size = new System.Drawing.Size(135, 55);
-            this.btnGui.TabIndex = 0;
-            this.btnGui.Text = "Gửi";
-            this.btnGui.UseVisualStyleBackColor = true;
-            // 
             // txtTinNhan
             // 
+            this.txtTinNhan.BackColor = System.Drawing.Color.Bisque;
             this.txtTinNhan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtTinNhan.Location = new System.Drawing.Point(17, 3);
             this.txtTinNhan.Multiline = true;
@@ -68,8 +58,24 @@
             this.txtTinNhan.Size = new System.Drawing.Size(431, 97);
             this.txtTinNhan.TabIndex = 1;
             // 
+            // btnGui
+            // 
+            this.btnGui.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGui.BackColor = System.Drawing.Color.Bisque;
+            this.btnGui.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnGui.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnGui.Location = new System.Drawing.Point(454, 21);
+            this.btnGui.Name = "btnGui";
+            this.btnGui.Size = new System.Drawing.Size(135, 55);
+            this.btnGui.TabIndex = 0;
+            this.btnGui.Text = "Gửi";
+            this.btnGui.UseVisualStyleBackColor = false;
+            // 
             // rtbLichSuTinNhan
             // 
+            this.rtbLichSuTinNhan.BackColor = System.Drawing.Color.Bisque;
+            this.rtbLichSuTinNhan.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbLichSuTinNhan.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.rtbLichSuTinNhan.Location = new System.Drawing.Point(17, 29);
             this.rtbLichSuTinNhan.Name = "rtbLichSuTinNhan";
             this.rtbLichSuTinNhan.ReadOnly = true;

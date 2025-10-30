@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmLeaderBoard : Form
+    public partial class frmLeaderBoard : BaseForm
     {
         public frmLeaderBoard()
         {
