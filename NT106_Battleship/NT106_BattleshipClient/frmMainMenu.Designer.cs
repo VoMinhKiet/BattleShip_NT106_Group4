@@ -57,6 +57,7 @@
             // 
             this.btnHoSo.BackColor = System.Drawing.Color.Bisque;
             this.btnHoSo.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnHoSo.ForeColor = System.Drawing.SystemColors.ControlText;
             this.btnHoSo.Location = new System.Drawing.Point(47, 120);
             this.btnHoSo.Name = "btnHoSo";
             this.btnHoSo.Size = new System.Drawing.Size(205, 147);
@@ -75,7 +76,6 @@
             this.btnHuongDanChoi.TabIndex = 2;
             this.btnHuongDanChoi.Text = "Hướng Dẫn Chơi";
             this.btnHuongDanChoi.UseVisualStyleBackColor = false;
-            this.btnHuongDanChoi.Click += new System.EventHandler(this.btnHuongDanChoi_Click);
             // 
             // btnBanBe
             // 
@@ -93,7 +93,7 @@
             this.lblTieuDeChinh.AutoSize = true;
             this.lblTieuDeChinh.BackColor = System.Drawing.Color.Transparent;
             this.lblTieuDeChinh.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTieuDeChinh.ForeColor = System.Drawing.SystemColors.InfoText;
+            this.lblTieuDeChinh.ForeColor = System.Drawing.SystemColors.WindowText;
             this.lblTieuDeChinh.Location = new System.Drawing.Point(746, 186);
             this.lblTieuDeChinh.Name = "lblTieuDeChinh";
             this.lblTieuDeChinh.Size = new System.Drawing.Size(398, 81);
