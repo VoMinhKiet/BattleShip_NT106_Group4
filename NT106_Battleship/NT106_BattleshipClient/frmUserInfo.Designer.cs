@@ -146,8 +146,9 @@
             // 
             // btnLichSuDau
             // 
+            this.btnLichSuDau.BackColor = System.Drawing.Color.Lime;
             this.btnLichSuDau.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLichSuDau.Location = new System.Drawing.Point(29, 452);
+            this.btnLichSuDau.Location = new System.Drawing.Point(29, 441);
             this.btnLichSuDau.Name = "btnLichSuDau";
             this.btnLichSuDau.Size = new System.Drawing.Size(180, 62);
             this.btnLichSuDau.TabIndex = 9;

@@ -76,6 +76,7 @@
             this.btnHuongDanChoi.TabIndex = 2;
             this.btnHuongDanChoi.Text = "Hướng Dẫn Chơi";
             this.btnHuongDanChoi.UseVisualStyleBackColor = false;
+            this.btnHuongDanChoi.Click += new System.EventHandler(this.btnHuongDanChoi_Click_1);
             // 
             // btnBanBe
             // 

@@ -73,5 +73,11 @@ namespace NT106_BattleshipClient
             frmNoteGame MoForm = new frmNoteGame();
             MoForm.ShowDialog();
         }
+
+        private void btnHuongDanChoi_Click_1(object sender, EventArgs e)
+        {
+            frmNoteGame moForm = new frmNoteGame();
+            moForm.ShowDialog();
+        }
     }
 }
