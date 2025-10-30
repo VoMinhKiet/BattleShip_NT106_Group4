@@ -61,9 +61,9 @@
             this.lblID.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblID.Location = new System.Drawing.Point(11, 83);
             this.lblID.Name = "lblID";
-            this.lblID.Size = new System.Drawing.Size(161, 31);
+            this.lblID.Size = new System.Drawing.Size(50, 31);
             this.lblID.TabIndex = 1;
-            this.lblID.Text = "ID : XXXXXXX";
+            this.lblID.Text = "ID :";
             // 
             // lblTen
             // 
@@ -72,9 +72,9 @@
             this.lblTen.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTen.Location = new System.Drawing.Point(11, 127);
             this.lblTen.Name = "lblTen";
-            this.lblTen.Size = new System.Drawing.Size(208, 31);
+            this.lblTen.Size = new System.Drawing.Size(63, 31);
             this.lblTen.TabIndex = 2;
-            this.lblTen.Text = "Tên: BeTaoBanLon";
+            this.lblTen.Text = "Tên: ";
             // 
             // lblEmail
             // 
@@ -83,9 +83,9 @@
             this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEmail.Location = new System.Drawing.Point(11, 168);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(360, 31);
+            this.lblEmail.Size = new System.Drawing.Size(85, 31);
             this.lblEmail.TabIndex = 3;
-            this.lblEmail.Text = "Email: 24520918@gm.uit.edu.vn";
+            this.lblEmail.Text = "Email: ";
             // 
             // lblRank
             // 
@@ -94,9 +94,9 @@
             this.lblRank.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblRank.Location = new System.Drawing.Point(11, 213);
             this.lblRank.Name = "lblRank";
-            this.lblRank.Size = new System.Drawing.Size(140, 31);
+            this.lblRank.Size = new System.Drawing.Size(81, 31);
             this.lblRank.TabIndex = 4;
-            this.lblRank.Text = "Rank: Đồng";
+            this.lblRank.Text = "Rank: ";
             // 
             // lblSao
             // 
@@ -105,9 +105,9 @@
             this.lblSao.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSao.Location = new System.Drawing.Point(157, 213);
             this.lblSao.Name = "lblSao";
-            this.lblSao.Size = new System.Drawing.Size(137, 31);
+            this.lblSao.Size = new System.Drawing.Size(98, 31);
             this.lblSao.TabIndex = 5;
-            this.lblSao.Text = "Số Sao: 6xx";
+            this.lblSao.Text = "Số Sao: ";
             // 
             // lblTongSoTran
             // 
@@ -116,9 +116,9 @@
             this.lblTongSoTran.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTongSoTran.Location = new System.Drawing.Point(11, 260);
             this.lblTongSoTran.Name = "lblTongSoTran";
-            this.lblTongSoTran.Size = new System.Drawing.Size(213, 31);
+            this.lblTongSoTran.Size = new System.Drawing.Size(161, 31);
             this.lblTongSoTran.TabIndex = 6;
-            this.lblTongSoTran.Text = "Tổng số trận: 7xxx";
+            this.lblTongSoTran.Text = "Tổng số trận: ";
             // 
             // lblTiLeThang
             // 
@@ -127,9 +127,9 @@
             this.lblTiLeThang.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTiLeThang.Location = new System.Drawing.Point(11, 303);
             this.lblTiLeThang.Name = "lblTiLeThang";
-            this.lblTiLeThang.Size = new System.Drawing.Size(186, 31);
+            this.lblTiLeThang.Size = new System.Drawing.Size(140, 31);
             this.lblTiLeThang.TabIndex = 7;
-            this.lblTiLeThang.Text = "Tỉ lệ thắng: 80%";
+            this.lblTiLeThang.Text = "Tỉ lệ thắng: ";
             // 
             // btnThoat
             // 
