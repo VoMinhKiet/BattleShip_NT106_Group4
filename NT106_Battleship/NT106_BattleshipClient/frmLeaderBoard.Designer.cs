@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLeaderBoard));
             this.lblTieuDe = new System.Windows.Forms.Label();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -44,10 +45,10 @@
             // 
             this.lblTieuDe.AutoSize = true;
             this.lblTieuDe.BackColor = System.Drawing.Color.Transparent;
-            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTieuDe.Location = new System.Drawing.Point(352, 53);
+            this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 25.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTieuDe.Location = new System.Drawing.Point(820, 160);
             this.lblTieuDe.Name = "lblTieuDe";
-            this.lblTieuDe.Size = new System.Drawing.Size(288, 45);
+            this.lblTieuDe.Size = new System.Drawing.Size(384, 60);
             this.lblTieuDe.TabIndex = 0;
             this.lblTieuDe.Text = "BẢNG XẾP HẠNG";
             // 
@@ -55,6 +56,14 @@
             // 
             this.dataGridView1.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.STT,
@@ -64,11 +73,11 @@
             this.TiLeThang,
             this.TongSoTran});
             this.dataGridView1.GridColor = System.Drawing.Color.Black;
-            this.dataGridView1.Location = new System.Drawing.Point(101, 138);
+            this.dataGridView1.Location = new System.Drawing.Point(225, 264);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(803, 339);
+            this.dataGridView1.Size = new System.Drawing.Size(1269, 1080);
             this.dataGridView1.TabIndex = 1;
             // 
             // STT
@@ -83,35 +92,35 @@
             this.TenNguoiChoi.HeaderText = "Tên Người Chơi";
             this.TenNguoiChoi.MinimumWidth = 6;
             this.TenNguoiChoi.Name = "TenNguoiChoi";
-            this.TenNguoiChoi.Width = 125;
+            this.TenNguoiChoi.Width = 300;
             // 
             // Hang
             // 
             this.Hang.HeaderText = "Hạng";
             this.Hang.MinimumWidth = 6;
             this.Hang.Name = "Hang";
-            this.Hang.Width = 125;
+            this.Hang.Width = 200;
             // 
             // SoSao
             // 
             this.SoSao.HeaderText = "Số Sao";
             this.SoSao.MinimumWidth = 6;
             this.SoSao.Name = "SoSao";
-            this.SoSao.Width = 125;
+            this.SoSao.Width = 200;
             // 
             // TiLeThang
             // 
             this.TiLeThang.HeaderText = "Tỉ Lệ Thắng";
             this.TiLeThang.MinimumWidth = 6;
             this.TiLeThang.Name = "TiLeThang";
-            this.TiLeThang.Width = 125;
+            this.TiLeThang.Width = 200;
             // 
             // TongSoTran
             // 
             this.TongSoTran.HeaderText = "Tổng Số Trận";
             this.TongSoTran.MinimumWidth = 6;
             this.TongSoTran.Name = "TongSoTran";
-            this.TongSoTran.Width = 125;
+            this.TongSoTran.Width = 200;
             // 
             // frmLeaderBoard
             // 
@@ -119,7 +128,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(916, 489);
+            this.ClientSize = new System.Drawing.Size(1902, 1033);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.lblTieuDe);
             this.Name = "frmLeaderBoard";

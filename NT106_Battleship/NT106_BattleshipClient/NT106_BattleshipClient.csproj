@@ -165,13 +165,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Cursor\ClickSound.wav">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Cursor\CursorAnimation.cur">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Cursor\CursorImage.cur">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Cursor\safeimagekit-cannon-removebg-preview-removebg-preview.png" />
   </ItemGroup>

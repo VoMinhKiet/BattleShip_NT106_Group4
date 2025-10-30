@@ -136,9 +136,9 @@
             this.btnThoat.BackColor = System.Drawing.Color.Red;
             this.btnThoat.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThoat.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnThoat.Location = new System.Drawing.Point(258, 441);
+            this.btnThoat.Location = new System.Drawing.Point(265, 452);
             this.btnThoat.Name = "btnThoat";
-            this.btnThoat.Size = new System.Drawing.Size(125, 84);
+            this.btnThoat.Size = new System.Drawing.Size(125, 62);
             this.btnThoat.TabIndex = 8;
             this.btnThoat.Text = "Thoát";
             this.btnThoat.UseVisualStyleBackColor = false;
@@ -146,16 +146,18 @@
             // 
             // btnLichSuDau
             // 
+            this.btnLichSuDau.BackColor = System.Drawing.Color.Lime;
             this.btnLichSuDau.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLichSuDau.Location = new System.Drawing.Point(29, 452);
             this.btnLichSuDau.Name = "btnLichSuDau";
             this.btnLichSuDau.Size = new System.Drawing.Size(180, 62);
             this.btnLichSuDau.TabIndex = 9;
             this.btnLichSuDau.Text = "Lịch sử đấu";
-            this.btnLichSuDau.UseVisualStyleBackColor = true;
+            this.btnLichSuDau.UseVisualStyleBackColor = false;
             // 
             // panelUserInfo
             // 
+            this.panelUserInfo.BackColor = System.Drawing.Color.Bisque;
             this.panelUserInfo.Controls.Add(this.lblID);
             this.panelUserInfo.Controls.Add(this.lblTen);
             this.panelUserInfo.Controls.Add(this.lblEmail);

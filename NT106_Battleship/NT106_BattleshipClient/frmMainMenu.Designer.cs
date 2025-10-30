@@ -55,42 +55,45 @@
             // 
             // btnHoSo
             // 
+            this.btnHoSo.BackColor = System.Drawing.Color.Bisque;
             this.btnHoSo.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHoSo.Location = new System.Drawing.Point(47, 120);
             this.btnHoSo.Name = "btnHoSo";
             this.btnHoSo.Size = new System.Drawing.Size(205, 147);
             this.btnHoSo.TabIndex = 1;
             this.btnHoSo.Text = "Hồ Sơ";
-            this.btnHoSo.UseVisualStyleBackColor = true;
+            this.btnHoSo.UseVisualStyleBackColor = false;
             this.btnHoSo.Click += new System.EventHandler(this.btnHoSo_Click);
             // 
             // btnHuongDanChoi
             // 
+            this.btnHuongDanChoi.BackColor = System.Drawing.Color.Bisque;
             this.btnHuongDanChoi.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnHuongDanChoi.Location = new System.Drawing.Point(50, 452);
             this.btnHuongDanChoi.Name = "btnHuongDanChoi";
             this.btnHuongDanChoi.Size = new System.Drawing.Size(321, 119);
             this.btnHuongDanChoi.TabIndex = 2;
             this.btnHuongDanChoi.Text = "Hướng Dẫn Chơi";
-            this.btnHuongDanChoi.UseVisualStyleBackColor = true;
+            this.btnHuongDanChoi.UseVisualStyleBackColor = false;
             this.btnHuongDanChoi.Click += new System.EventHandler(this.btnHuongDanChoi_Click);
             // 
             // btnBanBe
             // 
+            this.btnBanBe.BackColor = System.Drawing.Color.Bisque;
             this.btnBanBe.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBanBe.Location = new System.Drawing.Point(47, 756);
             this.btnBanBe.Name = "btnBanBe";
             this.btnBanBe.Size = new System.Drawing.Size(277, 135);
             this.btnBanBe.TabIndex = 3;
             this.btnBanBe.Text = "Bạn Bè";
-            this.btnBanBe.UseVisualStyleBackColor = true;
+            this.btnBanBe.UseVisualStyleBackColor = false;
             // 
             // lblTieuDeChinh
             // 
             this.lblTieuDeChinh.AutoSize = true;
             this.lblTieuDeChinh.BackColor = System.Drawing.Color.Transparent;
             this.lblTieuDeChinh.Font = new System.Drawing.Font("Segoe UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTieuDeChinh.ForeColor = System.Drawing.Color.LightGray;
+            this.lblTieuDeChinh.ForeColor = System.Drawing.SystemColors.InfoText;
             this.lblTieuDeChinh.Location = new System.Drawing.Point(746, 186);
             this.lblTieuDeChinh.Name = "lblTieuDeChinh";
             this.lblTieuDeChinh.Size = new System.Drawing.Size(398, 81);
@@ -110,54 +113,59 @@
             // 
             // btnChoiVoiMay
             // 
+            this.btnChoiVoiMay.BackColor = System.Drawing.Color.Bisque;
             this.btnChoiVoiMay.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnChoiVoiMay.Location = new System.Drawing.Point(442, 699);
             this.btnChoiVoiMay.Name = "btnChoiVoiMay";
             this.btnChoiVoiMay.Size = new System.Drawing.Size(401, 248);
             this.btnChoiVoiMay.TabIndex = 6;
             this.btnChoiVoiMay.Text = "Chơi Với Máy";
-            this.btnChoiVoiMay.UseVisualStyleBackColor = true;
+            this.btnChoiVoiMay.UseVisualStyleBackColor = false;
             // 
             // btnChoiVoiNguoi
             // 
+            this.btnChoiVoiNguoi.BackColor = System.Drawing.Color.Bisque;
             this.btnChoiVoiNguoi.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnChoiVoiNguoi.Location = new System.Drawing.Point(1061, 699);
             this.btnChoiVoiNguoi.Name = "btnChoiVoiNguoi";
             this.btnChoiVoiNguoi.Size = new System.Drawing.Size(401, 248);
             this.btnChoiVoiNguoi.TabIndex = 7;
             this.btnChoiVoiNguoi.Text = "Chơi Với Người";
-            this.btnChoiVoiNguoi.UseVisualStyleBackColor = true;
+            this.btnChoiVoiNguoi.UseVisualStyleBackColor = false;
             // 
             // btnCaiDat
             // 
+            this.btnCaiDat.BackColor = System.Drawing.Color.Bisque;
             this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCaiDat.Location = new System.Drawing.Point(1630, 134);
             this.btnCaiDat.Name = "btnCaiDat";
             this.btnCaiDat.Size = new System.Drawing.Size(232, 119);
             this.btnCaiDat.TabIndex = 8;
             this.btnCaiDat.Text = "Cài Đặt";
-            this.btnCaiDat.UseVisualStyleBackColor = true;
+            this.btnCaiDat.UseVisualStyleBackColor = false;
             // 
             // btnBXH
             // 
+            this.btnBXH.BackColor = System.Drawing.Color.Bisque;
             this.btnBXH.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBXH.Location = new System.Drawing.Point(1630, 412);
             this.btnBXH.Name = "btnBXH";
             this.btnBXH.Size = new System.Drawing.Size(232, 119);
             this.btnBXH.TabIndex = 9;
             this.btnBXH.Text = "BXH";
-            this.btnBXH.UseVisualStyleBackColor = true;
+            this.btnBXH.UseVisualStyleBackColor = false;
             this.btnBXH.Click += new System.EventHandler(this.btnBXH_Click);
             // 
             // btnThoat
             // 
+            this.btnThoat.BackColor = System.Drawing.Color.Bisque;
             this.btnThoat.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThoat.Location = new System.Drawing.Point(1630, 658);
             this.btnThoat.Name = "btnThoat";
             this.btnThoat.Size = new System.Drawing.Size(232, 119);
             this.btnThoat.TabIndex = 10;
             this.btnThoat.Text = "Thoát";
-            this.btnThoat.UseVisualStyleBackColor = true;
+            this.btnThoat.UseVisualStyleBackColor = false;
             this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
             // frmMainMenu
