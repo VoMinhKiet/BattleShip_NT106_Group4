@@ -39,6 +39,7 @@
             this.lblEmail = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.lblForgotpassword = new System.Windows.Forms.Label();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.pnlForgotpassword.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picEmail)).BeginInit();
             this.SuspendLayout();
@@ -190,5 +191,6 @@
         private System.Windows.Forms.LinkLabel linkLogin;
         private System.Windows.Forms.LinkLabel linkCreateAccount;
         private System.Windows.Forms.Button bntExit;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmUserInfo : Form
+    public partial class frmUserInfo : BaseForm
     {
         public frmUserInfo()
         {
