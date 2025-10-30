@@ -78,6 +78,12 @@
       <DependentUpon>frmMainMenu.cs</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="frmNoteGame.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmNoteGame.Designer.cs">
+      <DependentUpon>frmNoteGame.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmResetpassword.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -119,6 +125,9 @@
     <EmbeddedResource Include="frmMainMenu.resx">
       <DependentUpon>frmMainMenu.cs</DependentUpon>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmNoteGame.resx">
+      <DependentUpon>frmNoteGame.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmResetpassword.resx">
       <DependentUpon>frmResetpassword.cs</DependentUpon>
