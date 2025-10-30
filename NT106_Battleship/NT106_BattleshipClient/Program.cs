@@ -16,7 +16,7 @@ namespace NT106_BattleshipClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmSettings());
+            Application.Run(new frmMatchHistory());
         }
     }
 }
