@@ -97,12 +97,6 @@
     <Compile Include="ModernTrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Panel.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Panel.Designer.cs">
-      <DependentUpon>Panel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmConnectionLost.resx">
@@ -125,9 +119,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmUserInfo.resx">
       <DependentUpon>frmUserInfo.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Panel.resx">
-      <DependentUpon>Panel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
