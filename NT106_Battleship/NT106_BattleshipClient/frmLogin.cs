@@ -73,9 +73,11 @@ namespace NT106_BattleshipClient
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            frmMainMenu mainForm = new frmMainMenu();
-            mainForm.Show();
             this.Hide();
+            frmMainMenu mainForm = new frmMainMenu();
+            
+            mainForm.ShowDialog();
+            this.Close();
         }
     }
 }

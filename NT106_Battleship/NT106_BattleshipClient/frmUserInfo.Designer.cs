@@ -154,6 +154,7 @@
             this.btnLichSuDau.TabIndex = 9;
             this.btnLichSuDau.Text = "Lịch sử đấu";
             this.btnLichSuDau.UseVisualStyleBackColor = false;
+            this.btnLichSuDau.Click += new System.EventHandler(this.btnLichSuDau_Click);
             // 
             // panelUserInfo
             // 

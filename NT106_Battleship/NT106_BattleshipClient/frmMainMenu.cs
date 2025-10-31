@@ -85,5 +85,27 @@ namespace NT106_BattleshipClient
             frmFriendlist MoForm = new frmFriendlist();
             MoForm.ShowDialog();
         }
+
+        private void btnCaiDat_Click(object sender, EventArgs e)
+        {
+            frmSettings MoForm = new frmSettings();
+            MoForm.ShowDialog();
+        }
+
+        private void btnChoiVoiMay_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            frmLobby Lobby = new frmLobby();
+            Lobby.ShowDialog();
+            this.Show();
+        }
+
+        private void btnChoiVoiNguoi_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            frmLobby Lobby = new frmLobby();
+            Lobby.ShowDialog();
+            this.Show();
+        }
     }
 }

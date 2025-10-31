@@ -12,6 +12,8 @@ namespace NT106_BattleshipClient
 {
     public partial class frmSelectcharacter : Form
     {
+        public string TenNhanVatDaChon { get; private set; }
+
         public frmSelectcharacter()
         {
             InitializeComponent();
@@ -95,6 +97,46 @@ namespace NT106_BattleshipClient
                 "Chọn **5 ô bất kỳ** để bắn đồng thời.\n" +
                 "Phù hợp khi đã xác định được vùng tàu địch ẩn nấp."
             );
+        }
+
+        private void btnSelectES_Click(object sender, EventArgs e)
+        {
+            // 1. Gán tên nhân vật
+            this.TenNhanVatDaChon = "Elizabeth Swann";
+
+            // 2. Thiết lập kết quả và đóng Form
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnSelectHB_Click(object sender, EventArgs e)
+        {
+            // 1. Gán tên nhân vật
+            this.TenNhanVatDaChon = "Hector Barbossa";
+
+            // 2. Thiết lập kết quả và đóng Form
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnSelectWT_Click(object sender, EventArgs e)
+        {
+            // 1. Gán tên nhân vật
+            this.TenNhanVatDaChon = "Will Turner";
+
+            // 2. Thiết lập kết quả và đóng Form
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnSelectJS_Click(object sender, EventArgs e)
+        {
+            // 1. Gán tên nhân vật
+            this.TenNhanVatDaChon = "Jack Sparrow";
+
+            // 2. Thiết lập kết quả và đóng Form
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }

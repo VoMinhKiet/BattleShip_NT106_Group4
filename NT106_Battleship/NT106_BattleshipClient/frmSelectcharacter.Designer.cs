@@ -30,6 +30,12 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSelectcharacter));
             this.pnlCharacter = new System.Windows.Forms.Panel();
+            this.pnlDescribe = new System.Windows.Forms.Panel();
+            this.pnlTiltleDescribe = new System.Windows.Forms.Panel();
+            this.lblDescribe = new System.Windows.Forms.Label();
+            this.button11 = new System.Windows.Forms.Button();
+            this.btnExitdescribe = new System.Windows.Forms.Button();
+            this.rchtxtDescribe = new System.Windows.Forms.RichTextBox();
             this.btnExit = new System.Windows.Forms.Button();
             this.picJS = new System.Windows.Forms.PictureBox();
             this.picWT = new System.Windows.Forms.PictureBox();
@@ -48,19 +54,13 @@
             this.lblCharHB = new System.Windows.Forms.Label();
             this.lblCharES = new System.Windows.Forms.Label();
             this.lblCharacterlist = new System.Windows.Forms.Label();
-            this.pnlDescribe = new System.Windows.Forms.Panel();
-            this.pnlTiltleDescribe = new System.Windows.Forms.Panel();
-            this.lblDescribe = new System.Windows.Forms.Label();
-            this.button11 = new System.Windows.Forms.Button();
-            this.btnExitdescribe = new System.Windows.Forms.Button();
-            this.rchtxtDescribe = new System.Windows.Forms.RichTextBox();
             this.pnlCharacter.SuspendLayout();
+            this.pnlDescribe.SuspendLayout();
+            this.pnlTiltleDescribe.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picJS)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picWT)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picHB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picES)).BeginInit();
-            this.pnlDescribe.SuspendLayout();
-            this.pnlTiltleDescribe.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlCharacter
@@ -89,6 +89,81 @@
             this.pnlCharacter.Name = "pnlCharacter";
             this.pnlCharacter.Size = new System.Drawing.Size(841, 498);
             this.pnlCharacter.TabIndex = 12;
+            // 
+            // pnlDescribe
+            // 
+            this.pnlDescribe.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.pnlDescribe.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlDescribe.Controls.Add(this.pnlTiltleDescribe);
+            this.pnlDescribe.Controls.Add(this.rchtxtDescribe);
+            this.pnlDescribe.Location = new System.Drawing.Point(212, 68);
+            this.pnlDescribe.Name = "pnlDescribe";
+            this.pnlDescribe.Size = new System.Drawing.Size(419, 224);
+            this.pnlDescribe.TabIndex = 13;
+            this.pnlDescribe.Visible = false;
+            // 
+            // pnlTiltleDescribe
+            // 
+            this.pnlTiltleDescribe.BackColor = System.Drawing.SystemColors.Highlight;
+            this.pnlTiltleDescribe.Controls.Add(this.lblDescribe);
+            this.pnlTiltleDescribe.Controls.Add(this.button11);
+            this.pnlTiltleDescribe.Controls.Add(this.btnExitdescribe);
+            this.pnlTiltleDescribe.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTiltleDescribe.Location = new System.Drawing.Point(0, 0);
+            this.pnlTiltleDescribe.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.pnlTiltleDescribe.Name = "pnlTiltleDescribe";
+            this.pnlTiltleDescribe.Size = new System.Drawing.Size(417, 30);
+            this.pnlTiltleDescribe.TabIndex = 11;
+            // 
+            // lblDescribe
+            // 
+            this.lblDescribe.AutoSize = true;
+            this.lblDescribe.Location = new System.Drawing.Point(0, 4);
+            this.lblDescribe.Name = "lblDescribe";
+            this.lblDescribe.Size = new System.Drawing.Size(134, 20);
+            this.lblDescribe.TabIndex = 2;
+            this.lblDescribe.Text = "BATTLESHIP GAME";
+            // 
+            // button11
+            // 
+            this.button11.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button11.BackgroundImage")));
+            this.button11.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.button11.Cursor = System.Windows.Forms.Cursors.Default;
+            this.button11.FlatAppearance.BorderSize = 0;
+            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button11.Location = new System.Drawing.Point(839, -9);
+            this.button11.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.button11.Name = "button11";
+            this.button11.Size = new System.Drawing.Size(37, 55);
+            this.button11.TabIndex = 1;
+            this.button11.UseVisualStyleBackColor = true;
+            // 
+            // btnExitdescribe
+            // 
+            this.btnExitdescribe.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnExitdescribe.BackgroundImage")));
+            this.btnExitdescribe.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.btnExitdescribe.Cursor = System.Windows.Forms.Cursors.Default;
+            this.btnExitdescribe.FlatAppearance.BorderSize = 0;
+            this.btnExitdescribe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnExitdescribe.Location = new System.Drawing.Point(389, 0);
+            this.btnExitdescribe.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.btnExitdescribe.Name = "btnExitdescribe";
+            this.btnExitdescribe.Size = new System.Drawing.Size(28, 28);
+            this.btnExitdescribe.TabIndex = 3;
+            this.btnExitdescribe.UseVisualStyleBackColor = true;
+            this.btnExitdescribe.Click += new System.EventHandler(this.btnExitdescribe_Click);
+            // 
+            // rchtxtDescribe
+            // 
+            this.rchtxtDescribe.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.rchtxtDescribe.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.rchtxtDescribe.Location = new System.Drawing.Point(-1, 27);
+            this.rchtxtDescribe.Name = "rchtxtDescribe";
+            this.rchtxtDescribe.ReadOnly = true;
+            this.rchtxtDescribe.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.rchtxtDescribe.Size = new System.Drawing.Size(419, 196);
+            this.rchtxtDescribe.TabIndex = 4;
+            this.rchtxtDescribe.Text = "";
             // 
             // btnExit
             // 
@@ -155,6 +230,7 @@
             this.btnSelectJS.TabIndex = 16;
             this.btnSelectJS.Text = "Select";
             this.btnSelectJS.UseVisualStyleBackColor = false;
+            this.btnSelectJS.Click += new System.EventHandler(this.btnSelectJS_Click);
             // 
             // btnSelectWT
             // 
@@ -166,6 +242,7 @@
             this.btnSelectWT.TabIndex = 15;
             this.btnSelectWT.Text = "Select";
             this.btnSelectWT.UseVisualStyleBackColor = false;
+            this.btnSelectWT.Click += new System.EventHandler(this.btnSelectWT_Click);
             // 
             // btnSelectHB
             // 
@@ -177,6 +254,7 @@
             this.btnSelectHB.TabIndex = 14;
             this.btnSelectHB.Text = "Select";
             this.btnSelectHB.UseVisualStyleBackColor = false;
+            this.btnSelectHB.Click += new System.EventHandler(this.btnSelectHB_Click);
             // 
             // btnSelectES
             // 
@@ -188,6 +266,7 @@
             this.btnSelectES.TabIndex = 13;
             this.btnSelectES.Text = "Select";
             this.btnSelectES.UseVisualStyleBackColor = false;
+            this.btnSelectES.Click += new System.EventHandler(this.btnSelectES_Click);
             // 
             // btnDescribeJS
             // 
@@ -287,81 +366,6 @@
             this.lblCharacterlist.TabIndex = 0;
             this.lblCharacterlist.Text = "Danh sách chọn nhân vật";
             // 
-            // pnlDescribe
-            // 
-            this.pnlDescribe.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.pnlDescribe.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlDescribe.Controls.Add(this.pnlTiltleDescribe);
-            this.pnlDescribe.Controls.Add(this.rchtxtDescribe);
-            this.pnlDescribe.Location = new System.Drawing.Point(212, 68);
-            this.pnlDescribe.Name = "pnlDescribe";
-            this.pnlDescribe.Size = new System.Drawing.Size(419, 224);
-            this.pnlDescribe.TabIndex = 13;
-            this.pnlDescribe.Visible = false;
-            // 
-            // pnlTiltleDescribe
-            // 
-            this.pnlTiltleDescribe.BackColor = System.Drawing.SystemColors.Highlight;
-            this.pnlTiltleDescribe.Controls.Add(this.lblDescribe);
-            this.pnlTiltleDescribe.Controls.Add(this.button11);
-            this.pnlTiltleDescribe.Controls.Add(this.btnExitdescribe);
-            this.pnlTiltleDescribe.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlTiltleDescribe.Location = new System.Drawing.Point(0, 0);
-            this.pnlTiltleDescribe.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.pnlTiltleDescribe.Name = "pnlTiltleDescribe";
-            this.pnlTiltleDescribe.Size = new System.Drawing.Size(417, 30);
-            this.pnlTiltleDescribe.TabIndex = 11;
-            // 
-            // lblDescribe
-            // 
-            this.lblDescribe.AutoSize = true;
-            this.lblDescribe.Location = new System.Drawing.Point(0, 4);
-            this.lblDescribe.Name = "lblDescribe";
-            this.lblDescribe.Size = new System.Drawing.Size(134, 20);
-            this.lblDescribe.TabIndex = 2;
-            this.lblDescribe.Text = "BATTLESHIP GAME";
-            // 
-            // button11
-            // 
-            this.button11.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button11.BackgroundImage")));
-            this.button11.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.button11.Cursor = System.Windows.Forms.Cursors.Default;
-            this.button11.FlatAppearance.BorderSize = 0;
-            this.button11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button11.Location = new System.Drawing.Point(839, -9);
-            this.button11.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(37, 55);
-            this.button11.TabIndex = 1;
-            this.button11.UseVisualStyleBackColor = true;
-            // 
-            // btnExitdescribe
-            // 
-            this.btnExitdescribe.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnExitdescribe.BackgroundImage")));
-            this.btnExitdescribe.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btnExitdescribe.Cursor = System.Windows.Forms.Cursors.Default;
-            this.btnExitdescribe.FlatAppearance.BorderSize = 0;
-            this.btnExitdescribe.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnExitdescribe.Location = new System.Drawing.Point(389, 0);
-            this.btnExitdescribe.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.btnExitdescribe.Name = "btnExitdescribe";
-            this.btnExitdescribe.Size = new System.Drawing.Size(28, 28);
-            this.btnExitdescribe.TabIndex = 3;
-            this.btnExitdescribe.UseVisualStyleBackColor = true;
-            this.btnExitdescribe.Click += new System.EventHandler(this.btnExitdescribe_Click);
-            // 
-            // rchtxtDescribe
-            // 
-            this.rchtxtDescribe.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.rchtxtDescribe.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.rchtxtDescribe.Location = new System.Drawing.Point(-1, 27);
-            this.rchtxtDescribe.Name = "rchtxtDescribe";
-            this.rchtxtDescribe.ReadOnly = true;
-            this.rchtxtDescribe.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.rchtxtDescribe.Size = new System.Drawing.Size(419, 196);
-            this.rchtxtDescribe.TabIndex = 4;
-            this.rchtxtDescribe.Text = "";
-            // 
             // frmSelectcharacter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -376,13 +380,13 @@
             this.Text = "frmSelectcharacter";
             this.pnlCharacter.ResumeLayout(false);
             this.pnlCharacter.PerformLayout();
+            this.pnlDescribe.ResumeLayout(false);
+            this.pnlTiltleDescribe.ResumeLayout(false);
+            this.pnlTiltleDescribe.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picJS)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picWT)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picHB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picES)).EndInit();
-            this.pnlDescribe.ResumeLayout(false);
-            this.pnlTiltleDescribe.ResumeLayout(false);
-            this.pnlTiltleDescribe.PerformLayout();
             this.ResumeLayout(false);
 
         }

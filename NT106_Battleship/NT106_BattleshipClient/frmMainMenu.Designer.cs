@@ -123,6 +123,7 @@
             this.btnChoiVoiMay.TabIndex = 6;
             this.btnChoiVoiMay.Text = "Chơi Với Máy";
             this.btnChoiVoiMay.UseVisualStyleBackColor = false;
+            this.btnChoiVoiMay.Click += new System.EventHandler(this.btnChoiVoiMay_Click);
             // 
             // btnChoiVoiNguoi
             // 
@@ -134,6 +135,7 @@
             this.btnChoiVoiNguoi.TabIndex = 7;
             this.btnChoiVoiNguoi.Text = "Chơi Với Người";
             this.btnChoiVoiNguoi.UseVisualStyleBackColor = false;
+            this.btnChoiVoiNguoi.Click += new System.EventHandler(this.btnChoiVoiNguoi_Click);
             // 
             // btnCaiDat
             // 
@@ -145,6 +147,7 @@
             this.btnCaiDat.TabIndex = 8;
             this.btnCaiDat.Text = "Cài Đặt";
             this.btnCaiDat.UseVisualStyleBackColor = false;
+            this.btnCaiDat.Click += new System.EventHandler(this.btnCaiDat_Click);
             // 
             // btnBXH
             // 

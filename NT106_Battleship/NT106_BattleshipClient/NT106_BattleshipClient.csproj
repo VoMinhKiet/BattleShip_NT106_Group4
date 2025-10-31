@@ -33,8 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Guna.UI2, Version=2.0.4.7, Culture=neutral, PublicKeyToken=8b9d14aa5142e261, processorArchitecture=MSIL">
+      <HintPath>..\packages\Guna.UI2.WinForms.2.0.4.7\lib\net472\Guna.UI2.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +52,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="frmConnectionLost.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmConnectionLost.Designer.cs">
+      <DependentUpon>frmConnectionLost.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmLobby.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmLobby.Designer.cs">
+      <DependentUpon>frmLobby.cs</DependentUpon>
+    </Compile>
     <Compile Include="BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -105,6 +123,18 @@
     <Compile Include="frmSignup.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmMatchHistory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmMatchHistory.Designer.cs">
+      <DependentUpon>frmMatchHistory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSettings.Designer.cs">
+      <DependentUpon>frmSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmSignup.Designer.cs">
       <DependentUpon>frmSignup.cs</DependentUpon>
     </Compile>
@@ -114,8 +144,23 @@
     <Compile Include="frmUserInfo.Designer.cs">
       <DependentUpon>frmUserInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmSurrender.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmSurrender.Designer.cs">
+      <DependentUpon>frmSurrender.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModernTrackBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="frmConnectionLost.resx">
+      <DependentUpon>frmConnectionLost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmLobby.resx">
+      <DependentUpon>frmLobby.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,6 +189,15 @@
     <EmbeddedResource Include="frmNoteGame.resx">
       <DependentUpon>frmNoteGame.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmMatchHistory.resx">
+      <DependentUpon>frmMatchHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSettings.resx">
+      <DependentUpon>frmSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmSurrender.resx">
+      <DependentUpon>frmSurrender.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmResetpassword.resx">
       <DependentUpon>frmResetpassword.cs</DependentUpon>
     </EmbeddedResource>
@@ -165,6 +219,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="packages.config" />
     <EmbeddedResource Include="ucChatBox.resx">
       <DependentUpon>ucChatBox.cs</DependentUpon>
     </EmbeddedResource>

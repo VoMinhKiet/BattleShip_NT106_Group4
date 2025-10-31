@@ -27,5 +27,13 @@ namespace NT106_BattleshipClient
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
         }
+
+        private void btnLichSuDau_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            frmMatchHistory matchHistoryForm = new frmMatchHistory();
+            matchHistoryForm.ShowDialog();
+            this.Show();
+        }
     }
 }
