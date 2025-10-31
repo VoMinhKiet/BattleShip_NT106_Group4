@@ -79,5 +79,11 @@ namespace NT106_BattleshipClient
             frmNoteGame moForm = new frmNoteGame();
             moForm.ShowDialog();
         }
+
+        private void btnBanBe_Click(object sender, EventArgs e)
+        {
+            frmFriendlist MoForm = new frmFriendlist();
+            MoForm.ShowDialog();
+        }
     }
 }

@@ -88,6 +88,7 @@
             this.btnBanBe.TabIndex = 3;
             this.btnBanBe.Text = "Bạn Bè";
             this.btnBanBe.UseVisualStyleBackColor = false;
+            this.btnBanBe.Click += new System.EventHandler(this.btnBanBe_Click);
             // 
             // lblTieuDeChinh
             // 
