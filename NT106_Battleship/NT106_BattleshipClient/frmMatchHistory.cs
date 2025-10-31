@@ -20,28 +20,62 @@ namespace NT106_BattleshipClient
         private void frmMatchHistory_Load(object sender, EventArgs e)
         {
             // Dữ liệu mẫu để hiển thị trong dgvBangXepHang
-            dgvBangXepHang.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvBangXepHang.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvBangXepHang.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvBangXepHang.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvBangXepHang.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvBangXepHang.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
+
+            // Đồng bộ scrollbar
+            guna2VScrollBar1.Scroll += (s, E) =>
+            {
+                int maxIndex = dgvLichSuDau.RowCount - 1;
+                int scrollValue = Math.Min(guna2VScrollBar1.Value, maxIndex);
+                dgvLichSuDau.FirstDisplayedScrollingRowIndex = scrollValue;
+            };
+
+            // Tính số dòng hiển thị
+            int visibleRows = dgvLichSuDau.DisplayedRowCount(true);
+            int totalRows = dgvLichSuDau.RowCount;
+
+            // Chỉ hiện scrollbar nếu cần
+            guna2VScrollBar1.Visible = totalRows > visibleRows;
+            guna2VScrollBar1.Maximum = totalRows;
         }
 
-        private void dgvBangXepHang_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        private void dgvLichSuDau_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             // Chỉ xử lý hàng tiêu đề cột
             if (e.RowIndex == -1)
             {
                 // Tắt style mặc định (nếu chưa tắt trong Form_Load)
-                dgvBangXepHang.EnableHeadersVisualStyles = false;
+                dgvLichSuDau.EnableHeadersVisualStyles = false;
 
                 // Lấy màu nền và màu chữ của header
-                Color backColor = dgvBangXepHang.ColumnHeadersDefaultCellStyle.BackColor;
-                Color foreColor = dgvBangXepHang.ColumnHeadersDefaultCellStyle.ForeColor;
+                Color backColor = dgvLichSuDau.ColumnHeadersDefaultCellStyle.BackColor;
+                Color foreColor = dgvLichSuDau.ColumnHeadersDefaultCellStyle.ForeColor;
 
                 // Lấy màu viền của bảng
-                Color borderColor = dgvBangXepHang.GridColor;
+                Color borderColor = dgvLichSuDau.GridColor;
 
                 // Tô nền header
                 using (SolidBrush backBrush = new SolidBrush(backColor))
