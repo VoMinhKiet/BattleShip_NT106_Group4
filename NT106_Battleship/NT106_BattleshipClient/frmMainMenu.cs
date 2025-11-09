@@ -24,6 +24,15 @@ namespace NT106_BattleshipClient
 
         private void frmMainMenu_Load(object sender, EventArgs e)
         {
+            if (!Session.IsAuthenticated)
+            {
+                // Chặn mở thẳng form chính khi chưa login
+                new frmLogin().Show();
+                this.Close();
+                return;
+            }
+            // ví dụ hiển thị tên
+            lblXinChao.Text = $"Xin chào, {Session.Username}!";
             // Lấy kích thước màn hình chính
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
 
@@ -106,6 +115,21 @@ namespace NT106_BattleshipClient
             frmLobby Lobby = new frmLobby();
             Lobby.ShowDialog();
             this.Show();
+        }
+
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            var ask = MessageBox.Show(
+        "Bạn có chắc chắn muốn đăng xuất?",
+        "Xác nhận",
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Question);
+
+            if (ask == DialogResult.Yes)
+            {
+                Session.Logout();
+                this.Close();  
+            }
         }
     }
 }
