@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmLobby : Form
+    public partial class frmLobby : BaseForm
     {
         public frmLobby()
         {
@@ -197,6 +197,8 @@ namespace NT106_BattleshipClient
 
         private void btnTinNhan_Click(object sender, EventArgs e)
         {
+            ucChatBox1.Visible = !ucChatBox1.Visible;
+            if (ucChatBox1.Visible) ucChatBox1.BringToFront();
 
         }
 
@@ -220,6 +222,11 @@ namespace NT106_BattleshipClient
                 string tenNV = selectForm.TenNhanVatDaChon;
                 lblNhanVatKhach.Text = "Nhân vật: " + tenNV;
             }
+        }
+
+        private void tlpTop_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

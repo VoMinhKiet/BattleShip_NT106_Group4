@@ -108,7 +108,7 @@
             // 
             // bntExit
             // 
-            this.bntExit.BackColor = System.Drawing.Color.Red;
+            this.bntExit.BackColor = System.Drawing.Color.Tomato;
             this.bntExit.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bntExit.Location = new System.Drawing.Point(346, 332);
             this.bntExit.Name = "bntExit";

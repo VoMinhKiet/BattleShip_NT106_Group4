@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmMatchHistory : Form
+    public partial class frmMatchHistory : BaseForm
     {
         public frmMatchHistory()
         {
@@ -122,6 +122,11 @@ namespace NT106_BattleshipClient
         private void btnDong_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

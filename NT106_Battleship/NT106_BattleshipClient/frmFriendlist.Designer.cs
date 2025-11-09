@@ -97,7 +97,7 @@
             this.lblFriendlist.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFriendlist.Location = new System.Drawing.Point(327, 21);
             this.lblFriendlist.Name = "lblFriendlist";
-            this.lblFriendlist.Size = new System.Drawing.Size(341, 41);
+            this.lblFriendlist.Size = new System.Drawing.Size(337, 41);
             this.lblFriendlist.TabIndex = 25;
             this.lblFriendlist.Text = "👥 DANH SÁCH BẠN BÈ";
             // 
@@ -131,7 +131,7 @@
             // 
             // btnExit
             // 
-            this.btnExit.BackColor = System.Drawing.Color.Red;
+            this.btnExit.BackColor = System.Drawing.Color.Tomato;
             this.btnExit.Location = new System.Drawing.Point(199, 432);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(96, 39);
@@ -219,6 +219,7 @@
             this.pnlFriendlist.Name = "pnlFriendlist";
             this.pnlFriendlist.Size = new System.Drawing.Size(1010, 517);
             this.pnlFriendlist.TabIndex = 0;
+            this.pnlFriendlist.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlFriendlist_Paint);
             // 
             // frmFriendlist
             // 

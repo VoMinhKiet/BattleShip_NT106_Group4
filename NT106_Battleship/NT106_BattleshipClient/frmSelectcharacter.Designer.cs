@@ -89,6 +89,7 @@
             this.pnlCharacter.Name = "pnlCharacter";
             this.pnlCharacter.Size = new System.Drawing.Size(841, 498);
             this.pnlCharacter.TabIndex = 12;
+            this.pnlCharacter.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlCharacter_Paint);
             // 
             // pnlDescribe
             // 
@@ -378,6 +379,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "frmSelectcharacter";
             this.Text = "frmSelectcharacter";
+            this.Load += new System.EventHandler(this.frmSelectcharacter_Load);
             this.pnlCharacter.ResumeLayout(false);
             this.pnlCharacter.PerformLayout();
             this.pnlDescribe.ResumeLayout(false);

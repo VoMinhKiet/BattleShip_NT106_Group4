@@ -24,13 +24,13 @@ namespace NT106_BattleshipClient
 
         private void frmMainMenu_Load(object sender, EventArgs e)
         {
-            if (!Session.IsAuthenticated)
+            /*if (!Session.IsAuthenticated)
             {
                 // Chặn mở thẳng form chính khi chưa login
                 new frmLogin().Show();
                 this.Close();
                 return;
-            }
+            }*/
             // ví dụ hiển thị tên
             lblXinChao.Text = $"Xin chào, {Session.Username}!";
             // Lấy kích thước màn hình chính
@@ -40,8 +40,9 @@ namespace NT106_BattleshipClient
             this.Size = screen.Size;
             this.Location = new Point(0, 0); // Đặt Form ở góc trên bên trái
                                              // Đường dẫn tương đối từ thư mục bin/Debug đến file
-            
 
+            //Ẩn thanh tiêu đề nếu cần
+            this.FormBorderStyle = FormBorderStyle.None;
         }
         
         private void btnHoSo_Click(object sender, EventArgs e)
@@ -128,8 +129,19 @@ namespace NT106_BattleshipClient
             if (ask == DialogResult.Yes)
             {
                 Session.Logout();
-                this.Close();  
+                // Mở form Signup
+                frmSignup signupForm = new frmSignup();
+                signupForm.Show();
+
+                // Ẩn 
+                this.Hide();
+                //đang để frmMainMenu là form chính nếu để frmLogin nên đổi thành this.Close();
             }
+        }
+
+        private void lblXinChao_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

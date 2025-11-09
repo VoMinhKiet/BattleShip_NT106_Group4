@@ -13,7 +13,7 @@ using Newtonsoft.Json;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmSignup : Form
+    public partial class frmSignup : BaseForm
     {
         private readonly UserRepository _repo = new UserRepository();
         public frmSignup()

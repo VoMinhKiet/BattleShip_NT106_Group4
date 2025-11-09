@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
-using System.Windows.Forms;
-using System.Media; 
 using System.IO; 
+using System.Media; 
+using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
@@ -21,10 +23,17 @@ namespace NT106_BattleshipClient
             InitializeComponent();
 
 
-            if (!DesignMode)
+            
+        }
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+            // Kiểm tra design-time: chỉ load tài nguyên khi chạy app thực tế
+            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
                 LoadCustomCursorsAndSound();
-                
+                AttachMouseEventsRecursive(this);
             }
         }
 
@@ -32,27 +41,58 @@ namespace NT106_BattleshipClient
         private void LoadCustomCursorsAndSound()
         {
 
-            string resourcesPath = "Resources/Cursor/";
-
-
+            string resourcesDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "Cursor");
 
             try
             {
                 // Tải Con trỏ
-                cursorDefault = new Cursor(resourcesPath + "CursorImage.cur");
-                cursorClick = new Cursor(resourcesPath + "CursorAnimation.cur");
+                string defaultCursorPath = Path.Combine(resourcesDir, "CursorImage.cur");
+                string clickCursorPath = Path.Combine(resourcesDir, "CursorAnimation.cur");
+                string clickSoundPath = Path.Combine(resourcesDir, "ClickSound.wav"); ;
 
 
-                this.Cursor = cursorDefault;
+                // kiểm tra và load cursor mặc định (nếu có)
+                if (File.Exists(defaultCursorPath))
+                {
+                    cursorDefault = new Cursor(defaultCursorPath);
+                    this.Cursor = cursorDefault;
+                }
+                else
+                {
+                    Debug.WriteLine($"Cursor default not found: {defaultCursorPath}");
+                }
 
+                // load cursor click (nếu có)
+                if (File.Exists(clickCursorPath))
+                {
+                    cursorClick = new Cursor(clickCursorPath);
+                }
+                else
+                {
+                    Debug.WriteLine($"Cursor click not found: {clickCursorPath}");
+                }
 
-                clickSoundPlayer = new System.Media.SoundPlayer(resourcesPath + "ClickSound.wav");
-                clickSoundPlayer.Load();
+                // load sound (nếu có)
+                if (File.Exists(clickSoundPath))
+                {
+                    clickSoundPlayer = new System.Media.SoundPlayer(clickSoundPath);
+                    // bạn có thể LoadAsync() nếu muốn
+                    try { clickSoundPlayer.Load(); }
+                    catch (Exception exLoad) { Debug.WriteLine("SoundPlayer load failed: " + exLoad.Message); clickSoundPlayer = null; }
+                }
+                else
+                {
+                    Debug.WriteLine($"Click sound not found: {clickSoundPath}");
+                }
             }
             catch (Exception ex)
             {
-
+                // KHÔNG show MessageBox trên lỗi load tài nguyên (sẽ gây annoying khi lỗi)
+                Debug.WriteLine("Lỗi tải tài nguyên con trỏ/âm thanh: " + ex);
+                // nếu muốn hiển thị cho dev khi debug:
+#if DEBUG
                 MessageBox.Show("Lỗi tải tài nguyên con trỏ/âm thanh: " + ex.Message, "Lỗi Tải Tài Nguyên", MessageBoxButtons.OK, MessageBoxIcon.Error);
+#endif
             }
         }
 
@@ -94,12 +134,12 @@ namespace NT106_BattleshipClient
                 this.Cursor = cursorClick;
 
 
-                if (clickSoundPlayer != null)
+                /*if (clickSoundPlayer != null)
                 {
                     clickSoundPlayer.Stop();
                     clickSoundPlayer.Play();
-                }
-            }
+                }*/
+            }   
         }
 
         protected virtual void OnControlMouseUp(object sender, MouseEventArgs e)

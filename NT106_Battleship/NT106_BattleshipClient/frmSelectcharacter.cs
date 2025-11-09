@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmSelectcharacter : Form
+    public partial class frmSelectcharacter : BaseForm
     {
         public string TenNhanVatDaChon { get; private set; }
 
@@ -137,6 +137,17 @@ namespace NT106_BattleshipClient
             // 2. Thiết lập kết quả và đóng Form
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void pnlCharacter_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void frmSelectcharacter_Load(object sender, EventArgs e)
+        {
+            //Ẩn thanh tiêu đề nếu cần
+            this.FormBorderStyle = FormBorderStyle.None;
         }
     }
 }

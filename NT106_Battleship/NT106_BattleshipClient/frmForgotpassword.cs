@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmForgotpassword : Form
+    public partial class frmForgotpassword : BaseForm
     {
         public frmForgotpassword()
         {
@@ -73,6 +73,11 @@ namespace NT106_BattleshipClient
             frmResetpassword resetPasswordForm = new frmResetpassword(email);
             resetPasswordForm.Show();
             this.Hide();
+        }
+
+        private void pnlForgotpassword_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }
