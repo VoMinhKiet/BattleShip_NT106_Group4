@@ -228,5 +228,10 @@ namespace NT106_BattleshipClient
         {
 
         }
+
+        private void pnlPhongCho_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

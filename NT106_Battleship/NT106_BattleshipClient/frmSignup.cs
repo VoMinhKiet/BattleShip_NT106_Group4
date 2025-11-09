@@ -122,7 +122,8 @@ namespace NT106_BattleshipClient
 
         private void frmSignup_Load(object sender, EventArgs e)
         {
-
+            //Ẩn thanh tiêu đề nếu cần
+            this.FormBorderStyle = FormBorderStyle.None;
         }
     }
 }

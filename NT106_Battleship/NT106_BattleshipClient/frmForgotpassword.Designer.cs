@@ -174,6 +174,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "frmForgotpassword";
             this.Text = "frmForgotpassword";
+            this.Load += new System.EventHandler(this.frmForgotpassword_Load);
             this.pnlForgotpassword.ResumeLayout(false);
             this.pnlForgotpassword.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picEmail)).EndInit();
