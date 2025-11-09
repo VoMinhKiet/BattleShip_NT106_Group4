@@ -65,9 +65,9 @@
             // 
             this.bntExit.BackColor = System.Drawing.Color.Red;
             this.bntExit.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bntExit.Location = new System.Drawing.Point(432, 241);
+            this.bntExit.Location = new System.Drawing.Point(387, 241);
             this.bntExit.Name = "bntExit";
-            this.bntExit.Size = new System.Drawing.Size(204, 67);
+            this.bntExit.Size = new System.Drawing.Size(249, 67);
             this.bntExit.TabIndex = 8;
             this.bntExit.Text = "Thoát";
             this.bntExit.UseVisualStyleBackColor = false;
@@ -77,7 +77,7 @@
             // 
             this.lblor.AutoSize = true;
             this.lblor.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblor.Location = new System.Drawing.Point(239, 337);
+            this.lblor.Location = new System.Drawing.Point(218, 337);
             this.lblor.Name = "lblor";
             this.lblor.Size = new System.Drawing.Size(29, 25);
             this.lblor.TabIndex = 7;
@@ -88,7 +88,7 @@
             this.linkLogin.AutoSize = true;
             this.linkLogin.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLogin.LinkColor = System.Drawing.Color.DimGray;
-            this.linkLogin.Location = new System.Drawing.Point(183, 362);
+            this.linkLogin.Location = new System.Drawing.Point(162, 362);
             this.linkLogin.Name = "linkLogin";
             this.linkLogin.Size = new System.Drawing.Size(150, 25);
             this.linkLogin.TabIndex = 6;
@@ -101,7 +101,7 @@
             this.linkCreateAccount.AutoSize = true;
             this.linkCreateAccount.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkCreateAccount.LinkColor = System.Drawing.Color.DimGray;
-            this.linkCreateAccount.Location = new System.Drawing.Point(178, 312);
+            this.linkCreateAccount.Location = new System.Drawing.Point(157, 312);
             this.linkCreateAccount.Name = "linkCreateAccount";
             this.linkCreateAccount.Size = new System.Drawing.Size(155, 25);
             this.linkCreateAccount.TabIndex = 5;
@@ -115,10 +115,11 @@
             this.btnResetpassword.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetpassword.Location = new System.Drawing.Point(110, 241);
             this.btnResetpassword.Name = "btnResetpassword";
-            this.btnResetpassword.Size = new System.Drawing.Size(287, 68);
+            this.btnResetpassword.Size = new System.Drawing.Size(249, 68);
             this.btnResetpassword.TabIndex = 4;
             this.btnResetpassword.Text = "Tạo mật khẩu mới";
             this.btnResetpassword.UseVisualStyleBackColor = false;
+            this.btnResetpassword.Click += new System.EventHandler(this.btnResetpassword_Click);
             // 
             // picEmail
             // 

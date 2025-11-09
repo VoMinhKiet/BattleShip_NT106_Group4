@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -14,12 +16,46 @@ namespace NT106_BattleshipClient
 {
     public partial class frmLogin : Form
     {
+        private readonly UserRepository _repo = new UserRepository();
         public frmLogin()
         {
             InitializeComponent();
             txtPassword.PasswordChar = '*';
         }
+        private void btnLogin_Click(object sender, EventArgs e)
+        {
+            string u = txtUsername.Text.Trim();
+            string p = txtPassword.Text;
 
+            if (string.IsNullOrWhiteSpace(u) || string.IsNullOrWhiteSpace(p))
+            {
+                MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
+                return;
+            }
+
+            try
+            {
+                bool ok = _repo.VerifyLogin(u, p);
+                if (!ok)
+                {
+                    MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu.");
+                    return;
+                }
+                Session.Username = u;
+                // Đăng nhập thành công -> vào MainMenu
+                this.Hide();
+                using (var mainForm = new frmMainMenu())
+                {
+                    mainForm.ShowDialog();
+                }
+                this.Show();
+                txtPassword.Clear();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi: " + ex.Message);
+            }
+        }
         private void frmLogin_Load(object sender, EventArgs e)
         {
             
@@ -69,15 +105,6 @@ namespace NT106_BattleshipClient
             frmForgotpassword f = new frmForgotpassword();
             f.Show();
             this.Hide();
-        }
-
-        private void btnLogin_Click(object sender, EventArgs e)
-        {
-            this.Hide();
-            frmMainMenu mainForm = new frmMainMenu();
-            
-            mainForm.ShowDialog();
-            this.Close();
         }
     }
 }

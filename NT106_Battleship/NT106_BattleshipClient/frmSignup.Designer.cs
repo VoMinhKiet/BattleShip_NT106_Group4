@@ -171,6 +171,7 @@
             this.btnSignup.TabIndex = 10;
             this.btnSignup.Text = "Đăng kí";
             this.btnSignup.UseVisualStyleBackColor = false;
+            this.btnSignup.Click += new System.EventHandler(this.btnSignup_Click);
             // 
             // chkShowpassword
             // 
@@ -283,6 +284,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "frmSignup";
             this.Text = "frmSignup";
+            this.Load += new System.EventHandler(this.frmSignup_Load);
             this.pnlSignup.ResumeLayout(false);
             this.pnlSignup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picConfirmpassword)).EndInit();
