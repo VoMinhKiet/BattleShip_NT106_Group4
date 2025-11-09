@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLobby));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.pnlTimTaoPhong = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -66,6 +66,7 @@
             this.btnSanSang = new System.Windows.Forms.Button();
             this.pnlNenChuPhong = new System.Windows.Forms.Panel();
             this.pnlChuPhong = new System.Windows.Forms.Panel();
+            this.ucChatBox1 = new NT106_BattleshipClient.ucChatBox();
             this.tplChuPhong = new System.Windows.Forms.TableLayoutPanel();
             this.tplChuPhong2 = new System.Windows.Forms.TableLayoutPanel();
             this.pnlTieuDeChuPhong = new System.Windows.Forms.Label();
@@ -255,28 +256,28 @@
             this.dgvDanhSachPhong.BackgroundColor = System.Drawing.Color.Bisque;
             this.dgvDanhSachPhong.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvDanhSachPhong.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.LightBlue;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.LightBlue;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvDanhSachPhong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.LightBlue;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.LightBlue;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvDanhSachPhong.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvDanhSachPhong.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDanhSachPhong.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colID,
             this.colTenChuPhong,
             this.colTrangThai,
             this.colThamGia});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.LightBlue;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.SteelBlue;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.LightBlue;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvDanhSachPhong.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.LightBlue;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.SteelBlue;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.LightBlue;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvDanhSachPhong.DefaultCellStyle = dataGridViewCellStyle2;
             this.dgvDanhSachPhong.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvDanhSachPhong.EnableHeadersVisualStyles = false;
             this.dgvDanhSachPhong.GridColor = System.Drawing.Color.SteelBlue;
@@ -421,6 +422,7 @@
             // 
             this.pnlPhongCho.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pnlPhongCho.BackgroundImage")));
             this.pnlPhongCho.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pnlPhongCho.Controls.Add(this.ucChatBox1);
             this.pnlPhongCho.Controls.Add(this.tlpNguoiChoi);
             this.pnlPhongCho.Controls.Add(this.tlpTop);
             this.pnlPhongCho.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -636,6 +638,16 @@
             this.pnlChuPhong.Padding = new System.Windows.Forms.Padding(10);
             this.pnlChuPhong.Size = new System.Drawing.Size(790, 329);
             this.pnlChuPhong.TabIndex = 0;
+            // 
+            // ucChatBox1
+            // 
+            this.ucChatBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ucChatBox1.BackgroundImage")));
+            this.ucChatBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.ucChatBox1.Location = new System.Drawing.Point(477, 199);
+            this.ucChatBox1.Name = "ucChatBox1";
+            this.ucChatBox1.Size = new System.Drawing.Size(833, 528);
+            this.ucChatBox1.TabIndex = 3;
+            this.ucChatBox1.Visible = false;
             // 
             // tplChuPhong
             // 
@@ -897,6 +909,7 @@
             this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpTop.Size = new System.Drawing.Size(1842, 334);
             this.tlpTop.TabIndex = 0;
+            this.tlpTop.Paint += new System.Windows.Forms.PaintEventHandler(this.tlpTop_Paint);
             // 
             // tblTieuDe
             // 
@@ -1064,5 +1077,6 @@
         private System.Windows.Forms.Label lblTieuDe1;
         private System.Windows.Forms.Label lblTieuDe2;
         private System.Windows.Forms.Button btnThoatPhongCho;
+        private ucChatBox ucChatBox1;
     }
 }

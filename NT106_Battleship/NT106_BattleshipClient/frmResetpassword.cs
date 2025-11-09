@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmResetpassword : Form
+    public partial class frmResetpassword : BaseForm
     {
         private string _email;
 

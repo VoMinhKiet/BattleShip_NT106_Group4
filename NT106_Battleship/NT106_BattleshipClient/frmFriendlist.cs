@@ -11,7 +11,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmFriendlist : Form
+    public partial class frmFriendlist : BaseForm
     {
         public frmFriendlist()
         {
@@ -25,6 +25,9 @@ namespace NT106_BattleshipClient
             cbStatus.Items.Add("Online");
             cbStatus.Items.Add("Offline");
             cbStatus.SelectedIndex = 0;
+
+            //Ẩn thanh tiêu đề nếu cần
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -33,6 +36,11 @@ namespace NT106_BattleshipClient
         }
 
         private void cbStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlFriendlist_Paint(object sender, PaintEventArgs e)
         {
 
         }

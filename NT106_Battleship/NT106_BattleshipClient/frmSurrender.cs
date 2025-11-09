@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmSurrender : Form
+    public partial class frmSurrender : BaseForm
     {
         public frmSurrender()
         {

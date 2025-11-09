@@ -60,10 +60,11 @@
             this.pnlForgotpassword.Name = "pnlForgotpassword";
             this.pnlForgotpassword.Size = new System.Drawing.Size(705, 450);
             this.pnlForgotpassword.TabIndex = 0;
+            this.pnlForgotpassword.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlForgotpassword_Paint);
             // 
             // bntExit
             // 
-            this.bntExit.BackColor = System.Drawing.Color.Red;
+            this.bntExit.BackColor = System.Drawing.Color.Tomato;
             this.bntExit.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bntExit.Location = new System.Drawing.Point(387, 241);
             this.bntExit.Name = "bntExit";

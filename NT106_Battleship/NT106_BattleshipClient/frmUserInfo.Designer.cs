@@ -133,7 +133,7 @@
             // 
             // btnThoat
             // 
-            this.btnThoat.BackColor = System.Drawing.Color.Red;
+            this.btnThoat.BackColor = System.Drawing.Color.Tomato;
             this.btnThoat.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThoat.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnThoat.Location = new System.Drawing.Point(258, 441);
@@ -146,7 +146,7 @@
             // 
             // btnLichSuDau
             // 
-            this.btnLichSuDau.BackColor = System.Drawing.Color.Lime;
+            this.btnLichSuDau.BackColor = System.Drawing.Color.Bisque;
             this.btnLichSuDau.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLichSuDau.Location = new System.Drawing.Point(29, 441);
             this.btnLichSuDau.Name = "btnLichSuDau";

@@ -112,6 +112,7 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Không thể kết nối tới máy chủ.\r\nVui lòng kiểm tra kết nối mạng.\r\n\r\n\r\n";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 

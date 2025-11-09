@@ -14,7 +14,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmLogin : Form
+    public partial class frmLogin : BaseForm
     {
         private readonly UserRepository _repo = new UserRepository();
         public frmLogin()
