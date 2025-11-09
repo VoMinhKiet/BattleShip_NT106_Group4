@@ -78,6 +78,12 @@
     <Compile Include="frmConnectionLost.Designer.cs">
       <DependentUpon>frmConnectionLost.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmIn_Battle.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmIn_Battle.Designer.cs">
+      <DependentUpon>frmIn_Battle.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmLobby.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,11 +140,23 @@
     <Compile Include="frmResetpassword.Designer.cs">
       <DependentUpon>frmResetpassword.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmResult.Designer.cs">
+      <DependentUpon>frmResult.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmSelectcharacter.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmSelectcharacter.Designer.cs">
       <DependentUpon>frmSelectcharacter.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmShip_Sorting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmShip_Sorting.Designer.cs">
+      <DependentUpon>frmShip_Sorting.cs</DependentUpon>
     </Compile>
     <Compile Include="frmSignup.cs">
       <SubType>Form</SubType>
@@ -157,6 +175,12 @@
     </Compile>
     <Compile Include="frmSignup.Designer.cs">
       <DependentUpon>frmSignup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTurnPopUp.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTurnPopUp.Designer.cs">
+      <DependentUpon>frmTurnPopUp.cs</DependentUpon>
     </Compile>
     <Compile Include="frmUserInfo.cs">
       <SubType>Form</SubType>
@@ -179,6 +203,9 @@
     <Compile Include="UserRepository.cs" />
     <EmbeddedResource Include="frmConnectionLost.resx">
       <DependentUpon>frmConnectionLost.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmIn_Battle.resx">
+      <DependentUpon>frmIn_Battle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmLobby.resx">
       <DependentUpon>frmLobby.cs</DependentUpon>
@@ -217,6 +244,9 @@
     <EmbeddedResource Include="frmSettings.resx">
       <DependentUpon>frmSettings.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmShip_Sorting.resx">
+      <DependentUpon>frmShip_Sorting.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmSurrender.resx">
       <DependentUpon>frmSurrender.cs</DependentUpon>
     </EmbeddedResource>
@@ -228,6 +258,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmSignup.resx">
       <DependentUpon>frmSignup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTurnPopUp.resx">
+      <DependentUpon>frmTurnPopUp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUserInfo.resx">
       <DependentUpon>frmUserInfo.cs</DependentUpon>
