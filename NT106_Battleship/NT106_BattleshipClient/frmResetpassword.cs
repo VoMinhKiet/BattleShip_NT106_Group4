@@ -69,7 +69,8 @@ namespace NT106_BattleshipClient
 
         private void frmResetpassword_Load(object sender, EventArgs e)
         {
-
+            //Ẩn thanh tiêu đề nếu cần
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnReset_Click(object sender, EventArgs e)

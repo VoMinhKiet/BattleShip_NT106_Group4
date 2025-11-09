@@ -222,6 +222,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "frmResetpassword";
             this.Text = "frmResetpassword";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmResetpassword_Load);
             this.pnlResetpassword.ResumeLayout(false);
             this.pnlResetpassword.PerformLayout();

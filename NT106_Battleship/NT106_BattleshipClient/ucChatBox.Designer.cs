@@ -52,6 +52,7 @@
             // 
             this.txtTinNhan.BackColor = System.Drawing.Color.AliceBlue;
             this.txtTinNhan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtTinNhan.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTinNhan.Location = new System.Drawing.Point(17, 3);
             this.txtTinNhan.Multiline = true;
             this.txtTinNhan.Name = "txtTinNhan";

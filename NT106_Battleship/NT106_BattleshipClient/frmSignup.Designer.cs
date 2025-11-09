@@ -284,6 +284,7 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "frmSignup";
             this.Text = "frmSignup";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmSignup_Load);
             this.pnlSignup.ResumeLayout(false);
             this.pnlSignup.PerformLayout();

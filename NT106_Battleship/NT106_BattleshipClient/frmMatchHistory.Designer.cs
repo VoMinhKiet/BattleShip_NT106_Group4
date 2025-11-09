@@ -325,6 +325,7 @@
             this.Name = "frmMatchHistory";
             this.Padding = new System.Windows.Forms.Padding(20);
             this.Text = "frmMatchHistory";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmMatchHistory_Load);
             this.panel1.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
