@@ -213,6 +213,7 @@
             this.Controls.Add(this.pnlLogin);
             this.Name = "frmLogin";
             this.Text = "frmLogin";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmLogin_Load);
             this.pnlLogin.ResumeLayout(false);
             this.pnlLogin.PerformLayout();
