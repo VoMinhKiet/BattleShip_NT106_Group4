@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmNoteGame : Form
+    public partial class frmNoteGame : BaseForm
     {
         public frmNoteGame()
         {
@@ -81,6 +81,8 @@ namespace NT106_BattleshipClient
 🎉 Chúc bạn có những trận hải chiến thật gay cấn và vui vẻ!
 ⚓══════════════════════════════════════════════════════════════⚓";
 
+            //Ẩn thanh tiêu đề nếu cần
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -89,6 +91,11 @@ namespace NT106_BattleshipClient
         }
 
         private void rchtxtNote_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlNotegame_Paint(object sender, PaintEventArgs e)
         {
 
         }

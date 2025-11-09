@@ -53,6 +53,7 @@
             this.lblXinChao.Size = new System.Drawing.Size(501, 50);
             this.lblXinChao.TabIndex = 0;
             this.lblXinChao.Text = "Xin chào+[Tên người dùng]";
+            this.lblXinChao.Click += new System.EventHandler(this.lblXinChao_Click);
             // 
             // btnHoSo
             // 
@@ -176,11 +177,11 @@
             // 
             // btnLogout
             // 
-            this.btnLogout.BackColor = System.Drawing.Color.Bisque;
-            this.btnLogout.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogout.Location = new System.Drawing.Point(532, 39);
+            this.btnLogout.BackColor = System.Drawing.Color.Tomato;
+            this.btnLogout.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnLogout.Location = new System.Drawing.Point(1630, 828);
             this.btnLogout.Name = "btnLogout";
-            this.btnLogout.Size = new System.Drawing.Size(120, 50);
+            this.btnLogout.Size = new System.Drawing.Size(232, 119);
             this.btnLogout.TabIndex = 11;
             this.btnLogout.Text = "Đăng xuất";
             this.btnLogout.UseVisualStyleBackColor = false;
@@ -207,6 +208,7 @@
             this.Controls.Add(this.lblXinChao);
             this.Name = "frmMainMenu";
             this.Text = "frmMainMenu";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmMainMenu_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

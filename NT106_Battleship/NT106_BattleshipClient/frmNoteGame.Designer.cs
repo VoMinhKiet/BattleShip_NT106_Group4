@@ -56,10 +56,11 @@
             this.pnlNotegame.Name = "pnlNotegame";
             this.pnlNotegame.Size = new System.Drawing.Size(746, 669);
             this.pnlNotegame.TabIndex = 1;
+            this.pnlNotegame.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlNotegame_Paint);
             // 
             // btnExit
             // 
-            this.btnExit.BackColor = System.Drawing.Color.Red;
+            this.btnExit.BackColor = System.Drawing.Color.Tomato;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnExit.Location = new System.Drawing.Point(284, 592);
             this.btnExit.Name = "btnExit";
