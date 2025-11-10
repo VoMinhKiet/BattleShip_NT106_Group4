@@ -24,10 +24,17 @@ namespace NT106_BattleshipClient
         private bool[,] playerShips = new bool[10, 10]; // true = ship is here\
         public frmShip_Sorting()
         {
-            InitializeComponent();
+            
             this.FormBorderStyle = FormBorderStyle.None; // removes title bar
             this.WindowState = FormWindowState.Maximized; // maximize to full screen
             this.ShowInTaskbar = false;
+            this.BackgroundImage = Properties.Resources.In_Battle_Background;
+            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.SetStyle(ControlStyles.DoubleBuffer |
+              ControlStyles.UserPaint |
+              ControlStyles.AllPaintingInWmPaint, true);
+            this.UpdateStyles();
+            InitializeComponent();
             pnlYourGrid.Top = (this.ClientSize.Height - pnlYourGrid.Bottom / 4);
             CreateTopPanel();
             CreateGrid(pnlYourGrid, playerGrid);
@@ -229,6 +236,7 @@ namespace NT106_BattleshipClient
         {
             Label lblYourShip = new Label();
             lblYourShip.Text = "Your Ships";
+            lblYourShip.BackColor = Color.Transparent;
             lblYourShip.Font = new Font("Arial", 18, FontStyle.Bold);
             lblYourShip.AutoSize = true;
             lblYourShip.Left = pnlYourGrid.Left +(pnlYourGrid.Width - lblYourShip.Width) / 2;
