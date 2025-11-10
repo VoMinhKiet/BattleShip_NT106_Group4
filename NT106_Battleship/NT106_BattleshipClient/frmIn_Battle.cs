@@ -30,6 +30,12 @@ namespace NT106_BattleshipClient
             this.FormBorderStyle = FormBorderStyle.None; // removes title bar
             this.WindowState = FormWindowState.Maximized; // maximize to full screen
             this.ShowInTaskbar = false;
+            this.BackgroundImage = Properties.Resources.In_Battle_Background;
+            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.SetStyle(ControlStyles.DoubleBuffer |
+              ControlStyles.UserPaint |
+              ControlStyles.AllPaintingInWmPaint, true);
+            this.UpdateStyles();
             InitializeComponent();
             CreateTopPanel();
             
@@ -45,6 +51,7 @@ namespace NT106_BattleshipClient
             // create label for your ship
             Label lblYourShip = new Label();
             lblYourShip.Text = "Your Ships";
+            lblYourShip.BackColor = Color.Transparent;
             lblYourShip.Font = new Font("Arial", 18, FontStyle.Bold);
             lblYourShip.AutoSize = true;
             lblYourShip.Left = pnlYourGrid.Left + (pnlYourGrid.Width - lblYourShip.Width) / 2 - 20;
@@ -56,7 +63,7 @@ namespace NT106_BattleshipClient
             pnlOpponentGrid.Width = 500;
             pnlOpponentGrid.Height = 500;
             pnlOpponentGrid.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-            pnlOpponentGrid.Left = pnlOpponentGrid.Left = this.ClientSize.Width - pnlYourGrid.Left - pnlYourGrid.Width;
+            pnlOpponentGrid.Left = this.ClientSize.Width - pnlYourGrid.Left - pnlYourGrid.Width;
             pnlOpponentGrid.Top = 297;
             this.Controls.Add(pnlOpponentGrid);
             CreateGrid(pnlOpponentGrid, playerGrid);
@@ -64,6 +71,7 @@ namespace NT106_BattleshipClient
             //create label for enemy's ship
             Label lblOpponentShip = new Label();
             lblOpponentShip.Text = "Opponent Ships";
+            lblOpponentShip.BackColor = Color.Transparent;
             lblOpponentShip.Font = new Font("Arial", 18, FontStyle.Bold);
             lblOpponentShip.AutoSize = true;
             lblOpponentShip.Left = this.ClientSize.Width - pnlOpponentGrid.Left - pnlOpponentGrid.Width+ (pnlOpponentGrid.Width - lblOpponentShip.Width) / 2 + 70;
@@ -74,7 +82,7 @@ namespace NT106_BattleshipClient
             Button btnSkill = new Button();
             btnSkill.Text = "Skill Ready!";
             btnSkill.Font = new Font("Arial", 18, FontStyle.Bold);
-            btnSkill.Width = 500 / 2;
+            btnSkill.Width = 255;
             btnSkill.Height = 60;
             btnSkill.Left = pnlOpponentGrid.Left; // distance from left side of form
             btnSkill.Top = pnlOpponentGrid.Bottom; // below your grid panel
