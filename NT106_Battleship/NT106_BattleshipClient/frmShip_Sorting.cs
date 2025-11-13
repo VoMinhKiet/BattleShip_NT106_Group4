@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmShip_Sorting : Form
+    public partial class frmShip_Sorting : BaseForm
     {
         private Timer timer;
         private TimeSpan leftTime;
@@ -231,7 +231,14 @@ namespace NT106_BattleshipClient
             Button btn = sender as Button;
             lblLeftTimer.Text = "Ready";
             //adding ships check
+
+            //frmIn_Battle here 
+            frmIn_Battle in_battle= new frmIn_Battle();
+            in_battle.Show();
+            this.Close();
+
         }
+
         public void CreateGrid(Panel container, Button[,] grid)
         {
             Label lblYourShip = new Label();
@@ -290,6 +297,11 @@ namespace NT106_BattleshipClient
         private void BtnAutoSort_Click(object sender, EventArgs e)
         {
             //autosort function here
+        }
+
+        private void frmShip_Sorting_Load_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 //using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmIn_Battle : Form
+    public partial class frmIn_Battle : BaseForm
     {
         private Timer timer;
         private TimeSpan leftTime;
@@ -21,7 +22,7 @@ namespace NT106_BattleshipClient
         private bool isLeftTimerRunning = true;
         private bool isRightTimerRunning = true;
         private Button[,] playerGrid = new Button[10, 10];
-        private bool[,] playerShips = new bool[10, 10]; // true = ship is here\
+        private bool[,] playerShips = new bool[10, 10]; // true = ship is here
         
         
         
@@ -32,6 +33,7 @@ namespace NT106_BattleshipClient
             this.ShowInTaskbar = false;
             this.BackgroundImage = Properties.Resources.In_Battle_Background;
             this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.TopMost = true; //remember to close this after
             this.SetStyle(ControlStyles.DoubleBuffer |
               ControlStyles.UserPaint |
               ControlStyles.AllPaintingInWmPaint, true);
@@ -257,5 +259,9 @@ namespace NT106_BattleshipClient
             //using skill here
         }
 
+        private void frmIn_Battle_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
