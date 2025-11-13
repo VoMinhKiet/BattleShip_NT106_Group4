@@ -14,6 +14,9 @@ namespace NT106_BattleshipClient
     {
         public frmLobby()
         {
+            this.SetStyle(ControlStyles.DoubleBuffer |
+ControlStyles.UserPaint |
+ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
         }
 
@@ -230,6 +233,18 @@ namespace NT106_BattleshipClient
         }
 
         private void pnlPhongCho_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnBatDau_Click(object sender, EventArgs e)
+        {
+            frmShip_Sorting f = new frmShip_Sorting();
+            f.ShowDialog();
+            this.Close();
+        }
+
+        private void tblTieuDe_Paint(object sender, PaintEventArgs e)
         {
 
         }
