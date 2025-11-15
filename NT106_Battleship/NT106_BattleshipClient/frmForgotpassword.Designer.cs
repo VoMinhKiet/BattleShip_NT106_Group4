@@ -60,7 +60,6 @@
             this.pnlForgotpassword.Name = "pnlForgotpassword";
             this.pnlForgotpassword.Size = new System.Drawing.Size(705, 450);
             this.pnlForgotpassword.TabIndex = 0;
-            this.pnlForgotpassword.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlForgotpassword_Paint);
             // 
             // bntExit
             // 
@@ -131,7 +130,6 @@
             this.picEmail.Size = new System.Drawing.Size(61, 59);
             this.picEmail.TabIndex = 3;
             this.picEmail.TabStop = false;
-            this.picEmail.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // lblEmail
             // 

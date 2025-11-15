@@ -16,59 +16,61 @@ namespace NT106_BattleshipClient
 {
     public partial class frmLogin : BaseForm
     {
-        private readonly UserRepository _repo = new UserRepository();
+        private async Task DangNhapTaiKhoanAsync(string tenDangNhap, string matKhau)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5074/");  // Port server của bạn
+
+                var body = new
+                {
+                    tenDangNhap = tenDangNhap,
+                    matKhau = matKhau
+                };
+
+                string json = JsonConvert.SerializeObject(body);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync("api/Auth/login", content);
+                string result = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Đăng nhập thành công!");
+
+                    // Ở đây bạn có thể chuyển sang form Main Menu
+                    frmMainMenu f = new frmMainMenu();
+                    f.Show();
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Đăng nhập thất bại!\n" + result, "Lỗi");
+                }
+            }
+        }
         public frmLogin()
         {
             InitializeComponent();
             txtPassword.PasswordChar = '*';
         }
-        private void btnLogin_Click(object sender, EventArgs e)
+        private async void btnLogin_Click(object sender, EventArgs e)
         {
-            string u = txtUsername.Text.Trim();
-            string p = txtPassword.Text;
+            string username = txtUsername.Text.Trim();
+            string password = txtPassword.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(u) || string.IsNullOrWhiteSpace(p))
+            if (username == "" || password == "")
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu.");
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
 
-            try
-            {
-                bool ok = _repo.VerifyLogin(u, p);
-                if (!ok)
-                {
-                    MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu.");
-                    return;
-                }
-                Session.Username = u;
-                // Đăng nhập thành công -> vào MainMenu
-                this.Hide();
-                using (var mainForm = new frmMainMenu())
-                {
-                    mainForm.ShowDialog();
-                }
-                this.Show();
-                txtPassword.Clear();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message);
-            }
+            await DangNhapTaiKhoanAsync(username, password);
         }
         private void frmLogin_Load(object sender, EventArgs e)
         {
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
-        }
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlLogin_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         private void btnExit_Click(object sender, EventArgs e)

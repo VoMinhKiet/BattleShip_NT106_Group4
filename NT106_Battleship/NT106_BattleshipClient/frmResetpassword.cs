@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,22 +14,19 @@ namespace NT106_BattleshipClient
 {
     public partial class frmResetpassword : BaseForm
     {
-        private string _email;
+        private string userEmail;
+        private string otpCode;
 
-        public frmResetpassword(string email)
+        public frmResetpassword(string email, string otp)
         {
             InitializeComponent();
-            _email = email;
-        }
-        public frmResetpassword()
-        {
-            InitializeComponent();
+
+            userEmail = email;
+            otpCode = otp;
+
+            // Ẩn mật khẩu khi nhập
+            txtNewpassword.PasswordChar = '*';
             txtConfirmpassword.PasswordChar = '*';
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
         private void bntExit_Click(object sender, EventArgs e)
@@ -47,10 +46,10 @@ namespace NT106_BattleshipClient
 
         private void chkShowpassword_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkShowpassword.Checked)
-                txtConfirmpassword.PasswordChar = '\0';
-            else
-                txtConfirmpassword.PasswordChar = '*';
+            char c = chkShowpassword.Checked ? '\0' : '*';
+
+            txtNewpassword.PasswordChar = c;
+            txtConfirmpassword.PasswordChar = c;
         }
 
         private void linkLogin_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -73,36 +72,59 @@ namespace NT106_BattleshipClient
             this.FormBorderStyle = FormBorderStyle.None;
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
+        private async void btnReset_Click(object sender, EventArgs e)
         {
-            string newPassword = txtNewpassword.Text.Trim();
-            string confirmPassword = txtConfirmpassword.Text.Trim();
+            string newPass = txtNewpassword.Text.Trim();
+            string confirmPass = txtConfirmpassword.Text.Trim();
 
-            if (string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword))
+            // Kiểm tra rỗng
+            if (newPass == "" || confirmPass == "")
             {
-                MessageBox.Show("Vui lòng nhập đầy đủ mật khẩu mới và xác nhận mật khẩu.");
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!", "Lỗi");
                 return;
             }
 
-            if (newPassword != confirmPassword)
+            // Kiểm tra trùng khớp
+            if (newPass != confirmPass)
             {
-                MessageBox.Show("Mật khẩu và xác nhận mật khẩu không khớp.");
+                MessageBox.Show("Mật khẩu xác nhận không trùng!", "Lỗi");
                 return;
             }
 
-            var userRepo = new UserRepository();
-
-            // Hash mật khẩu mới
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
-
-            // Cập nhật mật khẩu mới vào cơ sở dữ liệu
-            if (userRepo.UpdatePassword(_email, hashedPassword))
+            try
             {
-                MessageBox.Show("Mật khẩu đã được cập nhật thành công.");
+                using (HttpClient client = new HttpClient())
+                {
+                    var request = new
+                    {
+                        email = userEmail,
+                        code = otpCode,
+                        newPassword = newPass
+                    };
+
+                    string json = JsonConvert.SerializeObject(request);
+                    var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await client.PostAsync("http://localhost:5074/api/Auth/reset-password", content);
+                    string result = await response.Content.ReadAsStringAsync();
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Đặt lại mật khẩu thành công!", "Thông báo");
+
+                        frmLogin f = new frmLogin();
+                        f.Show();
+                        this.Hide();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Không thể đổi mật khẩu!\n" + result, "Lỗi");
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("Cập nhật mật khẩu thất bại.");
+                MessageBox.Show("Lỗi kết nối API: " + ex.Message);
             }
         }
     }

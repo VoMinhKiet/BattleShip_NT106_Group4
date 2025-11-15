@@ -67,8 +67,6 @@
             this.pnlLogin.Name = "pnlLogin";
             this.pnlLogin.Size = new System.Drawing.Size(707, 578);
             this.pnlLogin.TabIndex = 0;
-            this.pnlLogin.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLogin_Paint);
-            // 
             // btnExit
             // 
             this.btnExit.BackColor = System.Drawing.Color.Tomato;
@@ -173,7 +171,6 @@
             this.lblUsername.Size = new System.Drawing.Size(137, 25);
             this.lblUsername.TabIndex = 3;
             this.lblUsername.Text = "Tên người dùng";
-            this.lblUsername.Click += new System.EventHandler(this.label2_Click);
             // 
             // txtPassword
             // 

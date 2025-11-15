@@ -53,7 +53,6 @@
             this.lblXinChao.Size = new System.Drawing.Size(501, 50);
             this.lblXinChao.TabIndex = 0;
             this.lblXinChao.Text = "Xin chào+[Tên người dùng]";
-            this.lblXinChao.Click += new System.EventHandler(this.lblXinChao_Click);
             // 
             // btnHoSo
             // 

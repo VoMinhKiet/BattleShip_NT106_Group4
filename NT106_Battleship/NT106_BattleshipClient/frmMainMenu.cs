@@ -19,23 +19,14 @@ namespace NT106_BattleshipClient
         public frmMainMenu()
         {
             this.SetStyle(ControlStyles.DoubleBuffer |
-ControlStyles.UserPaint |
-ControlStyles.AllPaintingInWmPaint, true);
+            ControlStyles.UserPaint |
+            ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
             
         }
 
         private void frmMainMenu_Load(object sender, EventArgs e)
         {
-            if (!Session.IsAuthenticated)
-            {
-                // Chặn mở thẳng form chính khi chưa login
-                new frmLogin().Show();
-                this.Close();
-                return;
-            }
-            // ví dụ hiển thị tên
-            lblXinChao.Text = $"Xin chào, {Session.Username}!";
             // Lấy kích thước màn hình chính
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
 
@@ -129,22 +120,13 @@ ControlStyles.AllPaintingInWmPaint, true);
         MessageBoxButtons.YesNo,
         MessageBoxIcon.Question);
 
-            if (ask == DialogResult.Yes)
-            {
-                Session.Logout();
                 // Mở form Signup
-                frmSignup signupForm = new frmSignup();
-                signupForm.Show();
+                frmLogin loginForm = new frmLogin();
+                loginForm.Show();
 
                 // Ẩn 
                 this.Close();
                 //đang để frmMainMenu là form chính nếu để frmLogin nên đổi thành this.Close();
-            }
-        }
-
-        private void lblXinChao_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
