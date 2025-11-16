@@ -68,7 +68,6 @@
             this.pnlResetpassword.Name = "pnlResetpassword";
             this.pnlResetpassword.Size = new System.Drawing.Size(618, 561);
             this.pnlResetpassword.TabIndex = 0;
-            this.pnlResetpassword.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             // 
             // lblor
             // 

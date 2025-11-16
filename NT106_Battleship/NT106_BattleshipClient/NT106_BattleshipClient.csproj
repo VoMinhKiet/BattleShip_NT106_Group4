@@ -134,6 +134,12 @@
     <Compile Include="frmNoteGame.Designer.cs">
       <DependentUpon>frmNoteGame.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmOTP.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOTP.Designer.cs">
+      <DependentUpon>frmOTP.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmResetpassword.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,8 +205,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Session.cs" />
-    <Compile Include="UserRepository.cs" />
     <EmbeddedResource Include="frmConnectionLost.resx">
       <DependentUpon>frmConnectionLost.cs</DependentUpon>
     </EmbeddedResource>
@@ -240,6 +244,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmMatchHistory.resx">
       <DependentUpon>frmMatchHistory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmOTP.resx">
+      <DependentUpon>frmOTP.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmSettings.resx">
       <DependentUpon>frmSettings.cs</DependentUpon>

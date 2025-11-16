@@ -15,68 +15,100 @@ namespace NT106_BattleshipClient
 {
     public partial class frmSignup : BaseForm
     {
-        private readonly UserRepository _repo = new UserRepository();
+        private async Task DangKyTaiKhoanAsync(string tenDangNhap, string matKhau, string email)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5074/");
+
+                var body = new
+                {
+                    tenDangNhap = tenDangNhap,
+                    matKhau = matKhau,
+                    email = email
+                };
+
+                string json = JsonConvert.SerializeObject(body);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await client.PostAsync("api/Auth/register", content);
+                string result = await response.Content.ReadAsStringAsync();
+
+                // Thành công
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Đăng ký thành công!", "Thông báo");
+
+                    // Quay về form Login
+                    frmLogin loginForm = new frmLogin();
+                    loginForm.Show();
+                    this.Hide();  // Ẩn form signup
+
+                    return;
+                }
+
+                // Lấy lỗi từ API
+                dynamic error = JsonConvert.DeserializeObject(result);
+                string msg = error?.message ?? "Có lỗi xảy ra";
+
+                // Kiểm tra thông báo lỗi để báo đẹp hơn
+                if (msg.Contains("tồn tại"))
+                {
+                    MessageBox.Show(msg, "Tên đăng nhập hoặc email bị trùng",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                else
+                {
+                    MessageBox.Show("Lỗi đăng ký: " + msg);
+                }
+            }
+        }
+
+
         public frmSignup()
         {
             InitializeComponent();
             txtPassword.PasswordChar = '*';
             txtConfirmpassword.PasswordChar = '*';
         }
-        private void btnSignup_Click(object sender, EventArgs e)
+        private async void btnSignup_Click(object sender, EventArgs e)
         {
-            string u = txtUsername.Text.Trim();
-            string eMail = txtEmail.Text.Trim();
-            string p = txtPassword.Text;
-            string c = txtConfirmpassword.Text;
+            string username = txtUsername.Text.Trim();
+            string password = txtPassword.Text.Trim();
+            string confirm = txtConfirmpassword.Text.Trim();
+            string email = txtEmail.Text.Trim();
 
-            // Validate cơ bản
-            if (_repo.UsernameExists(u))
+            if (username == "" || password == "" || confirm == "" || email == "")
             {
-                MessageBox.Show("Tên đăng nhập đã tồn tại. Vui lòng chọn tên khác.");
+                MessageBox.Show("Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
-            if (string.IsNullOrWhiteSpace(eMail))
+
+            if (username.Length < 4)
             {
-                MessageBox.Show("Vui lòng nhập email.");
+                MessageBox.Show("Tên đăng nhập phải ít nhất 4 ký tự!");
                 return;
             }
-            if (!string.IsNullOrWhiteSpace(eMail) && _repo.EmailExists(eMail))
+
+            if (password.Length < 6)
             {
-                MessageBox.Show("Email đã tồn tại. Vui lòng dùng email khác.");
+                MessageBox.Show("Mật khẩu phải ít nhất 6 ký tự!");
                 return;
             }
-            if (string.IsNullOrWhiteSpace(u) || string.IsNullOrWhiteSpace(p))
+
+            if (password != confirm)
             {
-                MessageBox.Show("Vui lòng nhập tên người dùng và mật khẩu.");
+                MessageBox.Show("Mật khẩu xác nhận không khớp!");
                 return;
             }
-            if (p.Length < 6)
+
+            if (!email.Contains("@") || !email.Contains("."))
             {
-                MessageBox.Show("Mật khẩu tối thiểu 6 ký tự.");
+                MessageBox.Show("Email không hợp lệ!");
                 return;
             }
-            if (p != c)
-            {
-                MessageBox.Show("Xác nhận mật khẩu không khớp.");
-                return;
-            }
-            try
-            {
-                _repo.CreateUser(u, p, eMail);
-                MessageBox.Show("Đăng ký thành công! Hãy đăng nhập.");
-                // quay lại form login
-                var f = new frmLogin();
-                f.Show();
-                this.Close();
-            }
-            catch (SqlException ex) when (ex.Number == 2627 || ex.Number == 2601)
-            {
-                MessageBox.Show("Tên đăng nhập đã tồn tại (ràng buộc UNIQUE).");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message);
-            }
+
+            await DangKyTaiKhoanAsync(username, password, email);
         }
         private void btnExit_Click(object sender, EventArgs e)
         {
