@@ -16,6 +16,9 @@ namespace NT106_BattleshipClient
         public frmFriendlist()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
         }
 
         private void frmFriendlist_Load(object sender, EventArgs e)
@@ -41,6 +44,16 @@ namespace NT106_BattleshipClient
         }
 
         private void pnlFriendlist_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnFind_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnView_Click(object sender, EventArgs e)
         {
 
         }

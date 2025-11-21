@@ -15,6 +15,10 @@ namespace NT106_BattleshipClient
         public frmUserInfo()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+
         }
 
         private void btnThoat_Click(object sender, EventArgs e)

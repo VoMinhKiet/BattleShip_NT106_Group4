@@ -34,10 +34,11 @@
             // pnlYourGrid
             // 
             this.pnlYourGrid.Location = new System.Drawing.Point(123, 142);
-            this.pnlYourGrid.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pnlYourGrid.Margin = new System.Windows.Forms.Padding(4);
             this.pnlYourGrid.Name = "pnlYourGrid";
             this.pnlYourGrid.Size = new System.Drawing.Size(667, 615);
             this.pnlYourGrid.TabIndex = 0;
+            this.pnlYourGrid.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlYourGrid_Paint);
             // 
             // frmShip_Sorting
             // 
@@ -45,7 +46,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1067, 554);
             this.Controls.Add(this.pnlYourGrid);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmShip_Sorting";
             this.Text = "frmShip_Sorting";
             this.Load += new System.EventHandler(this.frmShip_Sorting_Load_1);

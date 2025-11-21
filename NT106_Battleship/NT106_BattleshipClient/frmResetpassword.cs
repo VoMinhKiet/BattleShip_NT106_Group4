@@ -20,6 +20,8 @@ namespace NT106_BattleshipClient
         public frmResetpassword(string email, string otp)
         {
             InitializeComponent();
+            // chống nháy form
+            EnableFormDoubleBuffering();
 
             userEmail = email;
             otpCode = otp;

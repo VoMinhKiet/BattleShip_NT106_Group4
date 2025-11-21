@@ -15,6 +15,8 @@ namespace NT106_BattleshipClient
         public frmSettings()
         {
             InitializeComponent();
+            // chống nháy form
+            EnableFormDoubleBuffering();
         }
 
         private void frmSettings_Load(object sender, EventArgs e)

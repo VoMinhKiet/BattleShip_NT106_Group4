@@ -15,6 +15,10 @@ namespace NT106_BattleshipClient
         public frmSurrender()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+
         }
 
         private void btnDauHang_Click(object sender, EventArgs e)

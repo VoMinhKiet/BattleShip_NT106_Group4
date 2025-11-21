@@ -18,6 +18,9 @@ namespace NT106_BattleshipClient
         public frmForgotpassword()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
         }
 
         private void linkCreateAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
