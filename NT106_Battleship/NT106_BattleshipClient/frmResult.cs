@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmResult : Form
+    public partial class frmResult : BaseForm
     {
         private Label lbTitle;
         private Label lbPoint;
@@ -20,7 +20,8 @@ namespace NT106_BattleshipClient
         public frmResult(string resultText = "YOU WON/LOSE!", string pointText = "Point + ", int Point = 0)
         {
             InitializeComponent();
-
+            // chống nháy form
+            EnableFormDoubleBuffering();
             // Form settings
             this.FormBorderStyle = FormBorderStyle.None;
             this.StartPosition = FormStartPosition.CenterScreen;
@@ -97,6 +98,11 @@ namespace NT106_BattleshipClient
             frmMainMenu MainMenuControl = new frmMainMenu();
             MainMenuControl.Show();
             this.Hide();
+        }
+
+        private void frmResult_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

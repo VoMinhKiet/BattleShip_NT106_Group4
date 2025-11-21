@@ -68,6 +68,10 @@ namespace NT106_BattleshipClient
         public frmSignup()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+            SetUseComposited(true);
             txtPassword.PasswordChar = '*';
             txtConfirmpassword.PasswordChar = '*';
         }

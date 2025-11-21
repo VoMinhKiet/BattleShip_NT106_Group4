@@ -12,13 +12,18 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmOTP : Form
+    public partial class frmOTP : BaseForm
     {
         private string userEmail;
 
         public frmOTP(string email)
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+            SetUseComposited(true);
+
             userEmail = email;
         }
 

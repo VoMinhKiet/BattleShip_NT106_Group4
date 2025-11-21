@@ -5,6 +5,8 @@ using System.Drawing;
 using System.IO; 
 using System.Media; 
 using System.Windows.Forms;
+using System.Reflection; //đang test 
+
 
 namespace NT106_BattleshipClient
 {
@@ -18,12 +20,12 @@ namespace NT106_BattleshipClient
 
         protected System.Media.SoundPlayer clickSoundPlayer = null;
 
+
         public BaseForm()
         {
             InitializeComponent();
 
-
-            
+           
         }
         protected override void OnLoad(EventArgs e)
         {
@@ -36,8 +38,81 @@ namespace NT106_BattleshipClient
                 AttachMouseEventsRecursive(this);
             }
         }
+        //test chống nháy các form
+        #region DoubleBuffer helpers for derived forms
 
 
+        protected void EnableFormDoubleBuffering()
+        {
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint
+                          | ControlStyles.UserPaint
+                          | ControlStyles.OptimizedDoubleBuffer, true);
+            this.UpdateStyles();
+            this.DoubleBuffered = true;
+        }
+
+
+        protected void SetControlDoubleBuffered(Control ctl, bool enabled = true)
+        {
+            if (ctl == null) return;
+
+            // Thử set bằng reflection để cover protected DoubleBuffered property (ví dụ Panel)
+            var prop = ctl.GetType().GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (prop != null && prop.CanWrite)
+            {
+                prop.SetValue(ctl, enabled, null);
+            }
+
+            // Cố gắng gọi SetStyle/UpdateStyles nếu control hỗ trợ (non-public)
+            var miSetStyle = ctl.GetType().GetMethod("SetStyle", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            if (miSetStyle != null)
+            {
+                object[] args = new object[] { ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, enabled };
+                try { miSetStyle.Invoke(ctl, args); }
+                catch { /* ignore */ }
+
+                var miUpdate = ctl.GetType().GetMethod("UpdateStyles", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+                miUpdate?.Invoke(ctl, null);
+            }
+        }
+
+    
+        protected void SetDoubleBufferedForAllChildren(Control parent, bool enabled = true)
+        {
+            if (parent == null) return;
+            foreach (Control c in parent.Controls)
+            {
+                SetControlDoubleBuffered(c, enabled);
+                if (c.HasChildren)
+                    SetDoubleBufferedForAllChildren(c, enabled);
+            }
+        }
+
+
+        protected bool UseCompositedFlag = false; // mặc định false
+
+        protected void SetUseComposited(bool enable)
+        {
+            UseCompositedFlag = enable;
+        }
+
+        // Override CreateParams để áp dụng WS_EX_COMPOSITED nếu UseCompositedFlag = true
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                if (UseCompositedFlag)
+                {
+                    const int WS_EX_COMPOSITED = 0x02000000;
+                    cp.ExStyle |= WS_EX_COMPOSITED;
+                }
+                return cp;
+            }
+        }
+
+        #endregion
+        //end test
         private void LoadCustomCursorsAndSound()
         {
 

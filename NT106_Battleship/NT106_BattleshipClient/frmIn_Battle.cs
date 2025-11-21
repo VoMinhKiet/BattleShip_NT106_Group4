@@ -39,6 +39,10 @@ namespace NT106_BattleshipClient
               ControlStyles.AllPaintingInWmPaint, true);
             this.UpdateStyles();
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+
             CreateTopPanel();
             
             // create yours panel and it settings
