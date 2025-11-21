@@ -21,6 +21,7 @@ namespace NT106_BattleshipClient
 
             // chống nháy form
             EnableFormDoubleBuffering();
+            SetUseComposited(true);
         }
 
         private void linkCreateAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

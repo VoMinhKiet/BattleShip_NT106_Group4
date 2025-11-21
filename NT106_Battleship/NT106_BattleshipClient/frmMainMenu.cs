@@ -24,6 +24,8 @@ namespace NT106_BattleshipClient
             InitializeComponent();
 
             EnableFormDoubleBuffering();//test
+
+            SetUseComposited(true);
         }
 
         private void frmMainMenu_Load(object sender, EventArgs e)

@@ -22,6 +22,7 @@ namespace NT106_BattleshipClient
             InitializeComponent();
             // chống nháy form
             EnableFormDoubleBuffering();
+            SetUseComposited(true);
 
             userEmail = email;
             otpCode = otp;

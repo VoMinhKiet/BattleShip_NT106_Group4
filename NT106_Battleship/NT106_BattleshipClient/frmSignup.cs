@@ -71,7 +71,7 @@ namespace NT106_BattleshipClient
 
             // chống nháy form
             EnableFormDoubleBuffering();
-
+            SetUseComposited(true);
             txtPassword.PasswordChar = '*';
             txtConfirmpassword.PasswordChar = '*';
         }

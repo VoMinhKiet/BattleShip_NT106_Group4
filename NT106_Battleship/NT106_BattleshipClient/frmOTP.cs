@@ -22,6 +22,7 @@ namespace NT106_BattleshipClient
 
             // chống nháy form
             EnableFormDoubleBuffering();
+            SetUseComposited(true);
 
             userEmail = email;
         }

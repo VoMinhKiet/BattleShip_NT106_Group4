@@ -19,6 +19,7 @@ namespace NT106_BattleshipClient
 
             // chống nháy form
             EnableFormDoubleBuffering();
+            SetUseComposited(true);
         }
 
         private void frmFriendlist_Load(object sender, EventArgs e)
@@ -56,6 +57,21 @@ namespace NT106_BattleshipClient
         private void btnView_Click(object sender, EventArgs e)
         {
 
+        }
+
+        //test chống nháy
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+
+            SetControlDoubleBuffered(pnlFriendlist);
+
+
+            SetControlDoubleBuffered(lvFriendlist);
+
+           
+            SetDoubleBufferedForAllChildren(this);
         }
     }
 }
