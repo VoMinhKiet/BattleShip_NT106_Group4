@@ -10,25 +10,27 @@ namespace NT106_BattleshipClient
 {
     public partial class frmRoom : BaseForm
     {
-        private RoomDto _room;                 // Thông tin phòng hiện tại
-        private int _currentUserId;            // ID user hiện tại
-        private string _currentUsername;       // Username user hiện tại
-        private readonly RoomApiService _roomApi = new RoomApiService();
-        private bool _isLeaving = false;       // Tránh gọi rời phòng nhiều lần
-        private int? _lastKnownGuestId = null; // Lưu ID khách lần trước
-        private bool _isHost;          // true nếu người chơi là chủ phòng
-        private bool _isGuestReady;    // khách đã bấm nút sẵn sàng
+        private RoomDto _room;
+        private int _currentUserId;
+        private string _currentUsername;
 
-        private bool IsHost => _room.IDChuPhong == _currentUserId; // Kiểm tra có phải Host
+        private readonly RoomApiService _roomApi = new RoomApiService();
+        private bool _isLeaving = false;
+        private int? _lastKnownGuestId = null;
+
+        private bool _isHost;
+        private bool _isGuestReady;
+
+        private bool IsHost => _room.IDChuPhong == _currentUserId;
 
         public frmRoom(RoomDto room, int userId, string username)
         {
             InitializeComponent();
-
             _room = room ?? throw new ArgumentNullException(nameof(room));
             _currentUserId = userId;
             _currentUsername = username;
-            this.FormClosing += frmRoom_FormClosing; // Sự kiện đóng form
+
+            this.FormClosing += frmRoom_FormClosing;
 
             _isHost = (_currentUserId == room.IDChuPhong);
             _isGuestReady = false;
@@ -36,79 +38,99 @@ namespace NT106_BattleshipClient
 
         private async void frmRoom_Load(object sender, EventArgs e)
         {
-            // Full màn hình
+            // FIX 1: Đảm bảo handle đã được tạo
+            if (!this.IsHandleCreated)
+                this.CreateControl();
+
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
             this.Size = screen.Size;
             this.Location = new Point(0, 0);
 
-            await UpdateRoomUIAsync(_room, firstLoad: true); // Hiển thị UI ban đầu
+            await UpdateRoomUIAsync(_room, firstLoad: true);
 
             try
             {
                 SignalRClient.Init("http://localhost:5074/roomHub");
                 await SignalRClient.StartAsync();
 
-                // Nhận cập nhật phòng
-                SignalRClient.Connection.On<RoomDto>("RoomUpdated", (roomDto) =>
-                {
-                    if (roomDto.Id != _room.Id) return;
-                    _room = roomDto;
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        _ = UpdateRoomUIAsync(roomDto);
-                    }));
-                });
+                SetupSignalREvents();
 
-                // Nhận thông báo phòng bị xoá
-                SignalRClient.Connection.On<int>("RoomDeleted", (deletedRoomId) =>
-                {
-                    if (deletedRoomId != _room.Id) return;
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        MessageBox.Show("Phòng đã bị xoá (chủ phòng rời).");
-                        ReturnToLobby();
-                    }));
-                });
-
-                // Nhận lệnh đồng bộ UI
-                SignalRClient.Connection.On<string, string>("SynchronizeRoomUI", (command, value) =>
-                {
-                    if (!this.IsDisposed)
-                    {
-                        this.BeginInvoke(new Action(() =>
-                        {
-                            ProcessIncomingData(command, value);
-                        }));
-                    }
-                });
-
-                // Nhận sự kiện khách đổi trạng thái sẵn sàng
-                SignalRClient.Connection.On<bool>("GuestReadyStateChanged", (state) =>
-                {
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        _isGuestReady = state;
-                        pnlTieuDeKhach.Text = state ? "KHÁCH đã sẵn sàng!" : "KHÁCH";
-                    }));
-                });
-
-
-
-                // Tham gia group phòng
                 try
                 {
                     await SignalRClient.Connection.InvokeAsync("JoinRoom", _room.Id.ToString());
                 }
                 catch { }
 
-                SetupUIControls(); // Thiết lập quyền điều khiển UI
+                SetupUIControls();
             }
             catch { }
         }
+        private void SetupSignalREvents()
+        {
+            // ================================
+            // FIX 2: Mẫu an toàn cho mọi BeginInvoke
+            // ================================
+            void SafeInvoke(Action act)
+            {
+                if (!this.IsHandleCreated) return;
+                if (this.IsDisposed) return;
 
+                try
+                {
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        if (!this.IsDisposed) act();
+                    }));
+                }
+                catch { }
+            }
+
+            // ROOM UPDATED
+            SignalRClient.Connection.On<RoomDto>("RoomUpdated", (roomDto) =>
+            {
+                if (roomDto.Id != _room.Id) return;
+                _room = roomDto;
+
+                SafeInvoke(() =>
+                {
+                    _ = UpdateRoomUIAsync(roomDto);
+                });
+            });
+
+            // ROOM DELETED
+            SignalRClient.Connection.On<int>("RoomDeleted", (deletedRoomId) =>
+            {
+                if (deletedRoomId != _room.Id) return;
+
+                SafeInvoke(() =>
+                {
+                    MessageBox.Show("Phòng đã bị xoá (chủ phòng rời).");
+                    ReturnToLobby();
+                });
+            });
+
+            // UI SYNC
+            SignalRClient.Connection.On<string, string>("SynchronizeRoomUI", (command, value) =>
+            {
+                SafeInvoke(() =>
+                {
+                    ProcessIncomingData(command, value);
+                });
+            });
+
+            // GUEST READY
+            SignalRClient.Connection.On<bool>("GuestReadyStateChanged", (state) =>
+            {
+                SafeInvoke(() =>
+                {
+                    _isGuestReady = state;
+                    pnlTieuDeKhach.Text = state ? "KHÁCH đã sẵn sàng!" : "KHÁCH";
+                });
+            });
+        }
         private void SetupUIControls()
         {
-            cbKichThuoc.Enabled = IsHost; // Chỉ host chỉnh được size
+            cbKichThuoc.Enabled = IsHost;
 
             if (cbKichThuoc.Items.Count == 0)
             {
@@ -117,14 +139,14 @@ namespace NT106_BattleshipClient
             }
         }
 
-        // Gửi lệnh đồng bộ UI qua SignalR
         private async Task SendUISyncCommand(string command, string value)
         {
             try
             {
                 if (SignalRClient.Connection.State == HubConnectionState.Connected)
                 {
-                    await SignalRClient.Connection.InvokeAsync("SendUISync", _room.Id.ToString(), command, value);
+                    await SignalRClient.Connection.InvokeAsync("SendUISync",
+                        _room.Id.ToString(), command, value);
                 }
             }
             catch (Exception ex)
@@ -133,7 +155,6 @@ namespace NT106_BattleshipClient
             }
         }
 
-        // Xử lý lệnh Sync nhận từ server
         private void ProcessIncomingData(string command, string value)
         {
             switch (command)
@@ -147,7 +168,6 @@ namespace NT106_BattleshipClient
             }
         }
 
-        // Cập nhật UI host/guest
         private async Task UpdateRoomUIAsync(RoomDto room, bool firstLoad = false)
         {
             if (room == null) return;
@@ -161,18 +181,12 @@ namespace NT106_BattleshipClient
             else
             {
                 lblIDChuPhong.Text = $"ID: {room.IDChuPhong}";
-
-                if (!string.IsNullOrWhiteSpace(room.TenChuPhong))
-                    lblTenChuPhong.Text = $"Tên: {room.TenChuPhong}";
-                else
+                try
                 {
-                    try
-                    {
-                        var host = await _roomApi.GetUserByIdAsync(room.IDChuPhong);
-                        lblTenChuPhong.Text = $"Tên: {host?.TenDangNhap ?? "(Không lấy được)"}";
-                    }
-                    catch { lblTenChuPhong.Text = "Tên: (Không lấy được)"; }
+                    var host = await _roomApi.GetUserByIdAsync(room.IDChuPhong);
+                    lblTenChuPhong.Text = $"Tên: {host?.TenDangNhap ?? "(Không lấy được)"}";
                 }
+                catch { lblTenChuPhong.Text = "Tên: (Không lấy được)"; }
             }
 
             // GUEST
@@ -185,29 +199,19 @@ namespace NT106_BattleshipClient
             else
             {
                 lblIDKhach.Text = $"ID: {room.IDKhach}";
-
                 if (_lastKnownGuestId != room.IDKhach || firstLoad)
                 {
-                    if (!string.IsNullOrWhiteSpace(room.TenKhach))
-                        lblTenKhach.Text = $"Tên: {room.TenKhach}";
-                    else
+                    try
                     {
-                        try
-                        {
-                            var guest = await _roomApi.GetUserByIdAsync(room.IDKhach.Value);
-                            lblTenKhach.Text = $"Tên: {guest?.TenDangNhap ?? "(Không lấy được)"}";
-                        }
-                        catch { lblTenKhach.Text = "Tên: (Không lấy được)"; }
+                        var guest = await _roomApi.GetUserByIdAsync(room.IDKhach.Value);
+                        lblTenKhach.Text = $"Tên: {guest?.TenDangNhap ?? "(Không lấy được)"}";
                     }
+                    catch { lblTenKhach.Text = "Tên: (Không lấy được)"; }
 
                     _lastKnownGuestId = room.IDKhach;
                 }
             }
         }
-
-        // ==============================
-        // Rời phòng (chỉ gọi 1 lần)
-        // ==============================
         private async Task LeaveRoomAsync()
         {
             if (_isLeaving) return;
@@ -217,7 +221,10 @@ namespace NT106_BattleshipClient
             {
                 if (SignalRClient.Connection.State == HubConnectionState.Connected)
                 {
-                    try { await SignalRClient.Connection.InvokeAsync("LeaveRoom", _room.Id.ToString()); }
+                    try
+                    {
+                        await SignalRClient.Connection.InvokeAsync("LeaveRoom", _room.Id.ToString());
+                    }
                     catch { }
                 }
 
@@ -236,7 +243,7 @@ namespace NT106_BattleshipClient
         {
             if (_isLeaving) return;
 
-            e.Cancel = true;      // Chặn đóng form trực tiếp
+            e.Cancel = true;
             await LeaveRoomAsync();
             ReturnToLobby();
         }
@@ -253,12 +260,13 @@ namespace NT106_BattleshipClient
             this.Dispose();
         }
 
-        // ==============================
+        // ============================
         // Chat + chọn nhân vật
-        // ==============================
+        // ============================
+
         private void btnTinNhan_Click(object sender, EventArgs e)
         {
-            ucChatBox1.Visible = !ucChatBox1.Visible; // Bật/tắt khung chat
+            ucChatBox1.Visible = !ucChatBox1.Visible;
             if (ucChatBox1.Visible) ucChatBox1.BringToFront();
         }
 
@@ -266,7 +274,7 @@ namespace NT106_BattleshipClient
         {
             if (!IsHost)
             {
-                MessageBox.Show("Chỉ chủ phòng được chọn nhân vật cho chủ phòng.", "Lỗi");
+                MessageBox.Show("Chỉ chủ phòng được chọn nhân vật.");
                 return;
             }
 
@@ -283,7 +291,7 @@ namespace NT106_BattleshipClient
         {
             if (IsHost)
             {
-                MessageBox.Show("Chỉ khách được chọn nhân vật cho khách.", "Lỗi");
+                MessageBox.Show("Chỉ khách được chọn nhân vật.");
                 return;
             }
 
@@ -300,7 +308,7 @@ namespace NT106_BattleshipClient
         {
             if (!IsHost)
             {
-                MessageBox.Show("Chỉ chủ phòng được đổi kích thước.", "Lỗi");
+                MessageBox.Show("Chỉ chủ phòng được đổi kích thước.");
                 return;
             }
 
@@ -313,9 +321,9 @@ namespace NT106_BattleshipClient
 
         private async void btnSanSang_Click(object sender, EventArgs e)
         {
-            if (_isHost)
+            if (IsHost)
             {
-                MessageBox.Show("Chỉ khách mới được bấm nút này!");
+                MessageBox.Show("Chỉ khách mới được bấm nút này.");
                 return;
             }
 
@@ -325,20 +333,19 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // Toggle trạng thái sẵn sàng
             _isGuestReady = !_isGuestReady;
 
-            if (_isGuestReady)
-                pnlTieuDeKhach.Text = "KHÁCH đã sẵn sàng!";
-            else
-                pnlTieuDeKhach.Text = "KHÁCH";
+            pnlTieuDeKhach.Text = _isGuestReady ?
+                "KHÁCH đã sẵn sàng!" :
+                "KHÁCH";
 
-            // Báo cho host qua signalR (nếu bạn có)
-            await SignalRClient.Connection.InvokeAsync("SetGuestReady", _room.Id, _isGuestReady);
+            await SignalRClient.Connection.InvokeAsync("SetGuestReady",
+                _room.Id, _isGuestReady);
         }
 
-        private void btnBatDau_Click(object sender, EventArgs e) {
-            if (!_isHost)
+        private void btnBatDau_Click(object sender, EventArgs e)
+        {
+            if (!IsHost)
             {
                 MessageBox.Show("Chỉ chủ phòng mới được bắt đầu trận!");
                 return;
@@ -346,28 +353,24 @@ namespace NT106_BattleshipClient
 
             if (!_isGuestReady)
             {
-                MessageBox.Show("Khách chưa sẵn sàng – không thể bắt đầu trận!");
+                MessageBox.Show("Khách chưa sẵn sàng!");
                 return;
             }
 
-            // Kiểm tra nhân vật chủ phòng
             if (lblNhanVatChuPhong.Text == "Nhân vật:")
             {
-                MessageBox.Show("Hãy chọn nhân vật trước khi bắt đầu trận!");
+                MessageBox.Show("Hãy chọn nhân vật trước khi bắt đầu!");
                 return;
             }
 
-            // Kiểm tra kích thước trận đấu
             if (cbKichThuoc.SelectedItem == null)
             {
-                MessageBox.Show("Hãy chọn kích thước trận đấu trước khi bắt đầu!");
+                MessageBox.Show("Hãy chọn kích thước trận đấu!");
                 return;
             }
 
-            // Báo cho khách chuẩn bị vào game
             SignalRClient.Connection.InvokeAsync("StartGame", _room.Id);
 
-            // Chủ phòng vào xếp tàu
             MessageBox.Show("Xếp tàu");
         }
     }
