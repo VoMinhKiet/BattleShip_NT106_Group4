@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NT106_BattleshipServer.Data;
+using NT106_BattleshipServer.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,6 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add SignalR
+builder.Services.AddSignalR();
 
 // Cấu hình DbContext để kết nối SQL Server
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -22,5 +26,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
 app.MapControllers();
+
+// Map Hub
+app.MapHub<RoomHub>("/roomHub");
+
 app.Run();

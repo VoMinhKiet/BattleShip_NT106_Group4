@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRoom));
             this.pnlPhongCho = new System.Windows.Forms.Panel();
             this.ucChatBox1 = new NT106_BattleshipClient.ucChatBox();
@@ -67,7 +66,6 @@
             this.lblTieuDe1 = new System.Windows.Forms.Label();
             this.lblTieuDe2 = new System.Windows.Forms.Label();
             this.btnThoatPhongCho = new System.Windows.Forms.Button();
-            this.timerCheckRoom = new System.Windows.Forms.Timer(this.components);
             this.pnlPhongCho.SuspendLayout();
             this.tlpNguoiChoi.SuspendLayout();
             this.pnlNenKhach.SuspendLayout();
@@ -238,8 +236,8 @@
             // tblNVKhach
             // 
             this.tblNVKhach.ColumnCount = 2;
-            this.tblNVKhach.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tblNVKhach.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tblNVKhach.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68.23529F));
+            this.tblNVKhach.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.76471F));
             this.tblNVKhach.Controls.Add(this.lblNhanVatKhach, 0, 0);
             this.tblNVKhach.Controls.Add(this.btnNVKhach, 1, 0);
             this.tblNVKhach.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -260,7 +258,7 @@
             this.lblNhanVatKhach.Location = new System.Drawing.Point(0, 0);
             this.lblNhanVatKhach.Margin = new System.Windows.Forms.Padding(0);
             this.lblNhanVatKhach.Name = "lblNhanVatKhach";
-            this.lblNhanVatKhach.Size = new System.Drawing.Size(297, 79);
+            this.lblNhanVatKhach.Size = new System.Drawing.Size(289, 79);
             this.lblNhanVatKhach.TabIndex = 0;
             this.lblNhanVatKhach.Text = "Nhân vật:";
             this.lblNhanVatKhach.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -272,10 +270,10 @@
             this.btnNVKhach.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnNVKhach.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNVKhach.ForeColor = System.Drawing.Color.NavajoWhite;
-            this.btnNVKhach.Location = new System.Drawing.Point(297, 23);
+            this.btnNVKhach.Location = new System.Drawing.Point(289, 23);
             this.btnNVKhach.Margin = new System.Windows.Forms.Padding(0, 23, 0, 20);
             this.btnNVKhach.Name = "btnNVKhach";
-            this.btnNVKhach.Size = new System.Drawing.Size(128, 36);
+            this.btnNVKhach.Size = new System.Drawing.Size(136, 36);
             this.btnNVKhach.TabIndex = 1;
             this.btnNVKhach.Text = "Chọn nhân vật";
             this.btnNVKhach.UseVisualStyleBackColor = false;
@@ -295,6 +293,7 @@
             this.btnSanSang.TabIndex = 1;
             this.btnSanSang.Text = "Sẵn sàng";
             this.btnSanSang.UseVisualStyleBackColor = false;
+            this.btnSanSang.Click += new System.EventHandler(this.btnSanSang_Click);
             // 
             // pnlNenChuPhong
             // 
@@ -401,8 +400,8 @@
             // tblNVChuPhong
             // 
             this.tblNVChuPhong.ColumnCount = 2;
-            this.tblNVChuPhong.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 70F));
-            this.tblNVChuPhong.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
+            this.tblNVChuPhong.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68.16038F));
+            this.tblNVChuPhong.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.83962F));
             this.tblNVChuPhong.Controls.Add(this.lblNhanVatChuPhong, 0, 0);
             this.tblNVChuPhong.Controls.Add(this.btnNVChuPhong, 1, 0);
             this.tblNVChuPhong.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -423,9 +422,9 @@
             this.lblNhanVatChuPhong.Location = new System.Drawing.Point(0, 0);
             this.lblNhanVatChuPhong.Margin = new System.Windows.Forms.Padding(0);
             this.lblNhanVatChuPhong.Name = "lblNhanVatChuPhong";
-            this.lblNhanVatChuPhong.Size = new System.Drawing.Size(296, 79);
+            this.lblNhanVatChuPhong.Size = new System.Drawing.Size(289, 79);
             this.lblNhanVatChuPhong.TabIndex = 0;
-            this.lblNhanVatChuPhong.Text = "Nhân vật: ";
+            this.lblNhanVatChuPhong.Text = "Nhân vật:";
             this.lblNhanVatChuPhong.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnNVChuPhong
@@ -435,10 +434,10 @@
             this.btnNVChuPhong.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.btnNVChuPhong.Font = new System.Drawing.Font("Segoe UI", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNVChuPhong.ForeColor = System.Drawing.Color.NavajoWhite;
-            this.btnNVChuPhong.Location = new System.Drawing.Point(296, 23);
+            this.btnNVChuPhong.Location = new System.Drawing.Point(289, 23);
             this.btnNVChuPhong.Margin = new System.Windows.Forms.Padding(0, 23, 0, 20);
             this.btnNVChuPhong.Name = "btnNVChuPhong";
-            this.btnNVChuPhong.Size = new System.Drawing.Size(128, 36);
+            this.btnNVChuPhong.Size = new System.Drawing.Size(135, 36);
             this.btnNVChuPhong.TabIndex = 1;
             this.btnNVChuPhong.Text = "Chọn nhân vật";
             this.btnNVChuPhong.UseVisualStyleBackColor = false;
@@ -458,6 +457,7 @@
             this.btnBatDau.TabIndex = 1;
             this.btnBatDau.Text = "Bắt đầu";
             this.btnBatDau.UseVisualStyleBackColor = false;
+            this.btnBatDau.Click += new System.EventHandler(this.btnBatDau_Click);
             // 
             // tlpChucNang
             // 
@@ -563,6 +563,7 @@
             this.cbKichThuoc.Name = "cbKichThuoc";
             this.cbKichThuoc.Size = new System.Drawing.Size(69, 31);
             this.cbKichThuoc.TabIndex = 1;
+            this.cbKichThuoc.SelectedIndexChanged += new System.EventHandler(this.cbKichThuoc_SelectedIndexChanged);
             // 
             // tlpTop
             // 
@@ -717,6 +718,5 @@
         private System.Windows.Forms.Label lblTieuDe1;
         private System.Windows.Forms.Label lblTieuDe2;
         private System.Windows.Forms.Button btnThoatPhongCho;
-        private System.Windows.Forms.Timer timerCheckRoom;
     }
 }

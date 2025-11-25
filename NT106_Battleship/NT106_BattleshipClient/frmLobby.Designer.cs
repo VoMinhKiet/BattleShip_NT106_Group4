@@ -240,7 +240,7 @@
             this.dgvDanhSachPhong.Size = new System.Drawing.Size(855, 480);
             this.dgvDanhSachPhong.TabIndex = 1;
             this.dgvDanhSachPhong.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDanhSachPhong_CellClick);
-            this.dgvDanhSachPhong.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvTimPhong_CellPainting);
+            this.dgvDanhSachPhong.CellPainting += new System.Windows.Forms.DataGridViewCellPaintingEventHandler(this.dgvDanhSachPhong_CellPainting);
             // 
             // colID
             // 

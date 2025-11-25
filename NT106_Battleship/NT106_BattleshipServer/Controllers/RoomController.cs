@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
 using NT106_BattleshipServer.Data;
 using NT106_BattleshipServer.Models;
+using NT106_BattleshipServer.Hubs;
 
 namespace NT106_BattleshipServer.Controllers
 {
@@ -10,12 +12,15 @@ namespace NT106_BattleshipServer.Controllers
     public class RoomController : ControllerBase
     {
         private readonly AppDbContext _context;
-        public RoomController(AppDbContext context)
+        private readonly IHubContext<RoomHub> _hubContext; // Hub để bắn tín hiệu realtime
+
+        public RoomController(AppDbContext context, IHubContext<RoomHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
-        // DTO trả về cho client (có tên người dùng)
+        // DTO gửi về client (đã bao gồm tên người dùng)
         public class RoomDto
         {
             public int Id { get; set; }
@@ -27,6 +32,7 @@ namespace NT106_BattleshipServer.Controllers
             public DateTime NgayTao { get; set; }
         }
 
+        // Convert Room → RoomDto (lấy thêm tên host & guest)
         private async Task<RoomDto> BuildRoomDto(Room room)
         {
             var dto = new RoomDto
@@ -46,10 +52,11 @@ namespace NT106_BattleshipServer.Controllers
                 var guest = await _context.NguoiDungs.FindAsync(room.IDKhach.Value);
                 dto.TenKhach = guest?.TenDangNhap;
             }
+
             return dto;
         }
 
-        // POST: api/room/create?userId=5
+        // Tạo phòng mới
         [HttpPost("create")]
         public async Task<IActionResult> CreateRoom(int userId)
         {
@@ -60,14 +67,20 @@ namespace NT106_BattleshipServer.Controllers
                 TrangThai = "waiting",
                 NgayTao = DateTime.Now
             };
+
             _context.Rooms.Add(room);
             await _context.SaveChangesAsync();
 
             var dto = await BuildRoomDto(room);
+
+            // Báo cho tất cả client reload
+            await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+            await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
+
             return Ok(new { message = "Tạo phòng thành công", room = dto });
         }
 
-        // GET: api/room/list
+        // Lấy danh sách phòng đang waiting
         [HttpGet("list")]
         public async Task<IActionResult> GetAvailableRooms()
         {
@@ -82,25 +95,31 @@ namespace NT106_BattleshipServer.Controllers
             return Ok(list);
         }
 
-        // POST: api/room/join?roomId=3&userId=10
+        // Người chơi tham gia phòng
         [HttpPost("join")]
         public async Task<IActionResult> JoinRoom(int roomId, int userId)
         {
             var room = await _context.Rooms.FindAsync(roomId);
             if (room == null)
                 return NotFound(new { message = "Phòng không tồn tại" });
+
             if (room.TrangThai != "waiting")
                 return BadRequest(new { message = "Phòng không còn chỗ" });
 
             room.IDKhach = userId;
             room.TrangThai = "full";
-            await _context.SaveChangesAsync();
 
+            await _context.SaveChangesAsync();
             var dto = await BuildRoomDto(room);
+
+            // Thông báo client reload
+            await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+            await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
+
             return Ok(new { message = "Tham gia phòng thành công", room = dto });
         }
 
-        // GET: api/room/get?roomId=3
+        // Lấy thông tin chi tiết phòng
         [HttpGet("get")]
         public async Task<IActionResult> GetRoom(int roomId)
         {
@@ -112,7 +131,7 @@ namespace NT106_BattleshipServer.Controllers
             return Ok(dto);
         }
 
-        // DELETE: api/room/leave?roomId=3&userId=10
+        // Người chơi rời phòng
         [HttpDelete("leave")]
         public async Task<IActionResult> LeaveRoom(int roomId, int userId)
         {
@@ -120,33 +139,44 @@ namespace NT106_BattleshipServer.Controllers
             if (room == null)
                 return NotFound(new { message = "Phòng không tồn tại" });
 
+            // Nếu host rời → xoá phòng
             if (room.IDChuPhong == userId)
             {
                 _context.Rooms.Remove(room);
                 await _context.SaveChangesAsync();
+
+                await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+                await _hubContext.Clients.All.SendAsync("RoomDeleted", roomId);
+
                 return Ok(new { message = "Chủ phòng rời — phòng đã bị xoá" });
             }
 
+            // Nếu guest rời → phòng trở lại waiting
             if (room.IDKhach == userId)
             {
                 room.IDKhach = null;
                 room.TrangThai = "waiting";
-                await _context.SaveChangesAsync();
 
+                await _context.SaveChangesAsync();
                 var dto = await BuildRoomDto(room);
+
+                await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+                await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
+
                 return Ok(new { message = "Khách rời phòng", room = dto });
             }
 
             return BadRequest(new { message = "Người này không nằm trong phòng" });
         }
 
-        // POST: api/room/start?roomId=3
+        // Chủ phòng bấm bắt đầu game
         [HttpPost("start")]
         public async Task<IActionResult> StartGame(int roomId)
         {
             var room = await _context.Rooms.FindAsync(roomId);
             if (room == null)
                 return NotFound(new { message = "Phòng không tồn tại" });
+
             if (room.TrangThai != "full")
                 return BadRequest(new { message = "Phòng chưa đủ người để chơi" });
 
@@ -154,16 +184,21 @@ namespace NT106_BattleshipServer.Controllers
             await _context.SaveChangesAsync();
 
             var dto = await BuildRoomDto(room);
+
+            await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
+            await _hubContext.Clients.All.SendAsync("GameStarted", dto.Id);
+
             return Ok(new { message = "Trận đấu bắt đầu", room = dto });
         }
 
-        // POST: api/room/finish?roomId=3
+        // Kết thúc game → quay lại trạng thái full
         [HttpPost("finish")]
         public async Task<IActionResult> FinishGame(int roomId)
         {
             var room = await _context.Rooms.FindAsync(roomId);
             if (room == null)
                 return NotFound(new { message = "Phòng không tồn tại" });
+
             if (room.TrangThai != "playing")
                 return BadRequest(new { message = "Phòng không trong trạng thái playing" });
 
@@ -171,6 +206,9 @@ namespace NT106_BattleshipServer.Controllers
             await _context.SaveChangesAsync();
 
             var dto = await BuildRoomDto(room);
+
+            await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
+
             return Ok(new { message = "Trận đấu kết thúc — quay lại full", room = dto });
         }
     }

@@ -13,18 +13,19 @@ namespace NT106_BattleshipServer.Controllers
 
         public UserController(AppDbContext context)
         {
-            _context = context;
+            _context = context;  // Inject DbContext
         }
 
         // =============================
         // GET api/User/{id}
+        // → Lấy thông tin 1 user theo ID
         // =============================
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await _context.NguoiDungs
-                .Where(u => u.Id == id)
-                .Select(u => new
+                .Where(u => u.Id == id)     // tìm theo ID
+                .Select(u => new            // trả về DTO đơn giản
                 {
                     Id = u.Id,
                     TenDangNhap = u.TenDangNhap,
@@ -36,7 +37,7 @@ namespace NT106_BattleshipServer.Controllers
             if (user == null)
                 return NotFound(new { message = "User not found" });
 
-            return Ok(user);
+            return Ok(user); // trả về thông tin user
         }
     }
 }
