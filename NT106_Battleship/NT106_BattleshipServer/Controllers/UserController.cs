@@ -1,0 +1,42 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using NT106_BattleshipServer.Data;
+using NT106_BattleshipServer.Models;
+
+namespace NT106_BattleshipServer.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
+    {
+        private readonly AppDbContext _context;
+
+        public UserController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        // =============================
+        // GET api/User/{id}
+        // =============================
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUser(int id)
+        {
+            var user = await _context.NguoiDungs
+                .Where(u => u.Id == id)
+                .Select(u => new
+                {
+                    Id = u.Id,
+                    TenDangNhap = u.TenDangNhap,
+                    Email = u.Email,
+                    NgayTao = u.NgayTao
+                })
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                return NotFound(new { message = "User not found" });
+
+            return Ok(user);
+        }
+    }
+}
