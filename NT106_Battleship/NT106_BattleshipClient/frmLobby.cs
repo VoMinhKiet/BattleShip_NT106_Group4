@@ -230,23 +230,6 @@ namespace NT106_BattleshipClient
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-
-            SetControlDoubleBuffered(pnlPhongCho);
-            SetControlDoubleBuffered(tlpNguoiChoi);        
-            SetControlDoubleBuffered(pnlNenKhach);
-            SetControlDoubleBuffered(pnlKhach);
-            SetControlDoubleBuffered(tblKhach);          
-            SetControlDoubleBuffered(tblNVKhach);          
-            SetControlDoubleBuffered(pnlNenChuPhong);
-            SetControlDoubleBuffered(pnlChuPhong);
-            SetControlDoubleBuffered(tblNVChuPhong);
-            SetControlDoubleBuffered(tlpChucNang);
-            SetControlDoubleBuffered(pnlNenTinNhan);
-            SetControlDoubleBuffered(pnlNenKichThuoc);
-            SetControlDoubleBuffered(tlbKichThuoc);
-            SetControlDoubleBuffered(tlpTop);
-            SetControlDoubleBuffered(tblTieuDe);
             SetControlDoubleBuffered(pnlTimTaoPhong);
             SetControlDoubleBuffered(panel2);
             SetControlDoubleBuffered(panel3);
@@ -256,7 +239,7 @@ namespace NT106_BattleshipClient
             SetControlDoubleBuffered(dgvDanhSachPhong);
 
 
-            SetControlDoubleBuffered(ucChatBox1);
+            //SetControlDoubleBuffered(ucChatBox1);
             SetDoubleBufferedForAllChildren(this);
 
         }
