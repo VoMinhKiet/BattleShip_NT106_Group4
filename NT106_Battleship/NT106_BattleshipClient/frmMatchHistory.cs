@@ -15,6 +15,12 @@ namespace NT106_BattleshipClient
         public frmMatchHistory()
         {
             InitializeComponent();
+
+            //test chống nháy
+            EnableFormDoubleBuffering();
+            //test chống nháy cực mạnh
+            SetUseComposited(true);
+
         }
 
         private void frmMatchHistory_Load(object sender, EventArgs e)
@@ -128,5 +134,29 @@ namespace NT106_BattleshipClient
         {
 
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+
+        //test chống nháy
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+
+            SetControlDoubleBuffered(panel1);
+            SetControlDoubleBuffered(tableLayoutPanel1);
+            SetControlDoubleBuffered(pnlDong);
+            SetControlDoubleBuffered(panel2);
+            SetControlDoubleBuffered(panel3);
+
+            SetControlDoubleBuffered(dgvLichSuDau);
+
+
+        }
+
     }
 }

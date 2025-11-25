@@ -15,6 +15,9 @@ namespace NT106_BattleshipClient
         public frmConnectionLost()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
         }
         private void btnThuLai_Click(object sender, EventArgs e)
         {

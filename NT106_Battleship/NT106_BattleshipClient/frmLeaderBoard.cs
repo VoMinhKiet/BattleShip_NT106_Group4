@@ -15,6 +15,9 @@ namespace NT106_BattleshipClient
         public frmLeaderBoard()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
         }
 
         private void frmLeaderBoard_Load(object sender, EventArgs e)

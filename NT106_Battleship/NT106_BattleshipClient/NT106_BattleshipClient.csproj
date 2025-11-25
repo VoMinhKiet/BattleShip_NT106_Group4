@@ -378,6 +378,9 @@
     <EmbeddedResource Include="frmOTP.resx">
       <DependentUpon>frmOTP.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmResult.resx">
+      <DependentUpon>frmResult.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmRoom.resx">
       <DependentUpon>frmRoom.cs</DependentUpon>
     </EmbeddedResource>

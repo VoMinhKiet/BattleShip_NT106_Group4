@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
-    public partial class frmTurnPopUp : Form
+    public partial class frmTurnPopUp : BaseForm
     {
         private Timer autoCloseTimer; //Timer
         private Label messageLabel; //Changing label
@@ -18,6 +18,9 @@ namespace NT106_BattleshipClient
         public frmTurnPopUp(string message = "Your Turn!", int durationMilliseconds = 1500) //when you doing this popup use new frmTurnPopUp("message", popuptime);
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
 
             // Remove border and title bar
             this.FormBorderStyle = FormBorderStyle.None;
@@ -68,6 +71,11 @@ namespace NT106_BattleshipClient
                 this.Close();
             };
             autoCloseTimer.Start();
+        }
+
+        private void frmTurnPopUp_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }
