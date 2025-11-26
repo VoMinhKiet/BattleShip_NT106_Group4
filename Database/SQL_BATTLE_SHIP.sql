@@ -192,3 +192,8 @@ CREATE TABLE BanBe
 );
 
 
+ALTER TABLE NguoiDung
+ADD ResetCode VARCHAR(10) NULL,
+    ResetCodeExpire DATETIME NULL;
+
+SELECT * FROM NguoiDung

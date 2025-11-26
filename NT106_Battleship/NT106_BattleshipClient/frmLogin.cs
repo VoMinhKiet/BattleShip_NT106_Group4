@@ -58,6 +58,9 @@ namespace NT106_BattleshipClient
         {
             InitializeComponent();
             txtPassword.PasswordChar = '*';
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
         }
         private async void btnLogin_Click(object sender, EventArgs e)
         {

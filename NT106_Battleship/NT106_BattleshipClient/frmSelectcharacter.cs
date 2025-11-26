@@ -17,6 +17,9 @@ namespace NT106_BattleshipClient
         public frmSelectcharacter()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
         }
 
         private void btnExit_Click(object sender, EventArgs e)

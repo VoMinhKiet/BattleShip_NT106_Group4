@@ -119,6 +119,7 @@
             this.btnFind.TabIndex = 32;
             this.btnFind.Text = "Find";
             this.btnFind.UseVisualStyleBackColor = true;
+            this.btnFind.Click += new System.EventHandler(this.btnFind_Click);
             // 
             // btnDeletefriend
             // 
@@ -158,6 +159,7 @@
             this.btnView.TabIndex = 36;
             this.btnView.Text = "Xem hồ sơ";
             this.btnView.UseVisualStyleBackColor = false;
+            this.btnView.Click += new System.EventHandler(this.btnView_Click);
             // 
             // lvFriendlist
             // 

@@ -311,6 +311,7 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "LỊCH SỬ ĐẤU";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // frmMatchHistory
             // 

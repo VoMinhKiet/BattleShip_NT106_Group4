@@ -49,6 +49,10 @@ namespace NT106_BattleshipClient
         {
             InitializeComponent();
             userId = id;
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+
         }
 
         private void btnThoat_Click(object sender, EventArgs e)

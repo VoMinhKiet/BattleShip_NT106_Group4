@@ -26,8 +26,13 @@ namespace NT106_BattleshipClient
             userId = id;
 
             this.SetStyle(ControlStyles.DoubleBuffer |
-                ControlStyles.UserPaint |
-                ControlStyles.AllPaintingInWmPaint, true);
+            ControlStyles.UserPaint |
+            ControlStyles.AllPaintingInWmPaint, true);
+            InitializeComponent();
+
+            EnableFormDoubleBuffering();//test
+
+            SetUseComposited(true);
         }
 
         private void frmMainMenu_Load(object sender, EventArgs e)

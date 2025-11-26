@@ -15,6 +15,10 @@ namespace NT106_BattleshipClient
         public frmNoteGame()
         {
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+            SetUseComposited(true);
         }
 
         private void frmNoteGame_Load(object sender, EventArgs e)

@@ -35,6 +35,10 @@ namespace NT106_BattleshipClient
               ControlStyles.AllPaintingInWmPaint, true);
             this.UpdateStyles();
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+
             pnlYourGrid.Top = (this.ClientSize.Height - pnlYourGrid.Bottom / 4);
             CreateTopPanel();
             CreateGrid(pnlYourGrid, playerGrid);
@@ -300,6 +304,11 @@ namespace NT106_BattleshipClient
         }
 
         private void frmShip_Sorting_Load_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlYourGrid_Paint(object sender, PaintEventArgs e)
         {
 
         }
