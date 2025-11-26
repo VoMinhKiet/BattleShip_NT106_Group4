@@ -367,13 +367,12 @@
             this.btnThoat.UseVisualStyleBackColor = false;
             this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
-            // 
-            // 
+            //
+            //
             // frmLobby
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1556, 884);
             this.ClientSize = new System.Drawing.Size(1556, 884);
             this.Controls.Add(this.pnlTimTaoPhong);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
