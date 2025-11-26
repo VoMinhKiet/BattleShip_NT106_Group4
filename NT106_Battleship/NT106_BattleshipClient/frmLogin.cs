@@ -36,11 +36,16 @@ namespace NT106_BattleshipClient
 
                 if (response.IsSuccessStatusCode)
                 {
+                    dynamic data = JsonConvert.DeserializeObject(result);
+                    int userId = (int)data.user.id;
+                    string username = (string)data.user.tenDangNhap;
+
                     MessageBox.Show("Đăng nhập thành công!");
 
                     // Ở đây bạn có thể chuyển sang form Main Menu
-                    frmMainMenu f = new frmMainMenu();
+                    frmMainMenu f = new frmMainMenu(userId);
                     f.Show();
+
                     this.Hide();
                 }
                 else

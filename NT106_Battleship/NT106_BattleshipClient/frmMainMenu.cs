@@ -15,14 +15,19 @@ namespace NT106_BattleshipClient
 {
     public partial class frmMainMenu : BaseForm
     {
-       
         public frmMainMenu()
         {
-            this.SetStyle(ControlStyles.DoubleBuffer |
-            ControlStyles.UserPaint |
-            ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
-            
+        }
+        private int userId;
+        public frmMainMenu(int id)
+        {
+            InitializeComponent();
+            userId = id;
+
+            this.SetStyle(ControlStyles.DoubleBuffer |
+                ControlStyles.UserPaint |
+                ControlStyles.AllPaintingInWmPaint, true);
         }
 
         private void frmMainMenu_Load(object sender, EventArgs e)
@@ -38,10 +43,10 @@ namespace NT106_BattleshipClient
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
         }
-        
+
         private void btnHoSo_Click(object sender, EventArgs e)
         {
-            frmUserInfo MoForm = new frmUserInfo();
+            frmUserInfo MoForm = new frmUserInfo(userId);
             MoForm.ShowDialog();
         }
 
@@ -115,18 +120,17 @@ namespace NT106_BattleshipClient
         private void btnLogout_Click(object sender, EventArgs e)
         {
             var ask = MessageBox.Show(
-        "Bạn có chắc chắn muốn đăng xuất?",
-        "Xác nhận",
-        MessageBoxButtons.YesNo,
-        MessageBoxIcon.Question);
+                "Bạn có chắc chắn muốn đăng xuất?",
+                "Xác nhận",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
 
-                // Mở form Signup
+            if (ask == DialogResult.Yes)
+            {
                 frmLogin loginForm = new frmLogin();
                 loginForm.Show();
-
-                // Ẩn 
-                this.Close();
-                //đang để frmMainMenu là form chính nếu để frmLogin nên đổi thành this.Close();
+                this.Close(); // đúng
+            }
         }
     }
 }

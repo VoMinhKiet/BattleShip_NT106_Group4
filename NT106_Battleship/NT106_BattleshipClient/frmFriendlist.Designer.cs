@@ -136,7 +136,7 @@
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(96, 39);
             this.btnExit.TabIndex = 34;
-            this.btnExit.Text = "Back";
+            this.btnExit.Text = "Thoát";
             this.btnExit.UseVisualStyleBackColor = false;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -156,7 +156,7 @@
             this.btnView.Name = "btnView";
             this.btnView.Size = new System.Drawing.Size(96, 38);
             this.btnView.TabIndex = 36;
-            this.btnView.Text = "View";
+            this.btnView.Text = "Xem hồ sơ";
             this.btnView.UseVisualStyleBackColor = false;
             // 
             // lvFriendlist
