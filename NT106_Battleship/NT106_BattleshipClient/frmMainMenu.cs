@@ -103,16 +103,14 @@ namespace NT106_BattleshipClient
         {
             this.Hide();
             frmLobby Lobby = new frmLobby();
-            Lobby.ShowDialog();
-            this.Show();
+            Lobby.Show();
         }
 
         private void btnChoiVoiNguoi_Click(object sender, EventArgs e)
         {
             this.Hide();
             frmLobby Lobby = new frmLobby();
-            Lobby.ShowDialog();
-            this.Show();
+            Lobby.Show();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)

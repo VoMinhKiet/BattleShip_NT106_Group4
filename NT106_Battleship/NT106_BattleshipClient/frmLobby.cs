@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using NT106_BattleshipClient.Services;
+using System;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,11 +9,16 @@ namespace NT106_BattleshipClient
 {
     public partial class frmLobby : BaseForm
     {
+        private readonly RoomApiService _roomApi = new RoomApiService();
+        private int _currentUserId;
+
         public frmLobby()
         {
-            this.SetStyle(ControlStyles.DoubleBuffer |
-ControlStyles.UserPaint |
-ControlStyles.AllPaintingInWmPaint, true);
+            // Tối ưu vẽ form
+            this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint |
+                          ControlStyles.AllPaintingInWmPaint, true);
+
+            _currentUserId = GlobalData.UserId;
             InitializeComponent();
 
             // chống nháy form
@@ -24,233 +26,203 @@ ControlStyles.AllPaintingInWmPaint, true);
             SetUseComposited(true);
         }
 
-        private void frmLobby_Load(object sender, EventArgs e)
+        private async void frmLobby_Load(object sender, EventArgs e)
         {
-            // Lấy kích thước màn hình chính
+            // Fullscreen
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-
-            // Áp dụng kích thước đó cho Form
             this.Size = screen.Size;
-            this.Location = new Point(0, 0); // Đặt Form ở góc trên bên trái
+            this.Location = new Point(0, 0);
+
+            // Kết nối SignalR
+            try
+            {
+                SignalRClient.Init("http://localhost:5074/roomHub");
+                await SignalRClient.StartAsync();
+
+                // Reload danh sách phòng khi server báo thay đổi
+                SignalRClient.Connection.On("RoomListUpdated", () =>
+                {
+                    this.BeginInvoke(new Action(async () => { await LoadRoomsFromServer(); }));
+                });
+
+                // Khi phòng bị xoá
+                SignalRClient.Connection.On<int>("RoomDeleted", (roomId) =>
+                {
+                    this.BeginInvoke(new Action(async () => { await LoadRoomsFromServer(); }));
+                });
+            }
+            catch
+            {
+                // Bỏ qua nếu SignalR lỗi
+            }
+
+            await LoadRoomsFromServer();
 
             label1.Focus();
-            // Đặt trạng thái mặc định khi Form tải
-            pnlTimTaoPhong.Visible = true; // (1) Hiện Panel Tìm/Tạo phòng
-            pnlPhongCho.Visible = false;  // (2) Ẩn Panel Phòng Chờ
 
-            //
-            dgvDanhSachPhong.Rows.Add("100", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("101", "Phong A", "Trống");
-            dgvDanhSachPhong.Rows.Add("102", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("103", "Phong A", "Trống");
-            dgvDanhSachPhong.Rows.Add("104", "Phong A", "Trống");
-            dgvDanhSachPhong.Rows.Add("105", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("106", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("107", "Phong A", "Trống");
-            dgvDanhSachPhong.Rows.Add("108", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("109", "Phong A", "Trống");
-            dgvDanhSachPhong.Rows.Add("110", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("111", "Phong A", "Trống");
-            dgvDanhSachPhong.Rows.Add("112", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("113", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("114", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("115", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("116", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("117", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("118", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("119", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("120", "Phong A", "Đầy");
-            dgvDanhSachPhong.Rows.Add("121", "Phong A", "Đầy");
-            // Đồng bộ scrollbar
+            // Cuộn scrollbar → cuộn dgv
             guna2VScrollBar1.Scroll += (s, E) =>
             {
-                int maxIndex = dgvDanhSachPhong.RowCount - 1;
-                int scrollValue = Math.Min(guna2VScrollBar1.Value, maxIndex);
-                dgvDanhSachPhong.FirstDisplayedScrollingRowIndex = scrollValue;
+                if (dgvDanhSachPhong.RowCount == 0) return;
+
+                int maxIndex = dgvDanhSachPhong.RowCount - dgvDanhSachPhong.DisplayedRowCount(false);
+                if (maxIndex < 0) maxIndex = 0;
+
+                int v = guna2VScrollBar1.Value;
+                if (v < 0) v = 0;
+                if (v > maxIndex) v = maxIndex;
+
+                dgvDanhSachPhong.FirstDisplayedScrollingRowIndex = v;
             };
 
-            // Tính số dòng hiển thị
-            int visibleRows = dgvDanhSachPhong.DisplayedRowCount(true);
-            int totalRows = dgvDanhSachPhong.RowCount;
 
-            // Chỉ hiện scrollbar nếu cần
-            guna2VScrollBar1.Visible = totalRows > visibleRows;
-            guna2VScrollBar1.Maximum = totalRows;
-
-            // Bỏ chọn dòng đầu tiên khi load
+            // Bỏ chọn ô
             dgvDanhSachPhong.ClearSelection();
             dgvDanhSachPhong.CurrentCell = null;
 
-            // Đặt tên TextBox của bạn là txtTimKiem hoặc tương tự
-            string placeholder = "Nhập ID hoặc tên chủ phòng";
-
-            // 1. Đặt chữ mặc định
-            txtTimTaoPhong.Text = placeholder;
+            txtTimTaoPhong.Text = "Nhập ID hoặc tên chủ phòng";
         }
-    
-        private void dgvTimPhong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+
+        private void UpdateScrollBar()
         {
-            // Đặt padding mong muốn là 25 pixel mỗi bên
-            const int HORIZONTAL_PADDING = 30;
-            const int VERTICAL_PADDING = 3; // Thêm padding dọc để nút không chạm viền trên/dưới
+            int total = dgvDanhSachPhong.RowCount;
+            int visible = dgvDanhSachPhong.DisplayedRowCount(false);
 
-            // 1. Kiểm tra điều kiện: Đúng cột và Đúng hàng dữ liệu
-            if (e.ColumnIndex == dgvDanhSachPhong.Columns["colThamGia"].Index && e.RowIndex >= 0)
+            if (visible >= total)
             {
-                // 2. Lấy Trạng Thái của hàng hiện tại
-                string trangThai = dgvDanhSachPhong.Rows[e.RowIndex].Cells["colTrangThai"].Value?.ToString();
+                guna2VScrollBar1.Visible = false;
+            }
+            else
+            {
+                guna2VScrollBar1.Visible = true;
+                guna2VScrollBar1.Minimum = 0;
+                guna2VScrollBar1.Maximum = total - visible;
+                guna2VScrollBar1.LargeChange = 1;
+            }
+        }
 
-                // 3. Xử lý logic ẩn/hiện nút và vẽ
-                if (trangThai == "Trống")
+
+        private async Task LoadRoomsFromServer()
+        {
+            dgvDanhSachPhong.Rows.Clear();
+
+            var rooms = await _roomApi.GetRoomsAsync();
+            if (rooms == null) return;
+
+            foreach (var r in rooms)
+            {
+                string trangThai = r.TrangThai == "waiting" ? "Trống" : "Đầy";
+                string tenChu = !string.IsNullOrWhiteSpace(r.TenChuPhong)
+                                ? r.TenChuPhong
+                                : ("ID: " + r.IDChuPhong);
+
+                dgvDanhSachPhong.Rows.Add(r.Id, tenChu, trangThai);
+            }
+
+            UpdateScrollBar();
+        }
+
+        private async void dgvDanhSachPhong_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+
+            int colJoin = dgvDanhSachPhong.Columns["colThamGia"].Index;
+
+            // Nhấn nút "Vào"
+            if (e.ColumnIndex == colJoin)
+            {
+                int roomId = Convert.ToInt32(dgvDanhSachPhong.Rows[e.RowIndex]
+                                             .Cells["colID"].Value);
+
+                string status = dgvDanhSachPhong.Rows[e.RowIndex]
+                                .Cells["colTrangThai"].Value.ToString();
+
+                if (status == "Đầy")
                 {
-                    // Vẽ nền và viền ô mặc định trước
-                    e.Paint(e.ClipBounds, DataGridViewPaintParts.Background | DataGridViewPaintParts.Border);
-
-                    // 4. Định nghĩa màu sắc và vẽ button tùy chỉnh
-                    Color buttonBackColor = Color.LightSkyBlue; // Nền nút
-                    Color buttonForeColor = Color.SteelBlue;    // Chữ nút
-
-                    // Tính toán vị trí và kích thước nút có padding 25px mỗi bên
-                    Rectangle buttonRect = new Rectangle(
-                        e.CellBounds.X + HORIZONTAL_PADDING,
-                        e.CellBounds.Y + VERTICAL_PADDING,
-                        e.CellBounds.Width - 2 * HORIZONTAL_PADDING, // Giảm 50px (25 trái + 25 phải)
-                        e.CellBounds.Height - 2 * VERTICAL_PADDING
-                    );
-
-                    // 5. Vẽ hình chữ nhật (Nút)
-                    using (SolidBrush backBrush = new SolidBrush(buttonBackColor))
-                    {
-                        e.Graphics.FillRectangle(backBrush, buttonRect);
-                        // Vẽ viền nút màu đậm hơn (tùy chọn)
-                        e.Graphics.DrawRectangle(Pens.DarkBlue, buttonRect);
-                    }
-
-                    // 6. Vẽ văn bản "Vào" ở giữa
-                    using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
-                    {
-                        // Dùng Font đậm 12pt như bạn đã thiết lập trước đó
-                        using (Font boldFont = new Font("Segoe UI", 12, FontStyle.Bold))
-                        {
-                            e.Graphics.DrawString("Vào", boldFont, new SolidBrush(buttonForeColor), e.CellBounds, sf);
-                        }
-                    }
-
-                    e.Handled = true; // Báo hiệu đã tự vẽ xong
+                    MessageBox.Show("Phòng đã đầy!");
+                    return;
                 }
-                else // Trạng thái là "Đầy" hoặc không phải "Trống"
-                {
-                    // Chỉ vẽ nền và chữ mặc định (để ô trông trống rỗng)
-                    e.Paint(e.ClipBounds, DataGridViewPaintParts.Background | DataGridViewPaintParts.Border);
-                    e.Handled = true;
-                }
+
+                // Gọi API join
+                var room = await _roomApi.JoinRoomAsync(roomId, _currentUserId);
+
+                // Mở form phòng
+                frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
+                this.Hide();
+                roomForm.Show();
             }
         }
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
+            // Trở về menu chính
+            var mainMenu = new frmMainMenu();
+            mainMenu.Show();
             this.Close();
         }
 
-        private void btnTaoPhong_Click(object sender, EventArgs e)
+        private async void btnTaoPhong_Click(object sender, EventArgs e)
         {
-            // Ẩn Panel Tìm/Tạo phòng (1)
-            pnlTimTaoPhong.Visible = false;
+            // Tạo phòng mới → user là host
+            var room = await _roomApi.CreateRoomAsync(_currentUserId);
+            frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
 
-            // Hiện Panel Phòng Chờ (2)
-            pnlPhongCho.Visible = true;
-
-            // Đảm bảo (2) được đưa lên trên (nếu có vấn đề về z-order)
-            pnlPhongCho.BringToFront();
-
-            // (Tùy chọn: Gọi hàm logic để thực sự tạo phòng ở đây)
-            // TaoPhongMoi(); 
-        }
-
-        private void btnThoatPhongCho_Click(object sender, EventArgs e)
-        {
-            // Ẩn Panel Phòng Chờ (2)
-            pnlPhongCho.Visible = false;
-
-            // Hiện Panel Tìm/Tạo phòng (1)
-            pnlTimTaoPhong.Visible = true;
-
-            // Đảm bảo (1) được đưa lên trên
-            pnlTimTaoPhong.BringToFront();
-
-            // (Tùy chọn: Gọi hàm logic để thoát khỏi phòng hiện tại)
-            // HuyKetNoiPhong();
+            this.Hide();
+            roomForm.Show();
         }
 
         private void txtTimTaoPhong_Enter(object sender, EventArgs e)
         {
-            string placeholder = "Nhập ID hoặc tên chủ phòng";
-
-            if (txtTimTaoPhong.Text == placeholder)
-            {
-                txtTimTaoPhong.Text = ""; // Xóa chữ Placeholder 
-            }
+            // Placeholder
+            if (txtTimTaoPhong.Text == "Nhập ID hoặc tên chủ phòng")
+                txtTimTaoPhong.Text = "";
         }
 
         private void txtTimTaoPhong_Leave(object sender, EventArgs e)
         {
-            string placeholder = "Nhập ID hoặc tên chủ phòng";
-
+            // Khôi phục placeholder
             if (string.IsNullOrWhiteSpace(txtTimTaoPhong.Text))
-            {
-                txtTimTaoPhong.Text = placeholder; // Đặt lại chữ Placeholder
-            }   
+                txtTimTaoPhong.Text = "Nhập ID hoặc tên chủ phòng";
         }
 
-        private void btnTinNhan_Click(object sender, EventArgs e)
+        private void dgvDanhSachPhong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            ucChatBox1.Visible = !ucChatBox1.Visible;
-            if (ucChatBox1.Visible) ucChatBox1.BringToFront();
+            const int HORIZONTAL_PADDING = 30;
+            const int VERTICAL_PADDING = 3;
 
-        }
-
-        private void btnNVChuPhong_Click(object sender, EventArgs e)
-        {
-            frmSelectcharacter selectForm = new frmSelectcharacter();
-
-            if (selectForm.ShowDialog() == DialogResult.OK)
+            // Vẽ nút "Vào" cho cột tham gia
+            if (e.ColumnIndex == dgvDanhSachPhong.Columns["colThamGia"].Index && e.RowIndex >= 0)
             {
-                string tenNV = selectForm.TenNhanVatDaChon;
-                lblNhanVatChuPhong.Text = "Nhân vật: " + tenNV;
+                string trangThai = dgvDanhSachPhong.Rows[e.RowIndex]
+                                   .Cells["colTrangThai"].Value?.ToString();
+
+                if (trangThai == "Trống")
+                {
+                    e.Paint(e.ClipBounds, DataGridViewPaintParts.Background | DataGridViewPaintParts.Border);
+
+                    Rectangle rect = new Rectangle(
+                        e.CellBounds.X + HORIZONTAL_PADDING,
+                        e.CellBounds.Y + VERTICAL_PADDING,
+                        e.CellBounds.Width - 2 * HORIZONTAL_PADDING,
+                        e.CellBounds.Height - 2 * VERTICAL_PADDING
+                    );
+
+                    using (SolidBrush b = new SolidBrush(Color.LightSkyBlue))
+                        e.Graphics.FillRectangle(b, rect);
+
+                    using (Font boldFont = new Font("Segoe UI", 12, FontStyle.Bold))
+                        e.Graphics.DrawString("Vào", boldFont, new SolidBrush(Color.SteelBlue), e.CellBounds,
+                            new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center });
+
+                    e.Handled = true;
+                }
+                else
+                {
+                    // Phòng đầy → chỉ vẽ nền
+                    e.Paint(e.ClipBounds, DataGridViewPaintParts.Background | DataGridViewPaintParts.Border);
+                    e.Handled = true;
+                }
             }
-        }
-
-        private void btnNVKhach_Click(object sender, EventArgs e)
-        {
-            frmSelectcharacter selectForm = new frmSelectcharacter();
-
-            if (selectForm.ShowDialog() == DialogResult.OK)
-            {
-                string tenNV = selectForm.TenNhanVatDaChon;
-                lblNhanVatKhach.Text = "Nhân vật: " + tenNV;
-            }
-        }
-
-        private void tlpTop_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void pnlPhongCho_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void btnBatDau_Click(object sender, EventArgs e)
-        {
-            frmShip_Sorting f = new frmShip_Sorting();
-            f.ShowDialog();
-            this.Close();
-        }
-
-        private void tblTieuDe_Paint(object sender, PaintEventArgs e)
-        {
-
         }
 
 
@@ -258,23 +230,6 @@ ControlStyles.AllPaintingInWmPaint, true);
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
-
-            SetControlDoubleBuffered(pnlPhongCho);
-            SetControlDoubleBuffered(tlpNguoiChoi);        
-            SetControlDoubleBuffered(pnlNenKhach);
-            SetControlDoubleBuffered(pnlKhach);
-            SetControlDoubleBuffered(tblKhach);          
-            SetControlDoubleBuffered(tblNVKhach);          
-            SetControlDoubleBuffered(pnlNenChuPhong);
-            SetControlDoubleBuffered(pnlChuPhong);
-            SetControlDoubleBuffered(tblNVChuPhong);
-            SetControlDoubleBuffered(tlpChucNang);
-            SetControlDoubleBuffered(pnlNenTinNhan);
-            SetControlDoubleBuffered(pnlNenKichThuoc);
-            SetControlDoubleBuffered(tlbKichThuoc);
-            SetControlDoubleBuffered(tlpTop);
-            SetControlDoubleBuffered(tblTieuDe);
             SetControlDoubleBuffered(pnlTimTaoPhong);
             SetControlDoubleBuffered(panel2);
             SetControlDoubleBuffered(panel3);
@@ -284,7 +239,7 @@ ControlStyles.AllPaintingInWmPaint, true);
             SetControlDoubleBuffered(dgvDanhSachPhong);
 
 
-            SetControlDoubleBuffered(ucChatBox1);
+            //SetControlDoubleBuffered(ucChatBox1);
             SetDoubleBufferedForAllChildren(this);
 
         }
