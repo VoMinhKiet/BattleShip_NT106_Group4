@@ -43,7 +43,7 @@ namespace NT106_BattleshipClient
                     MessageBox.Show("Đăng nhập thành công!");
 
                     // Ở đây bạn có thể chuyển sang form Main Menu
-                    frmMainMenu f = new frmMainMenu(userId);
+                    frmMainMenu f = new frmMainMenu(userId, username);
                     f.Show();
 
                     this.Hide();

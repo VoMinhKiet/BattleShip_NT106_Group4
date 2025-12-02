@@ -20,18 +20,19 @@ namespace NT106_BattleshipClient
             InitializeComponent();
         }
         private int userId;
-        public frmMainMenu(int id)
+        private string userName;
+        public frmMainMenu(int id, string tenDangNhap)
         {
             InitializeComponent();
+
             userId = id;
+            userName = tenDangNhap;
 
             this.SetStyle(ControlStyles.DoubleBuffer |
-            ControlStyles.UserPaint |
-            ControlStyles.AllPaintingInWmPaint, true);
-            InitializeComponent();
+                          ControlStyles.UserPaint |
+                          ControlStyles.AllPaintingInWmPaint, true);
 
             EnableFormDoubleBuffering();//test
-
             SetUseComposited(true);
         }
 
@@ -47,6 +48,8 @@ namespace NT106_BattleshipClient
 
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
+
+            lblXinChao.Text = $"Xin chào {userName}";
         }
 
         private void btnHoSo_Click(object sender, EventArgs e)
@@ -96,7 +99,7 @@ namespace NT106_BattleshipClient
 
         private void btnBanBe_Click(object sender, EventArgs e)
         {
-            frmFriendlist MoForm = new frmFriendlist();
+            frmFriendlist MoForm = new frmFriendlist(userId);
             MoForm.ShowDialog();
         }
 

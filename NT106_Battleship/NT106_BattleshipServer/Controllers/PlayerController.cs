@@ -10,6 +10,7 @@ namespace NT106_BattleshipServer.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private const int MAX_STARS = 5;
 
         public PlayerController(AppDbContext context)
         {
@@ -20,15 +21,12 @@ namespace NT106_BattleshipServer.Controllers
         [HttpGet("profile/{id}")]
         public IActionResult GetPlayerProfile(int id)
         {
-            // Lấy thông tin tài khoản người chơi từ bảng NguoiDung
             var user = _context.NguoiDungs.FirstOrDefault(u => u.Id == id);
             if (user == null)
                 return NotFound(new { message = "Không tìm thấy người chơi!" });
 
-            // Lấy thông tin rank từ bảng BangXepHang
             var rankInfo = _context.BangXepHangs.FirstOrDefault(b => b.IdNguoiDung == id);
 
-            // Tính tổng số trận và tỉ lệ thắng
             int soThang = rankInfo?.SoTranThang ?? 0;
             int soThua = rankInfo?.SoTranThua ?? 0;
             int tongTran = soThang + soThua;
@@ -72,20 +70,70 @@ namespace NT106_BattleshipServer.Controllers
             if (model.IsWin)
             {
                 rankInfo.SoTranThang++;
+
+                // +1 sao nếu chưa đủ 5
+                if (rankInfo.CapSao < MAX_STARS)
+                {
+                    rankInfo.CapSao++;
+                }
+                else
+                {
+                    // Đang 5 sao và thắng thêm
+                    var next = NextRank(rankInfo.BacRank);
+
+                    if (next == rankInfo.BacRank)
+                    {
+                        // Đã KIM CƯƠNG, giữ nguyên rank và sao max
+                        rankInfo.CapSao = MAX_STARS;
+                    }
+                    else
+                    {
+                        // Lên rank mới, sao = 1
+                        rankInfo.BacRank = next;
+                        rankInfo.CapSao = 1;
+                    }
+                }
             }
             else
             {
                 rankInfo.SoTranThua++;
+
+                // Thua: trừ 1 sao, không tụt rank, không nhỏ hơn 0
+                if (rankInfo.CapSao > 0)
+                    rankInfo.CapSao--;
             }
 
             _context.SaveChanges();
-            return Ok(new { message = "Cập nhật kết quả trận đấu thành công!" });
+
+            return Ok(new
+            {
+                message = "Cập nhật kết quả trận đấu thành công!",
+                bacRank = rankInfo.BacRank,
+                capSao = rankInfo.CapSao,
+                soTranThang = rankInfo.SoTranThang,
+                soTranThua = rankInfo.SoTranThua
+            });
+        }
+
+        // Hàm xác định rank tiếp theo
+        private string NextRank(string current)
+        {
+            switch (current)
+            {
+                case "ĐỒNG": return "BẠC";
+                case "BẠC": return "VÀNG";
+                case "VÀNG": return "BẠCH KIM";
+                case "BẠCH KIM": return "KIM CƯƠNG";
+                case "KIM CƯƠNG": return "CAO THỦ";
+                case "CAO THỦ":
+                default: return "KIM CƯƠNG"; // cao nhất, không lên nữa
+            }
         }
     }
-}
 
-public class FinishMatchRequest
-{
-    public int PlayerId { get; set; }
-    public bool IsWin { get; set; }
+    public class FinishMatchRequest
+    {
+        public int PlayerId { get; set; }
+        public bool IsWin { get; set; }
+    }
 }

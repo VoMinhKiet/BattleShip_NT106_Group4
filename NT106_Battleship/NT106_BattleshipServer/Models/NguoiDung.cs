@@ -31,5 +31,8 @@ namespace NT106_BattleshipServer.Models
         // Thời điểm hết hạn OTP
         [Column("ResetCodeExpire")]
         public DateTime? ResetCodeExpire { get; set; }
+
+        [Column("LastOnline")]
+        public DateTime? LastOnline { get; set; }
     }
 }

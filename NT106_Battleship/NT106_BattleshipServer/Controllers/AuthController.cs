@@ -65,6 +65,8 @@ namespace NT106_BattleshipServer.Controllers
                 return Unauthorized(new { message = "Mật khẩu không đúng!" });
 
             // Thành công
+            existingUser.LastOnline = DateTime.Now;
+            await _context.SaveChangesAsync();
             return Ok(new
             {
                 message = "Đăng nhập thành công!",

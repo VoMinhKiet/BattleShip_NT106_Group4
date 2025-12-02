@@ -13,10 +13,13 @@ namespace NT106_BattleshipServer.Data
 
         // (sau này bạn có thể thêm các bảng khác như PhongCho, TranDau,...)
         public DbSet<BangXepHang> BangXepHangs { get; set; }
+        public DbSet<BanBe> BanBes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<BanBe>()
+                .HasKey(b => new { b.IdNguoi1, b.IdNguoi2 });
         }
     }
 }
