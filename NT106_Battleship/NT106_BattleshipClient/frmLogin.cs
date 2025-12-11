@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NT106_BattleshipClient.Models;
+using NT106_BattleshipClient.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,7 +23,7 @@ namespace NT106_BattleshipClient
         {
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:5074/");  // Port server của bạn
+                client.BaseAddress = new Uri("http://localhost:5074/");  // Port server
 
                 var body = new
                 {
@@ -36,33 +37,51 @@ namespace NT106_BattleshipClient
                 HttpResponseMessage response = await client.PostAsync("api/Auth/login", content);
                 string result = await response.Content.ReadAsStringAsync();
 
+                if (!response.IsSuccessStatusCode)
+                {
+                    try
+                    {
+                        dynamic err = JsonConvert.DeserializeObject(result);
+                        string msg = err?.message != null ? (string)err.message : result;
+                        MessageBox.Show("Đăng nhập thất bại!\n" + msg, "Lỗi");
+                    }
+                    catch
+                    {
+                        MessageBox.Show("Đăng nhập thất bại!\n" + result, "Lỗi");
+                    }
+                    return;
+                }
+
+                // Thành công → parse theo model LoginResponse của bạn
                 var obj = JsonConvert.DeserializeObject<LoginResponse>(result);
-
-                if (response.IsSuccessStatusCode)
+                if (obj == null || obj.user == null)
                 {
-                    GlobalData.UserId = obj.user.Id;
-                    GlobalData.Username = obj.user.TenDangNhap;
-                    GlobalData.Email = obj.user.Email;
-
-                    MessageBox.Show($"Đăng nhập thành công!");
-                    dynamic data = JsonConvert.DeserializeObject(result);
-                    int userId = (int)data.user.id;
-                    string username = (string)data.user.tenDangNhap;
-
-                    MessageBox.Show("Đăng nhập thành công!");
-
-                    frmMainMenu f = new frmMainMenu();
-                    f.Show();
-
-                    this.Hide();
+                    MessageBox.Show("Phản hồi đăng nhập không hợp lệ từ server.", "Lỗi");
+                    return;
                 }
 
-                else
-                {
-                    MessageBox.Show("Đăng nhập thất bại!\n" + result, "Lỗi");
-                }
+                // LƯU VÀO GlobalData (tùy thích, có cũng được, bỏ cũng không sao)
+                GlobalData.UserId = obj.user.Id;
+                GlobalData.Username = obj.user.TenDangNhap;
+                GlobalData.Email = obj.user.Email;
+
+                // Khởi tạo SignalR 1 lần cho cả app
+                SignalRClient.Init("http://localhost:5074/roomHub");
+                await SignalRClient.StartAsync();
+                SignalRClient.RegisterInviteHandler();  // đăng ký lắng nghe InvitedToRoom
+
+                // VÀ QUAN TRỌNG: vẫn truyền tham số vào frmMainMenu y như cũ
+                int userId = obj.user.Id;
+                string username = obj.user.TenDangNhap;
+
+                MessageBox.Show("Đăng nhập thành công!");
+
+                frmMainMenu f = new frmMainMenu(userId, username);
+                f.Show();
+                this.Hide();
             }
         }
+
         public frmLogin()
         {
             InitializeComponent();

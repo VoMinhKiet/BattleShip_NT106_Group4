@@ -9,9 +9,11 @@ namespace NT106_BattleshipClient.Services
     {
         public static HubConnection Connection { get; private set; }
 
-        private static bool _started = false;           // Tránh StartAsync nhiều lần
-        private static bool _handlersRegistered = false; // Tránh đăng ký handler lặp lại
+        private static bool _started = false;                 // Tránh StartAsync nhiều lần
+        private static bool _handlersRegistered = false;      // Tránh đăng ký handler lặp lại
+        private static bool _inviteHandlerRegistered = false; // Tránh đăng ký invite nhiều lần
 
+        public static event Action<RoomInviteDto> RoomInviteReceived; // Event toàn cục: bất kỳ form nào cũng có thể subscribe
         public static void Init(string hubUrl)
         {
             if (Connection != null) return;            // Nếu đã tạo → bỏ qua
@@ -25,9 +27,16 @@ namespace NT106_BattleshipClient.Services
 
         public static async Task StartAsync()
         {
-            if (_started) return;                      // Chỉ Start 1 lần
-            await Connection.StartAsync();
-            _started = true;
+            if (Connection == null) return;
+            if (Connection.State == HubConnectionState.Disconnected)
+            {
+                await Connection.StartAsync();
+
+                if (GlobalData.UserId != 0)
+                {
+                    await Connection.InvokeAsync("RegisterUser", GlobalData.UserId);
+                }
+            }
         }
 
         public static void RegisterHandlers(
@@ -47,6 +56,19 @@ namespace NT106_BattleshipClient.Services
             Connection.On<RoomDto>("RoomUpdated", onRoomUpdated);
 
             _handlersRegistered = true;
+        }
+
+        public static void RegisterInviteHandler()
+        {
+            if (_inviteHandlerRegistered) return;
+            if (Connection == null) return;
+
+            Connection.On<RoomInviteDto>("InvitedToRoom", invite =>
+            {
+                RoomInviteReceived?.Invoke(invite);
+            });
+
+            _inviteHandlerRegistered = true;
         }
     }
 }

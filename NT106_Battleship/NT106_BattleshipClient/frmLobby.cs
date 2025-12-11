@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NT106_BattleshipClient.Models;
 
 namespace NT106_BattleshipClient
 {
@@ -12,19 +13,42 @@ namespace NT106_BattleshipClient
         private readonly RoomApiService _roomApi = new RoomApiService();
         private int _currentUserId;
 
+        private frmMainMenu _mainMenu;
+
+        public frmLobby(frmMainMenu mainMenu)
+        {
+            InitializeComponent();
+            _mainMenu = mainMenu;
+            _currentUserId = GlobalData.UserId;
+        }
         public frmLobby()
         {
-            // Tối ưu vẽ form
             this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint |
                           ControlStyles.AllPaintingInWmPaint, true);
 
-            _currentUserId = GlobalData.UserId;
-            InitializeComponent();
+            InitializeComponent();      
 
-            // chống nháy form
+            _currentUserId = GlobalData.UserId;
+            MessageBox.Show("currentUserId = " + _currentUserId);
+
             EnableFormDoubleBuffering();
             SetUseComposited(true);
         }
+
+        private void SafeBeginInvoke(Action action)
+        {
+            if (this.IsDisposed || !this.IsHandleCreated) return;
+
+            try
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    if (!this.IsDisposed) action();
+                }));
+            }
+            catch { }
+        }
+
 
         private async void frmLobby_Load(object sender, EventArgs e)
         {
@@ -33,27 +57,25 @@ namespace NT106_BattleshipClient
             this.Size = screen.Size;
             this.Location = new Point(0, 0);
 
-            // Kết nối SignalR
             try
             {
                 SignalRClient.Init("http://localhost:5074/roomHub");
                 await SignalRClient.StartAsync();
 
-                // Reload danh sách phòng khi server báo thay đổi
+                // reload list phòng
                 SignalRClient.Connection.On("RoomListUpdated", () =>
                 {
-                    this.BeginInvoke(new Action(async () => { await LoadRoomsFromServer(); }));
+                    SafeBeginInvoke(async () => { await LoadRoomsFromServer(); });
                 });
 
-                // Khi phòng bị xoá
                 SignalRClient.Connection.On<int>("RoomDeleted", (roomId) =>
                 {
-                    this.BeginInvoke(new Action(async () => { await LoadRoomsFromServer(); }));
+                    SafeBeginInvoke(async () => { await LoadRoomsFromServer(); });
                 });
             }
             catch
             {
-                // Bỏ qua nếu SignalR lỗi
+                // ignore
             }
 
             await LoadRoomsFromServer();
@@ -147,7 +169,7 @@ namespace NT106_BattleshipClient
                 var room = await _roomApi.JoinRoomAsync(roomId, _currentUserId);
 
                 // Mở form phòng
-                frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
+                frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username, this);
                 this.Hide();
                 roomForm.Show();
             }
@@ -155,21 +177,26 @@ namespace NT106_BattleshipClient
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
-            // Trở về menu chính
-            var mainMenu = new frmMainMenu();
-            mainMenu.Show();
-            this.Close();
+            _mainMenu.Show();  // quay lại menu cũ
+            this.Close();      // đóng lobby
         }
+
 
         private async void btnTaoPhong_Click(object sender, EventArgs e)
         {
-            // Tạo phòng mới → user là host
+            if (_currentUserId <= 0)
+            {
+                MessageBox.Show("Không xác định được người chơi. Vui lòng đăng nhập lại.");
+                return;
+            }
+
             var room = await _roomApi.CreateRoomAsync(_currentUserId);
-            frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
+            frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username, this);
 
             this.Hide();
             roomForm.Show();
         }
+
 
         private void txtTimTaoPhong_Enter(object sender, EventArgs e)
         {
@@ -224,6 +251,34 @@ namespace NT106_BattleshipClient
                 }
             }
         }
+        private async Task HandleRoomInvite(RoomInviteDto invite)
+        {
+            var result = MessageBox.Show(
+                $"{invite.FromUsername} mời bạn vào phòng {invite.RoomId}.\nBạn có muốn tham gia không?",
+                "Lời mời vào phòng",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes)
+                return;
+
+            try
+            {
+                var room = await _roomApi.JoinRoomAsync(invite.RoomId, GlobalData.UserId);
+
+                // Thêm "this"
+                var roomForm = new frmRoom(room, GlobalData.UserId, GlobalData.Username, this);
+
+                this.Hide();
+                roomForm.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Không thể tham gia phòng: " + ex.Message);
+            }
+        }
+
+
 
 
         //test hàm chống nháy

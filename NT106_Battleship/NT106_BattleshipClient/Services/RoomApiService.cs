@@ -3,7 +3,9 @@ using NT106_BattleshipClient.Models;
 
 using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NT106_BattleshipClient.Services
 {
@@ -44,17 +46,30 @@ namespace NT106_BattleshipClient.Services
         // ================================
         public async Task<RoomDto> CreateRoomAsync(int userId)
         {
-            var resp = await _http.PostAsync($"api/room/create?userId={userId}", null);
-
-            resp.EnsureSuccessStatusCode();
+            var emptyJson = new StringContent("{}", Encoding.UTF8, "application/json");
+            var resp = await _http.PostAsync($"api/room/create?userId={userId}", emptyJson);
 
             string json = await resp.Content.ReadAsStringAsync();
 
-            // Server trả về CreateRoomResponse { message, room }
-            var obj = JsonConvert.DeserializeObject<CreateRoomResponse>(json);
+            if (!resp.IsSuccessStatusCode)
+            {
+                // Hiện message từ server (nếu có)
+                string msg = json;
+                try
+                {
+                    dynamic err = JsonConvert.DeserializeObject(json);
+                    if (err?.message != null) msg = (string)err.message;
+                }
+                catch { }
 
-            return obj.room; // Trả về object RoomDto
+                throw new Exception($"Lỗi gọi API create room:\nStatus: {(int)resp.StatusCode} {resp.StatusCode}\nBody: {msg}");
+            }
+
+            var obj = JsonConvert.DeserializeObject<CreateRoomResponse>(json);
+            return obj.room;
         }
+
+
 
         // ================================
         // THAM GIA PHÒNG
@@ -62,16 +77,19 @@ namespace NT106_BattleshipClient.Services
         // ================================
         public async Task<RoomDto> JoinRoomAsync(int roomId, int userId)
         {
-            var resp = await _http.PostAsync($"api/room/join?roomId={roomId}&userId={userId}", null);
+            var emptyJson = new StringContent("{}", Encoding.UTF8, "application/json");
+
+            var resp = await _http.PostAsync(
+                $"api/room/join?roomId={roomId}&userId={userId}",
+                emptyJson);
 
             resp.EnsureSuccessStatusCode();
 
             string json = await resp.Content.ReadAsStringAsync();
-
             var obj = JsonConvert.DeserializeObject<CreateRoomResponse>(json);
-
             return obj.room;
         }
+
 
         // ================================
         // RỜI PHÒNG

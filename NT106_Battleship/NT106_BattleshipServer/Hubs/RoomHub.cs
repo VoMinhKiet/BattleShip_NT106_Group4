@@ -5,6 +5,11 @@ namespace NT106_BattleshipServer.Hubs
 {
     public class RoomHub : Hub
     {
+        // client gọi sau khi connect: đăng ký userId vào group riêng
+        public async Task RegisterUser(int userId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, $"user_{userId}");
+        }
         // Khi client vào phòng → thêm connection vào group theo roomId
         public async Task JoinRoom(string roomId)
         {

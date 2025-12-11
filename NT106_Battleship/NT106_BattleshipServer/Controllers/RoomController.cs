@@ -55,11 +55,24 @@ namespace NT106_BattleshipServer.Controllers
 
             return dto;
         }
-
+        public class CreateRoomRequest
+        {
+            public int UserId { get; set; }
+        }
         // Tạo phòng mới
         [HttpPost("create")]
-        public async Task<IActionResult> CreateRoom(int userId)
+        public async Task<IActionResult> CreateRoom([FromQuery] int userId)
         {
+            // 1. Check userId hợp lệ
+            if (userId <= 0)
+                return BadRequest(new { message = $"userId không hợp lệ: {userId}" });
+
+            // 2. Check user có tồn tại trong NguoiDung không
+            var user = await _context.NguoiDungs.FindAsync(userId);
+            if (user == null)
+                return BadRequest(new { message = $"User với Id={userId} không tồn tại trong NguoiDung." });
+
+            // 3. Tạo phòng
             var room = new Room
             {
                 IDChuPhong = userId,
@@ -73,12 +86,13 @@ namespace NT106_BattleshipServer.Controllers
 
             var dto = await BuildRoomDto(room);
 
-            // Báo cho tất cả client reload
             await _hubContext.Clients.All.SendAsync("RoomListUpdated");
             await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
 
             return Ok(new { message = "Tạo phòng thành công", room = dto });
         }
+
+
 
         // Lấy danh sách phòng đang waiting
         [HttpGet("list")]
@@ -211,5 +225,60 @@ namespace NT106_BattleshipServer.Controllers
 
             return Ok(new { message = "Trận đấu kết thúc — quay lại full", room = dto });
         }
+
+        public class RoomInviteRequest
+        {
+            public int RoomId { get; set; }
+            public int FromUserId { get; set; }   // người mời (chủ phòng)
+            public int TargetUserId { get; set; } // người được mời
+        }
+        public class RoomInviteDto
+        {
+            public int RoomId { get; set; }
+            public int FromUserId { get; set; }
+            public string FromUsername { get; set; }
+        }
+
+        [HttpPost("invite")]
+        public async Task<IActionResult> InviteFriend([FromBody] RoomInviteRequest model)
+        {
+            // 1. Kiểm tra phòng
+            var room = await _context.Rooms.FindAsync(model.RoomId);
+            if (room == null)
+                return NotFound(new { message = "Phòng không tồn tại" });
+
+            // 2. Chỉ chủ phòng mới được mời
+            if (room.IDChuPhong != model.FromUserId)
+                return BadRequest(new { message = "Chỉ chủ phòng mới được mời bạn" });
+
+            // 3. Kiểm tra người được mời tồn tại
+            var target = await _context.NguoiDungs.FindAsync(model.TargetUserId);
+            if (target == null)
+                return NotFound(new { message = "Người được mời không tồn tại" });
+
+            // 4. (Tuỳ chọn) kiểm tra 2 người là bạn, quan hệ ACCEPTED
+            var relation = await _context.BanBes.FirstOrDefaultAsync(bb =>
+                (bb.IdNguoi1 == model.FromUserId && bb.IdNguoi2 == model.TargetUserId) ||
+                (bb.IdNguoi1 == model.TargetUserId && bb.IdNguoi2 == model.FromUserId));
+
+            if (relation == null || relation.TrangThai != "ACCEPTED")
+                return BadRequest(new { message = "Hai người chưa phải bạn bè" });
+
+            // 5. Lấy tên người mời
+            var fromUser = await _context.NguoiDungs.FindAsync(model.FromUserId);
+            var inviteDto = new RoomInviteDto
+            {
+                RoomId = room.Id,
+                FromUserId = model.FromUserId,
+                FromUsername = fromUser?.TenDangNhap ?? "???"
+            };
+
+            // 6. Bắn SignalR tới user được mời
+            await _hubContext.Clients.Group($"user_{model.TargetUserId}")
+                .SendAsync("InvitedToRoom", inviteDto);
+
+            return Ok(new { message = "Đã gửi lời mời vào phòng", roomId = room.Id });
+        }
+
     }
 }

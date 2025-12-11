@@ -10,5 +10,7 @@
 
         // Lưu email người dùng
         public static string Email { get; set; }
+
+        public static bool IsInRoom { get; set; }  // Cờ báo đang ở trong frmRoom
     }
 }

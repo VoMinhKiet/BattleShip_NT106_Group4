@@ -16,10 +16,12 @@ namespace NT106_BattleshipClient
     public partial class frmFriendlist : BaseForm
     {
         private int currentUserId;
-        public frmFriendlist(int userId)
+        private int? roomIdForInvite;
+        public frmFriendlist(int userId, int? roomId = null)
         {
             InitializeComponent();
             currentUserId = userId;
+            roomIdForInvite = roomId;
 
             // chống nháy form
             EnableFormDoubleBuffering();
@@ -276,10 +278,64 @@ namespace NT106_BattleshipClient
             }
         }
 
-        private void btnInvite_Click(object sender, EventArgs e)
+        private async void btnInvite_Click(object sender, EventArgs e)
         {
+            // Không có roomId → đang mở Friendlist từ MainMenu, không phải trong phòng
+            if (roomIdForInvite == null)
+            {
+                MessageBox.Show("Chức năng mời chỉ dùng khi mở danh sách bạn từ trong phòng chơi.");
+                return;
+            }
 
+            int? friendId = GetSelectedFriendId();
+            if (!friendId.HasValue)
+            {
+                MessageBox.Show("Vui lòng chọn một người bạn trong danh sách để mời.");
+                return;
+            }
+
+            // DEBUG: xem ID bạn đang mời là ai
+            MessageBox.Show("Target ID = " + friendId.Value);
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://localhost:5074/");
+
+                var body = new
+                {
+                    RoomId = roomIdForInvite.Value, // phải trùng với RoomInviteRequest
+                    FromUserId = currentUserId,
+                    TargetUserId = friendId.Value
+                };
+
+                string jsonBody = JsonConvert.SerializeObject(body);
+                var content = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage resp;
+                try
+                {
+                    resp = await client.PostAsync("api/Room/invite", content);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Không kết nối được server: " + ex.Message);
+                    return;
+                }
+
+                string result = await resp.Content.ReadAsStringAsync();
+
+                if (!resp.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Gửi lời mời thất bại:\n" + result);
+                    return;
+                }
+
+                MessageBox.Show("Đã gửi lời mời vào phòng!\n" + result);
+            }
         }
+
+
+
 
         private async void btnDeletefriend_Click(object sender, EventArgs e)
         {

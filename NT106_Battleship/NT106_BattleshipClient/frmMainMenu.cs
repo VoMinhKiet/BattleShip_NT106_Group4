@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NT106_BattleshipClient.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,6 +11,8 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NT106_BattleshipClient.Models;
+
 
 namespace NT106_BattleshipClient
 {
@@ -18,6 +21,10 @@ namespace NT106_BattleshipClient
         public frmMainMenu()
         {
             InitializeComponent();
+
+            // Nếu form được tạo mà không truyền id (thiết kế, debug),
+            // vẫn đăng ký lắng nghe invite:
+            SignalRClient.RoomInviteReceived += SignalRClient_RoomInviteReceived;
         }
         private int userId;
         private string userName;
@@ -34,6 +41,46 @@ namespace NT106_BattleshipClient
 
             EnableFormDoubleBuffering();//test
             SetUseComposited(true);
+            // Đăng ký lắng nghe invite toàn cục
+            SignalRClient.RoomInviteReceived += SignalRClient_RoomInviteReceived;
+        }
+
+        // Hàm xử lý khi có invite gửi đến client này
+        private async void SignalRClient_RoomInviteReceived(RoomInviteDto invite)
+        {
+            // Nếu đang ở trong phòng chơi thì bỏ qua
+            if (GlobalData.IsInRoom)
+                return;
+
+            // Lấy form đang active để show popup trên đó
+            var activeForm = Form.ActiveForm;
+            if (activeForm == null || activeForm.IsDisposed)
+                activeForm = this;
+
+            // Callback SignalR chạy trên thread khác → dùng BeginInvoke
+            activeForm.BeginInvoke(new Action(async () =>
+            {
+                var result = MessageBox.Show(
+                    $"{invite.FromUsername} mời bạn vào phòng {invite.RoomId}.\nBạn có muốn tham gia không?",
+                    "Lời mời vào phòng",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (result != DialogResult.Yes)
+                    return;
+
+                // Join phòng
+                var roomApi = new NT106_BattleshipClient.Services.RoomApiService();
+                var room = await roomApi.JoinRoomAsync(invite.RoomId, GlobalData.UserId);
+
+                // Nếu đang ở lobby thì truyền vào, không thì null cũng được
+                frmLobby lobby = Application.OpenForms["frmLobby"] as frmLobby;
+
+                var roomForm = new frmRoom(room, GlobalData.UserId, GlobalData.Username, lobby);
+
+                activeForm.Hide();
+                roomForm.Show();
+            }));
         }
 
         private void frmMainMenu_Load(object sender, EventArgs e)
@@ -111,16 +158,16 @@ namespace NT106_BattleshipClient
 
         private void btnChoiVoiMay_Click(object sender, EventArgs e)
         {
+            frmLobby lobby = new frmLobby(this);
             this.Hide();
-            frmLobby Lobby = new frmLobby();
-            Lobby.Show();
+            lobby.Show();
         }
 
         private void btnChoiVoiNguoi_Click(object sender, EventArgs e)
         {
+            frmLobby lobby = new frmLobby(this);
             this.Hide();
-            frmLobby Lobby = new frmLobby();
-            Lobby.Show();
+            lobby.Show();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)

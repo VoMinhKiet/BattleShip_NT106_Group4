@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmRoom));
             this.pnlPhongCho = new System.Windows.Forms.Panel();
+            this.btnMoiBan = new System.Windows.Forms.Button();
             this.ucChatBox1 = new NT106_BattleshipClient.ucChatBox();
             this.tlpNguoiChoi = new System.Windows.Forms.TableLayoutPanel();
             this.pnlNenKhach = new System.Windows.Forms.Panel();
@@ -90,6 +91,7 @@
             // 
             this.pnlPhongCho.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pnlPhongCho.BackgroundImage")));
             this.pnlPhongCho.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pnlPhongCho.Controls.Add(this.btnMoiBan);
             this.pnlPhongCho.Controls.Add(this.ucChatBox1);
             this.pnlPhongCho.Controls.Add(this.tlpNguoiChoi);
             this.pnlPhongCho.Controls.Add(this.tlpTop);
@@ -100,6 +102,18 @@
             this.pnlPhongCho.Padding = new System.Windows.Forms.Padding(29, 30, 29, 30);
             this.pnlPhongCho.Size = new System.Drawing.Size(1538, 837);
             this.pnlPhongCho.TabIndex = 2;
+            // 
+            // btnMoiBan
+            // 
+            this.btnMoiBan.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.btnMoiBan.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMoiBan.Location = new System.Drawing.Point(29, 395);
+            this.btnMoiBan.Name = "btnMoiBan";
+            this.btnMoiBan.Size = new System.Drawing.Size(142, 59);
+            this.btnMoiBan.TabIndex = 4;
+            this.btnMoiBan.Text = "Mời";
+            this.btnMoiBan.UseVisualStyleBackColor = false;
+            this.btnMoiBan.Click += new System.EventHandler(this.btnMoiBan_Click);
             // 
             // ucChatBox1
             // 
@@ -718,5 +732,6 @@
         private System.Windows.Forms.Label lblTieuDe1;
         private System.Windows.Forms.Label lblTieuDe2;
         private System.Windows.Forms.Button btnThoatPhongCho;
+        private System.Windows.Forms.Button btnMoiBan;
     }
 }

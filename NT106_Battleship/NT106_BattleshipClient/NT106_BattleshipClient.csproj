@@ -326,6 +326,7 @@
     <Compile Include="GlobalData.cs" />
     <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\RoomDto.cs" />
+    <Compile Include="Models\RoomInviteDto.cs" />
     <Compile Include="Models\UserDto.cs" />
     <Compile Include="ModernTrackBar.cs">
       <SubType>Component</SubType>

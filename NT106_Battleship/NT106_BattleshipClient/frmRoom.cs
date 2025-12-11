@@ -18,27 +18,60 @@ namespace NT106_BattleshipClient
         private bool _isLeaving = false;
         private int? _lastKnownGuestId = null;
 
+        private frmLobby _lobby;
+
         private bool _isHost;
         private bool _isGuestReady;
 
         private bool IsHost => _room.IDChuPhong == _currentUserId;
 
-        public frmRoom(RoomDto room, int userId, string username)
+        public frmRoom(RoomDto room, int userId, string username, frmLobby lobby)
         {
             InitializeComponent();
             _room = room ?? throw new ArgumentNullException(nameof(room));
             _currentUserId = userId;
             _currentUsername = username;
+            _lobby = lobby;
+
+            GlobalData.IsInRoom = true;   // Đánh dấu đang ở trong phòng
 
             this.FormClosing += frmRoom_FormClosing;
 
             _isHost = (_currentUserId == room.IDChuPhong);
             _isGuestReady = false;
         }
+        private void ReturnToLobby()
+        {
+            // rời phòng rồi thì cho cờ IsInRoom = false
+            GlobalData.IsInRoom = false;
 
+            // Ưu tiên quay về lobby nếu có
+            if (_lobby != null && !_lobby.IsDisposed)
+            {
+                _lobby.Show();
+            }
+            else
+            {
+                // Nếu không có lobby (vd: vào phòng bằng invite từ MainMenu)
+                // thì quay về MainMenu
+                var main = Application.OpenForms["frmMainMenu"] as frmMainMenu;
+                if (main != null)
+                {
+                    main.Show();
+                }
+                else
+                {
+                    // fallback cuối: tạo MainMenu mới
+                    var newMain = new frmMainMenu(GlobalData.UserId, GlobalData.Username);
+                    newMain.Show();
+                }
+            }
+
+            this.FormClosing -= frmRoom_FormClosing;
+            this.Close();
+        }
         private async void frmRoom_Load(object sender, EventArgs e)
         {
-            // FIX 1: Đảm bảo handle đã được tạo
             if (!this.IsHandleCreated)
                 this.CreateControl();
 
@@ -60,10 +93,13 @@ namespace NT106_BattleshipClient
                     await SignalRClient.Connection.InvokeAsync("JoinRoom", _room.Id.ToString());
                 }
                 catch { }
-
-                SetupUIControls();
             }
-            catch { }
+            catch
+            {
+                
+            }
+
+            SetupUIControls();
         }
         private void SetupSignalREvents()
         {
@@ -104,10 +140,12 @@ namespace NT106_BattleshipClient
 
                 SafeInvoke(() =>
                 {
+                    _isLeaving = true; // thêm dòng này
                     MessageBox.Show("Phòng đã bị xoá (chủ phòng rời).");
                     ReturnToLobby();
                 });
             });
+
 
             // UI SYNC
             SignalRClient.Connection.On<string, string>("SynchronizeRoomUI", (command, value) =>
@@ -248,17 +286,6 @@ namespace NT106_BattleshipClient
             ReturnToLobby();
         }
 
-        private void ReturnToLobby()
-        {
-            if (!_isLeaving) return;
-
-            var lobby = new frmLobby();
-            lobby.Show();
-
-            this.FormClosing -= frmRoom_FormClosing;
-            this.Hide();
-            this.Dispose();
-        }
 
         // ============================
         // Chat + chọn nhân vật
@@ -372,6 +399,23 @@ namespace NT106_BattleshipClient
             SignalRClient.Connection.InvokeAsync("StartGame", _room.Id);
 
             MessageBox.Show("Xếp tàu");
+        }
+
+        private void btnMoiBan_Click(object sender, EventArgs e)
+        {
+            if (!_isHost)
+            {
+                MessageBox.Show("Chỉ chủ phòng được mời bạn vào phòng.");
+                return;
+            }
+
+            using (var f = new frmFriendlist(_currentUserId, _room.Id))
+            {
+                f.StartPosition = FormStartPosition.CenterParent;
+                f.ShowInTaskbar = false;   
+
+                f.ShowDialog(this);
+            }
         }
     }
 }
