@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using NT106_BattleshipClient.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Collections.Specialized.BitVector32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
@@ -34,20 +36,27 @@ namespace NT106_BattleshipClient
                 HttpResponseMessage response = await client.PostAsync("api/Auth/login", content);
                 string result = await response.Content.ReadAsStringAsync();
 
+                var obj = JsonConvert.DeserializeObject<LoginResponse>(result);
+
                 if (response.IsSuccessStatusCode)
                 {
+                    GlobalData.UserId = obj.user.Id;
+                    GlobalData.Username = obj.user.TenDangNhap;
+                    GlobalData.Email = obj.user.Email;
+
+                    MessageBox.Show($"Đăng nhập thành công!");
                     dynamic data = JsonConvert.DeserializeObject(result);
                     int userId = (int)data.user.id;
                     string username = (string)data.user.tenDangNhap;
 
                     MessageBox.Show("Đăng nhập thành công!");
 
-                    // Ở đây bạn có thể chuyển sang form Main Menu
-                    frmMainMenu f = new frmMainMenu(userId, username);
+                    frmMainMenu f = new frmMainMenu();
                     f.Show();
 
                     this.Hide();
                 }
+
                 else
                 {
                     MessageBox.Show("Đăng nhập thất bại!\n" + result, "Lỗi");
