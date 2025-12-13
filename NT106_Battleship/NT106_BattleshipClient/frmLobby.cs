@@ -158,17 +158,20 @@ namespace NT106_BattleshipClient
                 var room = await _roomApi.JoinRoomAsync(roomId, _currentUserId);
 
                 // Mở form phòng
-                frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
-                this.Hide();
-                roomForm.Show();
+                using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
+                {
+                    this.Hide();
+                    roomForm.ShowDialog();
+                }
+
+                this.Show();
+
+                await LoadRoomsFromServer();
             }
         }
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
-            // Trở về menu chính
-            var mainMenu = new frmMainMenu();
-            mainMenu.Show();
             this.Close();
         }
 
@@ -176,10 +179,15 @@ namespace NT106_BattleshipClient
         {
             // Tạo phòng mới → user là host
             var room = await _roomApi.CreateRoomAsync(_currentUserId);
-            frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
+            using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
+            {
+                this.Hide();
+                roomForm.ShowDialog();
+            }
 
-            this.Hide();
-            roomForm.Show();
+            this.Show();
+            // Load lại danh sách phòng mới nhất
+            await LoadRoomsFromServer();
         }
 
         private void txtTimTaoPhong_Enter(object sender, EventArgs e)

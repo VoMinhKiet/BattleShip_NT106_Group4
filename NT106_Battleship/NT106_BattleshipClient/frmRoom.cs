@@ -14,6 +14,7 @@ namespace NT106_BattleshipClient
         private RoomDto _room;
         private int _currentUserId;
         private string _currentUsername;
+        private string _myCharacterName = "";
 
         private readonly RoomApiService _roomApi = new RoomApiService();
         private bool _isLeaving = false;
@@ -22,10 +23,12 @@ namespace NT106_BattleshipClient
         private bool _isHost;
         private bool _isGuestReady;
 
+        // Biến này để đánh dấu khi nào Code đang tự cập nhật UI
+        private bool _isUpdatingUI = false;
+
         private HubConnection _hub;
         //private TranDauDto _size;
         public int mapsize;
-        private bool IsHost => _room.IDChuPhong == _currentUserId;
 
         public frmRoom(RoomDto room, int userId, string username)
         {
@@ -66,6 +69,12 @@ namespace NT106_BattleshipClient
                 catch { }
 
                 SetupUIControls();
+
+                if (!_isHost)
+                {
+                    // Gửi lệnh "REQUEST_INFO" (value để trống cũng được)
+                    await SendUISyncCommand("REQUEST_INFO", "");
+                }
             }
             catch { }
             await ConnectXepTau();
@@ -109,8 +118,12 @@ namespace NT106_BattleshipClient
 
                 SafeInvoke(() =>
                 {
-                    MessageBox.Show("Phòng đã bị xoá (chủ phòng rời).");
-                    ReturnToLobby();
+                    MessageBox.Show("Chủ phòng đã rời, phòng đã đóng!");
+
+                    // Đặt cờ này để không gọi API LeaveRoom
+                    _isLeaving = true;
+
+                    this.Close();
                 });
             });
 
@@ -135,7 +148,7 @@ namespace NT106_BattleshipClient
         }
         private void SetupUIControls()
         {
-            cbKichThuoc.Enabled = IsHost;
+            cbKichThuoc.Enabled = _isHost;
 
             if (cbKichThuoc.Items.Count == 0)
             {
@@ -160,15 +173,34 @@ namespace NT106_BattleshipClient
             }
         }
 
-        private void ProcessIncomingData(string command, string value)
+        private async void ProcessIncomingData(string command, string value)
         {
             switch (command)
             {
                 case "SET_HOST_CHAR": lblNhanVatChuPhong.Text = "Nhân vật: " + value; break;
                 case "SET_GUEST_CHAR": lblNhanVatKhach.Text = "Nhân vật: " + value; break;
                 case "SET_SIZE":
+                    _isUpdatingUI = true;
                     if (cbKichThuoc.Items.Contains(value))
                         cbKichThuoc.SelectedItem = value;
+                    _isUpdatingUI = false;
+                    break;
+                case "REQUEST_INFO":
+                    // Chỉ có Host mới cần trả lời câu hỏi này
+                    if (_isHost)
+                    {
+                        // 1. Gửi lại kích thước bàn cờ hiện tại
+                        if (cbKichThuoc.SelectedItem != null)
+                        {
+                            await SendUISyncCommand("SET_SIZE", cbKichThuoc.SelectedItem.ToString());
+                        }
+
+                        // 2. Gửi lại nhân vật của Host (nếu đã chọn)
+                        if (!string.IsNullOrEmpty(_myCharacterName))
+                        {
+                            await SendUISyncCommand("SET_HOST_CHAR", _myCharacterName);
+                        }
+                    }
                     break;
             }
         }
@@ -238,10 +270,9 @@ namespace NT106_BattleshipClient
             catch { }
         }
 
-        private async void btnThoatPhongCho_Click(object sender, EventArgs e)
+        private void btnThoatPhongCho_Click(object sender, EventArgs e)
         {
-            await LeaveRoomAsync();
-            ReturnToLobby();
+            this.Close();
         }
 
         private async void frmRoom_FormClosing(object sender, FormClosingEventArgs e)
@@ -250,19 +281,10 @@ namespace NT106_BattleshipClient
 
             e.Cancel = true;
             await LeaveRoomAsync();
-            ReturnToLobby();
-        }
 
-        private void ReturnToLobby()
-        {
-            if (!_isLeaving) return;
+            _isLeaving = true;
 
-            var lobby = new frmLobby();
-            lobby.Show();
-
-            this.FormClosing -= frmRoom_FormClosing;
-            this.Hide();
-            this.Dispose();
+            this.Close();
         }
 
         // ============================
@@ -277,7 +299,7 @@ namespace NT106_BattleshipClient
 
         private async void btnNVChuPhong_Click(object sender, EventArgs e)
         {
-            if (!IsHost)
+            if (!_isHost)
             {
                 MessageBox.Show("Chỉ chủ phòng được chọn nhân vật.");
                 return;
@@ -287,6 +309,7 @@ namespace NT106_BattleshipClient
             if (f.ShowDialog() == DialogResult.OK)
             {
                 string ten = f.TenNhanVatDaChon;
+                _myCharacterName = ten;
                 lblNhanVatChuPhong.Text = "Nhân vật: " + ten;
                 await SendUISyncCommand("SET_HOST_CHAR", ten);
             }
@@ -294,7 +317,7 @@ namespace NT106_BattleshipClient
 
         private async void btnNVKhach_Click(object sender, EventArgs e)
         {
-            if (IsHost)
+            if (_isHost)
             {
                 MessageBox.Show("Chỉ khách được chọn nhân vật.");
                 return;
@@ -311,11 +334,12 @@ namespace NT106_BattleshipClient
 
         private async void cbKichThuoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*if (!IsHost)
+            if (_isUpdatingUI) return;
+            if (!_isHost)
             {
                 MessageBox.Show("Chỉ chủ phòng được đổi kích thước.");
                 return;
-            }*/ //bug chỗ này sửa sau
+            }
 
             if (cbKichThuoc.SelectedItem != null)
             {
@@ -338,7 +362,7 @@ namespace NT106_BattleshipClient
 
         private async void btnSanSang_Click(object sender, EventArgs e)
         {
-            if (IsHost)
+            if (_isHost)
             {
                 MessageBox.Show("Chỉ khách mới được bấm nút này.");
                 return;
@@ -362,7 +386,7 @@ namespace NT106_BattleshipClient
 
         private async void btnBatDau_Click(object sender, EventArgs e)
         {
-            if (!IsHost)
+            if (!_isHost)
             {
                 MessageBox.Show("Chỉ chủ phòng mới được bắt đầu trận!");
                 return;

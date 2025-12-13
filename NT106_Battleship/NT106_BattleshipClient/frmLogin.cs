@@ -47,8 +47,9 @@ namespace NT106_BattleshipClient
                     MessageBox.Show($"Đăng nhập thành công!");
 
                     frmMainMenu f = new frmMainMenu();
-                    f.Show();
                     this.Hide();
+                    f.ShowDialog();
+                    this.Show();
                 }
 
                 else
