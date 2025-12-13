@@ -111,12 +111,24 @@ namespace NT106_BattleshipClient
 
             foreach (var r in rooms)
             {
-                string trangThai = r.TrangThai == "waiting" ? "Trống" : "Đầy";
+                string trangThaiHienThi = "";
+
+                // Map trạng thái từ Server sang Tiếng Việt hiển thị
+                switch (r.TrangThai)
+                {
+                    case "waiting": trangThaiHienThi = "Đang chờ"; break;
+                    case "full": trangThaiHienThi = "Đầy"; break;
+                    case "playing": trangThaiHienThi = "Đang chơi"; break;
+                    default: trangThaiHienThi = r.TrangThai; break;
+                }
+
                 string tenChu = !string.IsNullOrWhiteSpace(r.TenChuPhong)
                                 ? r.TenChuPhong
                                 : ("ID: " + r.IDChuPhong);
 
-                dgvDanhSachPhong.Rows.Add(r.Id, tenChu, trangThai);
+                dgvDanhSachPhong.Rows.Add(r.Id, tenChu, trangThaiHienThi);
+
+                dgvDanhSachPhong.Rows[dgvDanhSachPhong.Rows.Count - 1].Tag = r.TrangThai;
             }
 
             UpdateScrollBar();
@@ -131,17 +143,16 @@ namespace NT106_BattleshipClient
             // Nhấn nút "Vào"
             if (e.ColumnIndex == colJoin)
             {
-                int roomId = Convert.ToInt32(dgvDanhSachPhong.Rows[e.RowIndex]
-                                             .Cells["colID"].Value);
+                string trangThai = dgvDanhSachPhong.Rows[e.RowIndex].Cells["colTrangThai"].Value.ToString();
 
-                string status = dgvDanhSachPhong.Rows[e.RowIndex]
-                                .Cells["colTrangThai"].Value.ToString();
-
-                if (status == "Đầy")
+                if (trangThai != "Đang chờ")
                 {
-                    MessageBox.Show("Phòng đã đầy!");
+                    // Nếu click vào phòng Đầy hoặc Đang chơi -> Không làm gì cả
                     return;
                 }
+
+                int roomId = Convert.ToInt32(dgvDanhSachPhong.Rows[e.RowIndex]
+                                             .Cells["colID"].Value);
 
                 // Gọi API join
                 var room = await _roomApi.JoinRoomAsync(roomId, _currentUserId);
@@ -196,7 +207,7 @@ namespace NT106_BattleshipClient
                 string trangThai = dgvDanhSachPhong.Rows[e.RowIndex]
                                    .Cells["colTrangThai"].Value?.ToString();
 
-                if (trangThai == "Trống")
+                if (trangThai == "Đang chờ")
                 {
                     e.Paint(e.ClipBounds, DataGridViewPaintParts.Background | DataGridViewPaintParts.Border);
 

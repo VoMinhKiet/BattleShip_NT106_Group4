@@ -85,7 +85,8 @@ namespace NT106_BattleshipServer.Controllers
         public async Task<IActionResult> GetAvailableRooms()
         {
             var rooms = await _context.Rooms
-                .Where(r => r.TrangThai == "waiting")
+                .Where(r => r.TrangThai != "empty")
+                .OrderByDescending(r => r.NgayTao)
                 .ToListAsync();
 
             var list = new List<RoomDto>();
@@ -142,13 +143,15 @@ namespace NT106_BattleshipServer.Controllers
             // Nếu host rời → xoá phòng
             if (room.IDChuPhong == userId)
             {
-                _context.Rooms.Remove(room);
+                room.TrangThai = "empty";
+                room.IDKhach = null;
+
                 await _context.SaveChangesAsync();
 
                 await _hubContext.Clients.All.SendAsync("RoomListUpdated");
                 await _hubContext.Clients.All.SendAsync("RoomDeleted", roomId);
 
-                return Ok(new { message = "Chủ phòng rời — phòng đã bị xoá" });
+                return Ok(new { message = "Chủ phòng rời — phòng đã đóng" });
             }
 
             // Nếu guest rời → phòng trở lại waiting
