@@ -158,9 +158,12 @@ namespace NT106_BattleshipClient
                 var room = await _roomApi.JoinRoomAsync(roomId, _currentUserId);
 
                 // Mở form phòng
-                frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
-                this.Hide();
-                roomForm.ShowDialog();
+                using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
+                {
+                    this.Hide();
+                    roomForm.ShowDialog();
+                }
+
                 this.Show();
 
                 await LoadRoomsFromServer();
@@ -176,10 +179,11 @@ namespace NT106_BattleshipClient
         {
             // Tạo phòng mới → user là host
             var room = await _roomApi.CreateRoomAsync(_currentUserId);
-            frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
-
-            this.Hide();
-            roomForm.ShowDialog();
+            using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
+            {
+                this.Hide();
+                roomForm.ShowDialog();
+            }
 
             this.Show();
             // Load lại danh sách phòng mới nhất

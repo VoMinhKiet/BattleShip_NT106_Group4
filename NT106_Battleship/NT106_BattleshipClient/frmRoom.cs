@@ -23,10 +23,12 @@ namespace NT106_BattleshipClient
         private bool _isHost;
         private bool _isGuestReady;
 
+        // Biến này để đánh dấu khi nào Code đang tự cập nhật UI
+        private bool _isUpdatingUI = false;
+
         private HubConnection _hub;
         //private TranDauDto _size;
         public int mapsize;
-        private bool IsHost => _room.IDChuPhong == _currentUserId;
 
         public frmRoom(RoomDto room, int userId, string username)
         {
@@ -68,7 +70,7 @@ namespace NT106_BattleshipClient
 
                 SetupUIControls();
 
-                if (!IsHost)
+                if (!_isHost)
                 {
                     // Gửi lệnh "REQUEST_INFO" (value để trống cũng được)
                     await SendUISyncCommand("REQUEST_INFO", "");
@@ -112,7 +114,6 @@ namespace NT106_BattleshipClient
             // ROOM DELETED
             SignalRClient.Connection.On<int>("RoomDeleted", (deletedRoomId) =>
             {
-                MessageBox.Show($"Tín hiệu tới rồi! ID xoá: {deletedRoomId} - ID của tui: {_room.Id}");
                 if (deletedRoomId != _room.Id) return;
 
                 SafeInvoke(() =>
@@ -147,7 +148,7 @@ namespace NT106_BattleshipClient
         }
         private void SetupUIControls()
         {
-            cbKichThuoc.Enabled = IsHost;
+            cbKichThuoc.Enabled = _isHost;
 
             if (cbKichThuoc.Items.Count == 0)
             {
@@ -179,12 +180,14 @@ namespace NT106_BattleshipClient
                 case "SET_HOST_CHAR": lblNhanVatChuPhong.Text = "Nhân vật: " + value; break;
                 case "SET_GUEST_CHAR": lblNhanVatKhach.Text = "Nhân vật: " + value; break;
                 case "SET_SIZE":
+                    _isUpdatingUI = true;
                     if (cbKichThuoc.Items.Contains(value))
                         cbKichThuoc.SelectedItem = value;
+                    _isUpdatingUI = false;
                     break;
                 case "REQUEST_INFO":
                     // Chỉ có Host mới cần trả lời câu hỏi này
-                    if (IsHost)
+                    if (_isHost)
                     {
                         // 1. Gửi lại kích thước bàn cờ hiện tại
                         if (cbKichThuoc.SelectedItem != null)
@@ -296,7 +299,7 @@ namespace NT106_BattleshipClient
 
         private async void btnNVChuPhong_Click(object sender, EventArgs e)
         {
-            if (!IsHost)
+            if (!_isHost)
             {
                 MessageBox.Show("Chỉ chủ phòng được chọn nhân vật.");
                 return;
@@ -314,7 +317,7 @@ namespace NT106_BattleshipClient
 
         private async void btnNVKhach_Click(object sender, EventArgs e)
         {
-            if (IsHost)
+            if (_isHost)
             {
                 MessageBox.Show("Chỉ khách được chọn nhân vật.");
                 return;
@@ -331,11 +334,12 @@ namespace NT106_BattleshipClient
 
         private async void cbKichThuoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!IsHost)
+            if (_isUpdatingUI) return;
+            if (!_isHost)
             {
                 MessageBox.Show("Chỉ chủ phòng được đổi kích thước.");
                 return;
-            }//bug chỗ này sửa sau
+            }
 
             if (cbKichThuoc.SelectedItem != null)
             {
@@ -358,7 +362,7 @@ namespace NT106_BattleshipClient
 
         private async void btnSanSang_Click(object sender, EventArgs e)
         {
-            if (IsHost)
+            if (_isHost)
             {
                 MessageBox.Show("Chỉ khách mới được bấm nút này.");
                 return;
@@ -382,7 +386,7 @@ namespace NT106_BattleshipClient
 
         private async void btnBatDau_Click(object sender, EventArgs e)
         {
-            if (!IsHost)
+            if (!_isHost)
             {
                 MessageBox.Show("Chỉ chủ phòng mới được bắt đầu trận!");
                 return;

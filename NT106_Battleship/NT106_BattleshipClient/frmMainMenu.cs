@@ -125,13 +125,20 @@ namespace NT106_BattleshipClient
         MessageBoxButtons.YesNo,
         MessageBoxIcon.Question);
 
-                // Mở form Signup
-                frmLogin loginForm = new frmLogin();
-                loginForm.Show();
+                //// Mở form Signup
+                //frmLogin loginForm = new frmLogin();
+                //loginForm.Show();
 
                 // Ẩn 
                 this.Close();
                 //đang để frmMainMenu là form chính nếu để frmLogin nên đổi thành this.Close();
+        }
+
+        private void frmMainMenu_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // Nếu muốn tắt hẳn chương trình luôn (không quay lại Login)
+            // Thì bắt buộc phải có dòng này để giết form Login đang ẩn
+            Application.Exit();
         }
     }
 }
