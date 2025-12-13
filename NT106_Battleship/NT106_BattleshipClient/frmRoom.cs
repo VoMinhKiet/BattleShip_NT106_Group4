@@ -1,10 +1,11 @@
-﻿using NT106_BattleshipClient.Models;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using NT106_BattleshipClient.Models;
 using NT106_BattleshipClient.Services;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.AspNetCore.SignalR.Client;
+using static Guna.UI2.Native.WinApi;
 
 namespace NT106_BattleshipClient
 {
@@ -21,6 +22,9 @@ namespace NT106_BattleshipClient
         private bool _isHost;
         private bool _isGuestReady;
 
+        private HubConnection _hub;
+        //private TranDauDto _size;
+        public int mapsize;
         private bool IsHost => _room.IDChuPhong == _currentUserId;
 
         public frmRoom(RoomDto room, int userId, string username)
@@ -64,6 +68,7 @@ namespace NT106_BattleshipClient
                 SetupUIControls();
             }
             catch { }
+            await ConnectXepTau();
         }
         private void SetupSignalREvents()
         {
@@ -306,16 +311,28 @@ namespace NT106_BattleshipClient
 
         private async void cbKichThuoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!IsHost)
+            /*if (!IsHost)
             {
                 MessageBox.Show("Chỉ chủ phòng được đổi kích thước.");
                 return;
-            }
+            }*/ //bug chỗ này sửa sau
 
             if (cbKichThuoc.SelectedItem != null)
             {
                 string size = cbKichThuoc.SelectedItem.ToString();
                 await SendUISyncCommand("SET_SIZE", size);
+                if (size == "10x10")
+                {
+                    mapsize = 10;
+                }
+                if (size == "9x9")
+                {
+                    mapsize = 9;
+                }
+                if (size == "8x8")
+                {
+                    mapsize = 8;
+                }
             }
         }
 
@@ -343,7 +360,7 @@ namespace NT106_BattleshipClient
                 _room.Id, _isGuestReady);
         }
 
-        private void btnBatDau_Click(object sender, EventArgs e)
+        private async void btnBatDau_Click(object sender, EventArgs e)
         {
             if (!IsHost)
             {
@@ -369,9 +386,39 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            SignalRClient.Connection.InvokeAsync("StartGame", _room.Id);
+            //SignalRClient.Connection.InvokeAsync("StartGame", _room.Id);
+            await _hub.InvokeAsync("StartGame", _room.Id);
 
-            MessageBox.Show("Xếp tàu");
+
+        }
+        private async Task ConnectXepTau()
+        {
+            _hub = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5074/xepTauHub")
+                .WithAutomaticReconnect()
+                .Build();
+
+            _hub.On("GameStarted", () =>
+            {
+                this.Invoke(new Action(() =>
+                {
+                    try
+                    {
+                        frmShip_Sorting formShip_Sorting =
+                            new frmShip_Sorting(_room, mapsize);
+
+                        formShip_Sorting.Show();
+                        this.Hide();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.ToString(), "ERROR");
+                    }
+                }));
+            });
+
+            await _hub.StartAsync();
+            await _hub.InvokeAsync("JoinRoom", _room.Id);
         }
     }
 }
