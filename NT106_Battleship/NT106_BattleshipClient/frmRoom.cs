@@ -14,6 +14,7 @@ namespace NT106_BattleshipClient
         private RoomDto _room;
         private int _currentUserId;
         private string _currentUsername;
+        private string _myCharacterName = "";
 
         private readonly RoomApiService _roomApi = new RoomApiService();
         private bool _isLeaving = false;
@@ -66,6 +67,12 @@ namespace NT106_BattleshipClient
                 catch { }
 
                 SetupUIControls();
+
+                if (!IsHost)
+                {
+                    // Gửi lệnh "REQUEST_INFO" (value để trống cũng được)
+                    await SendUISyncCommand("REQUEST_INFO", "");
+                }
             }
             catch { }
             await ConnectXepTau();
@@ -160,7 +167,7 @@ namespace NT106_BattleshipClient
             }
         }
 
-        private void ProcessIncomingData(string command, string value)
+        private async void ProcessIncomingData(string command, string value)
         {
             switch (command)
             {
@@ -169,6 +176,23 @@ namespace NT106_BattleshipClient
                 case "SET_SIZE":
                     if (cbKichThuoc.Items.Contains(value))
                         cbKichThuoc.SelectedItem = value;
+                    break;
+                case "REQUEST_INFO":
+                    // Chỉ có Host mới cần trả lời câu hỏi này
+                    if (IsHost)
+                    {
+                        // 1. Gửi lại kích thước bàn cờ hiện tại
+                        if (cbKichThuoc.SelectedItem != null)
+                        {
+                            await SendUISyncCommand("SET_SIZE", cbKichThuoc.SelectedItem.ToString());
+                        }
+
+                        // 2. Gửi lại nhân vật của Host (nếu đã chọn)
+                        if (!string.IsNullOrEmpty(_myCharacterName))
+                        {
+                            await SendUISyncCommand("SET_HOST_CHAR", _myCharacterName);
+                        }
+                    }
                     break;
             }
         }
@@ -287,6 +311,7 @@ namespace NT106_BattleshipClient
             if (f.ShowDialog() == DialogResult.OK)
             {
                 string ten = f.TenNhanVatDaChon;
+                _myCharacterName = ten;
                 lblNhanVatChuPhong.Text = "Nhân vật: " + ten;
                 await SendUISyncCommand("SET_HOST_CHAR", ten);
             }
