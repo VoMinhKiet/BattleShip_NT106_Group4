@@ -10,8 +10,9 @@ namespace NT106_BattleshipServer.Data
 
         // ánh xạ bảng NguoiDung trong database
         public DbSet<NguoiDung> NguoiDungs { get; set; }
-        public DbSet<Room> Rooms { get; set; }  
+        public DbSet<Room> Rooms { get; set; }
         // (sau này bạn có thể thêm các bảng khác như PhongCho, TranDau,...)
+        public DbSet<TranDau> TranDau { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

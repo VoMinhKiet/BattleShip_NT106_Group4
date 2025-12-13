@@ -92,7 +92,9 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
@@ -326,6 +328,8 @@
     <Compile Include="GlobalData.cs" />
     <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\RoomDto.cs" />
+    <Compile Include="Models\TaoTranDauRequest.cs" />
+    <Compile Include="Models\TranDauDto.cs" />
     <Compile Include="Models\UserDto.cs" />
     <Compile Include="ModernTrackBar.cs">
       <SubType>Component</SubType>
@@ -355,6 +359,7 @@
     </EmbeddedResource>
     <Compile Include="Services\RoomApiService.cs" />
     <Compile Include="Services\SignalRClient.cs" />
+    <Compile Include="Services\TranDauAPIService.cs" />
     <Compile Include="Services\UserApiService.cs" />
     <Compile Include="ucChatBox.cs">
       <SubType>UserControl</SubType>

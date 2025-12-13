@@ -104,12 +104,16 @@ namespace NT106_BattleshipClient
             this.Hide();
             frmLobby Lobby = new frmLobby();
             Lobby.Show();
+            this.Show();
         }
 
         private void btnChoiVoiNguoi_Click(object sender, EventArgs e)
         {
             this.Hide();
             frmLobby Lobby = new frmLobby();
+            // Đăng ký sự kiện: Khi nào Lobby đóng thì Menu mới hiện lên
+            Lobby.FormClosed += (s, args) => this.Show();
+
             Lobby.Show();
         }
 
@@ -121,13 +125,14 @@ namespace NT106_BattleshipClient
         MessageBoxButtons.YesNo,
         MessageBoxIcon.Question);
 
-                // Mở form Signup
-                frmLogin loginForm = new frmLogin();
-                loginForm.Show();
+            this.Close();
+        }
 
-                // Ẩn 
-                this.Close();
-                //đang để frmMainMenu là form chính nếu để frmLogin nên đổi thành this.Close();
+        private void frmMainMenu_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            // Nếu muốn tắt hẳn chương trình luôn (không quay lại Login)
+            // Thì bắt buộc phải có dòng này để giết form Login đang ẩn
+            Application.Exit();
         }
     }
 }

@@ -31,5 +31,6 @@ app.MapControllers();
 
 // Map Hub
 app.MapHub<RoomHub>("/roomHub");
+app.MapHub<XepTauHub>("/XepTauHub");
 
 app.Run();

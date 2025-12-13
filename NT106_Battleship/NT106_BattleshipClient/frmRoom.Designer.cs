@@ -139,7 +139,7 @@
             this.pnlNenKhach.Location = new System.Drawing.Point(621, 0);
             this.pnlNenKhach.Margin = new System.Windows.Forms.Padding(0);
             this.pnlNenKhach.Name = "pnlNenKhach";
-            this.pnlNenKhach.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.pnlNenKhach.Padding = new System.Windows.Forms.Padding(8);
             this.pnlNenKhach.Size = new System.Drawing.Size(489, 284);
             this.pnlNenKhach.TabIndex = 2;
             // 
@@ -151,7 +151,7 @@
             this.pnlKhach.Location = new System.Drawing.Point(8, 8);
             this.pnlKhach.Margin = new System.Windows.Forms.Padding(0);
             this.pnlKhach.Name = "pnlKhach";
-            this.pnlKhach.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.pnlKhach.Padding = new System.Windows.Forms.Padding(8);
             this.pnlKhach.Size = new System.Drawing.Size(473, 268);
             this.pnlKhach.TabIndex = 0;
             // 
@@ -303,7 +303,7 @@
             this.pnlNenChuPhong.Location = new System.Drawing.Point(0, 0);
             this.pnlNenChuPhong.Margin = new System.Windows.Forms.Padding(0);
             this.pnlNenChuPhong.Name = "pnlNenChuPhong";
-            this.pnlNenChuPhong.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.pnlNenChuPhong.Padding = new System.Windows.Forms.Padding(8);
             this.pnlNenChuPhong.Size = new System.Drawing.Size(488, 284);
             this.pnlNenChuPhong.TabIndex = 0;
             // 
@@ -315,7 +315,7 @@
             this.pnlChuPhong.Location = new System.Drawing.Point(8, 8);
             this.pnlChuPhong.Margin = new System.Windows.Forms.Padding(0);
             this.pnlChuPhong.Name = "pnlChuPhong";
-            this.pnlChuPhong.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.pnlChuPhong.Padding = new System.Windows.Forms.Padding(8);
             this.pnlChuPhong.Size = new System.Drawing.Size(472, 268);
             this.pnlChuPhong.TabIndex = 0;
             // 
@@ -483,7 +483,7 @@
             this.pnlNenTinNhan.Location = new System.Drawing.Point(30, 217);
             this.pnlNenTinNhan.Margin = new System.Windows.Forms.Padding(30, 0, 30, 0);
             this.pnlNenTinNhan.Name = "pnlNenTinNhan";
-            this.pnlNenTinNhan.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.pnlNenTinNhan.Padding = new System.Windows.Forms.Padding(8);
             this.pnlNenTinNhan.Size = new System.Drawing.Size(73, 67);
             this.pnlNenTinNhan.TabIndex = 7;
             // 
@@ -494,7 +494,7 @@
             this.btnTinNhan.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnTinNhan.ForeColor = System.Drawing.Color.DarkOrange;
             this.btnTinNhan.Location = new System.Drawing.Point(8, 8);
-            this.btnTinNhan.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnTinNhan.Margin = new System.Windows.Forms.Padding(2);
             this.btnTinNhan.Name = "btnTinNhan";
             this.btnTinNhan.Size = new System.Drawing.Size(57, 51);
             this.btnTinNhan.TabIndex = 0;
@@ -510,7 +510,7 @@
             this.pnlNenKichThuoc.Location = new System.Drawing.Point(30, 0);
             this.pnlNenKichThuoc.Margin = new System.Windows.Forms.Padding(30, 0, 30, 0);
             this.pnlNenKichThuoc.Name = "pnlNenKichThuoc";
-            this.pnlNenKichThuoc.Padding = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.pnlNenKichThuoc.Padding = new System.Windows.Forms.Padding(8);
             this.pnlNenKichThuoc.Size = new System.Drawing.Size(73, 124);
             this.pnlNenKichThuoc.TabIndex = 0;
             // 
@@ -559,7 +559,7 @@
             "9x9",
             "10x10"});
             this.cbKichThuoc.Location = new System.Drawing.Point(2, 56);
-            this.cbKichThuoc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cbKichThuoc.Margin = new System.Windows.Forms.Padding(2);
             this.cbKichThuoc.Name = "cbKichThuoc";
             this.cbKichThuoc.Size = new System.Drawing.Size(53, 27);
             this.cbKichThuoc.TabIndex = 1;
@@ -633,7 +633,7 @@
             this.btnThoatPhongCho.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThoatPhongCho.ForeColor = System.Drawing.Color.White;
             this.btnThoatPhongCho.Location = new System.Drawing.Point(2, 2);
-            this.btnThoatPhongCho.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnThoatPhongCho.Margin = new System.Windows.Forms.Padding(2);
             this.btnThoatPhongCho.Name = "btnThoatPhongCho";
             this.btnThoatPhongCho.Size = new System.Drawing.Size(104, 48);
             this.btnThoatPhongCho.TabIndex = 1;
