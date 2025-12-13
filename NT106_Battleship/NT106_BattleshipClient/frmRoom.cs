@@ -25,7 +25,18 @@ namespace NT106_BattleshipClient
 
         public frmRoom(RoomDto room, int userId, string username)
         {
+            // Tối ưu vẽ form
+            this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint |
+                          ControlStyles.AllPaintingInWmPaint, true);
+
+            _currentUserId = GlobalData.UserId;
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+            SetUseComposited(true);
+
+
             _room = room ?? throw new ArgumentNullException(nameof(room));
             _currentUserId = userId;
             _currentUsername = username;
