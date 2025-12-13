@@ -160,15 +160,15 @@ namespace NT106_BattleshipClient
                 // Mở form phòng
                 frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
                 this.Hide();
-                roomForm.Show();
+                roomForm.ShowDialog();
+                this.Show();
+
+                await LoadRoomsFromServer();
             }
         }
 
         private void btnThoat_Click(object sender, EventArgs e)
         {
-            // Trở về menu chính
-            var mainMenu = new frmMainMenu();
-            mainMenu.Show();
             this.Close();
         }
 
@@ -179,7 +179,11 @@ namespace NT106_BattleshipClient
             frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
 
             this.Hide();
-            roomForm.Show();
+            roomForm.ShowDialog();
+
+            this.Show();
+            // Load lại danh sách phòng mới nhất
+            await LoadRoomsFromServer();
         }
 
         private void txtTimTaoPhong_Enter(object sender, EventArgs e)

@@ -112,12 +112,17 @@ namespace NT106_BattleshipClient
             // ROOM DELETED
             SignalRClient.Connection.On<int>("RoomDeleted", (deletedRoomId) =>
             {
+                MessageBox.Show($"Tín hiệu tới rồi! ID xoá: {deletedRoomId} - ID của tui: {_room.Id}");
                 if (deletedRoomId != _room.Id) return;
 
                 SafeInvoke(() =>
                 {
-                    MessageBox.Show("Phòng đã bị xoá (chủ phòng rời).");
-                    ReturnToLobby();
+                    MessageBox.Show("Chủ phòng đã rời, phòng đã đóng!");
+
+                    // Đặt cờ này để không gọi API LeaveRoom
+                    _isLeaving = true;
+
+                    this.Close();
                 });
             });
 
@@ -262,10 +267,9 @@ namespace NT106_BattleshipClient
             catch { }
         }
 
-        private async void btnThoatPhongCho_Click(object sender, EventArgs e)
+        private void btnThoatPhongCho_Click(object sender, EventArgs e)
         {
-            await LeaveRoomAsync();
-            ReturnToLobby();
+            this.Close();
         }
 
         private async void frmRoom_FormClosing(object sender, FormClosingEventArgs e)
@@ -274,19 +278,10 @@ namespace NT106_BattleshipClient
 
             e.Cancel = true;
             await LeaveRoomAsync();
-            ReturnToLobby();
-        }
 
-        private void ReturnToLobby()
-        {
-            if (!_isLeaving) return;
+            _isLeaving = true;
 
-            var lobby = new frmLobby();
-            lobby.Show();
-
-            this.FormClosing -= frmRoom_FormClosing;
-            this.Hide();
-            this.Dispose();
+            this.Close();
         }
 
         // ============================
@@ -336,11 +331,11 @@ namespace NT106_BattleshipClient
 
         private async void cbKichThuoc_SelectedIndexChanged(object sender, EventArgs e)
         {
-            /*if (!IsHost)
+            if (!IsHost)
             {
                 MessageBox.Show("Chỉ chủ phòng được đổi kích thước.");
                 return;
-            }*/ //bug chỗ này sửa sau
+            }//bug chỗ này sửa sau
 
             if (cbKichThuoc.SelectedItem != null)
             {
