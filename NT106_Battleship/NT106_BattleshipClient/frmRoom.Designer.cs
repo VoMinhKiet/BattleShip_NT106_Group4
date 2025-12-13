@@ -597,7 +597,6 @@
             this.tblTieuDe.RowCount = 2;
             this.tblTieuDe.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 53.59282F));
             this.tblTieuDe.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 46.40718F));
-            this.tblTieuDe.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tblTieuDe.Size = new System.Drawing.Size(370, 271);
             this.tblTieuDe.TabIndex = 0;
             // 
