@@ -49,7 +49,7 @@ namespace NT106_BattleshipClient
             
             this.FormBorderStyle = FormBorderStyle.None; // removes title bar
             this.WindowState = FormWindowState.Maximized; // maximize to full screen
-            this.ShowInTaskbar = false;
+            this.ShowInTaskbar = true;
             this.BackgroundImage = Properties.Resources.In_Battle_Background;
             this.BackgroundImageLayout = ImageLayout.Stretch;
             this.SetStyle(ControlStyles.DoubleBuffer |
