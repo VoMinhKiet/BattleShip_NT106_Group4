@@ -26,6 +26,8 @@ namespace NT106_BattleshipClient
         // Biến này để đánh dấu khi nào Code đang tự cập nhật UI
         private bool _isUpdatingUI = false;
 
+        private bool _isGoingToGame = false; // Cờ đánh dấu đang vào game
+
         private HubConnection _hub;
         //private TranDauDto _size;
         public int mapsize;
@@ -200,7 +202,13 @@ namespace NT106_BattleshipClient
                 case "SET_SIZE":
                     _isUpdatingUI = true;
                     if (cbKichThuoc.Items.Contains(value))
+                    {
                         cbKichThuoc.SelectedItem = value;
+
+                        if (value == "10x10") mapsize = 10;
+                        else if (value == "9x9") mapsize = 9;
+                        else if (value == "8x8") mapsize = 8;
+                    }
                     _isUpdatingUI = false;
                     break;
                 case "REQUEST_INFO":
@@ -295,9 +303,16 @@ namespace NT106_BattleshipClient
 
         private async void frmRoom_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (_isGoingToGame) return;
             if (_isLeaving) return;
 
             e.Cancel = true;
+
+            if (_hub != null)
+            {
+                try { await _hub.StopAsync(); await _hub.DisposeAsync(); } catch { }
+            }
+
             await LeaveRoomAsync();
 
             _isLeaving = true;
@@ -430,8 +445,6 @@ namespace NT106_BattleshipClient
 
             //SignalRClient.Connection.InvokeAsync("StartGame", _room.Id);
             await _hub.InvokeAsync("StartGame", _room.Id);
-
-
         }
         private async Task ConnectXepTau()
         {
@@ -446,6 +459,8 @@ namespace NT106_BattleshipClient
                 {
                     try
                     {
+                        _isGoingToGame = true;
+
                         frmShip_Sorting formShip_Sorting =
                             new frmShip_Sorting(_room, mapsize);
 

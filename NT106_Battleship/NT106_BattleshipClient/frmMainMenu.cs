@@ -39,7 +39,9 @@ namespace NT106_BattleshipClient
                                              // Đường dẫn tương đối từ thư mục bin/Debug đến file
 
             //Ẩn thanh tiêu đề nếu cần
-            // this.FormBorderStyle = FormBorderStyle.None;
+            this.FormBorderStyle = FormBorderStyle.None;
+
+            MusicManager.PlayMenuMusic();
         }
         
         private void btnHoSo_Click(object sender, EventArgs e)
@@ -101,20 +103,23 @@ namespace NT106_BattleshipClient
 
         private void btnChoiVoiMay_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            frmLobby Lobby = new frmLobby();
-            Lobby.Show();
+            using (frmLobby Lobby = new frmLobby())
+            {
+                this.Hide();
+                Lobby.ShowDialog();
+            }
+
             this.Show();
         }
 
         private void btnChoiVoiNguoi_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            frmLobby Lobby = new frmLobby();
-            // Đăng ký sự kiện: Khi nào Lobby đóng thì Menu mới hiện lên
-            Lobby.FormClosed += (s, args) => this.Show();
-
-            Lobby.Show();
+            using (frmLobby Lobby = new frmLobby())
+            {
+                this.Hide();
+                Lobby.ShowDialog();
+            }
+            this.Show();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
@@ -130,9 +135,12 @@ namespace NT106_BattleshipClient
 
         private void frmMainMenu_FormClosed(object sender, FormClosedEventArgs e)
         {
+            MusicManager.Stop();
+
             // Nếu muốn tắt hẳn chương trình luôn (không quay lại Login)
             // Thì bắt buộc phải có dòng này để giết form Login đang ẩn
-            Application.Exit();
+
+            //Application.Exit();
         }
     }
 }
