@@ -40,6 +40,8 @@ namespace NT106_BattleshipClient
 
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
+
+            MusicManager.PlayMenuMusic();
         }
         
         private void btnHoSo_Click(object sender, EventArgs e)
@@ -133,9 +135,12 @@ namespace NT106_BattleshipClient
 
         private void frmMainMenu_FormClosed(object sender, FormClosedEventArgs e)
         {
+            MusicManager.Stop();
+
             // Nếu muốn tắt hẳn chương trình luôn (không quay lại Login)
             // Thì bắt buộc phải có dòng này để giết form Login đang ẩn
-            Application.Exit();
+
+            //Application.Exit();
         }
     }
 }

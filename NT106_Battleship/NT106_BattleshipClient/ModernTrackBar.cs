@@ -49,28 +49,48 @@ namespace NT106_BattleshipClient // <<< ĐÃ KHẮC PHỤC LỖI THIẾU NAMESPA
 
         // <<< KHẮC PHỤC TRIỆT ĐỂ BẰNG CÁCH GHI ĐÈ SỰ KIỆN CHUỘT >>>
 
-        // 1. Khi nhấn chuột xuống, bắt đầu trạng thái kéo
-        protected override void OnMouseDown(MouseEventArgs mevent)
+        //// 1. Khi nhấn chuột xuống, bắt đầu trạng thái kéo
+        //protected override void OnMouseDown(MouseEventArgs mevent)
+        //{
+        //    base.OnMouseDown(mevent);
+        //    if (mevent.Button == MouseButtons.Left)
+        //    {
+        //        isDragging = true;
+        //        // Vẫn gọi Invalidate() để đảm bảo vẽ lại ngay lập tức
+        //        this.Invalidate();
+        //    }
+        //}
+
+        //// 2. Khi di chuyển chuột (chỉ cần Invalidate() để vẽ lại, OnValueChanged sẽ xử lý logic)
+        //protected override void OnMouseMove(MouseEventArgs mevent)
+        //{
+        //    base.OnMouseMove(mevent);
+        //    if (isDragging)
+        //    {
+        //        // Gọi Invalidate() để buộc vẽ lại khi đang kéo
+        //        this.Invalidate();
+        //    }
+        //}
+
+        protected override void OnMouseDown(MouseEventArgs e)
         {
-            base.OnMouseDown(mevent);
-            if (mevent.Button == MouseButtons.Left)
+            base.OnMouseDown(e);
+            if (e.Button == MouseButtons.Left)
             {
                 isDragging = true;
-                // Vẫn gọi Invalidate() để đảm bảo vẽ lại ngay lập tức
-                this.Invalidate();
+                UpdateValueFromMouse(e.X);
             }
         }
 
-        // 2. Khi di chuyển chuột (chỉ cần Invalidate() để vẽ lại, OnValueChanged sẽ xử lý logic)
-        protected override void OnMouseMove(MouseEventArgs mevent)
+        protected override void OnMouseMove(MouseEventArgs e)
         {
-            base.OnMouseMove(mevent);
+            base.OnMouseMove(e);
             if (isDragging)
             {
-                // Gọi Invalidate() để buộc vẽ lại khi đang kéo
-                this.Invalidate();
+                UpdateValueFromMouse(e.X);
             }
         }
+
 
         // 3. Khi nhả chuột, kết thúc trạng thái kéo
         protected override void OnMouseUp(MouseEventArgs mevent)
@@ -190,6 +210,20 @@ namespace NT106_BattleshipClient // <<< ĐÃ KHẮC PHỤC LỖI THIẾU NAMESPA
 
             path.CloseFigure();
             return path;
+        }
+
+        private void UpdateValueFromMouse(int mouseX)
+        {
+            int thumbSize = 14;
+            int trackWidth = Width - thumbSize;
+
+            float percent = (float)(mouseX - thumbSize / 2) / trackWidth;
+            percent = Math.Max(0f, Math.Min(1f, percent));
+
+            int newValue = Minimum + (int)((Maximum - Minimum) * percent);
+
+            if (newValue != Value)
+                Value = newValue;
         }
     }
 }
