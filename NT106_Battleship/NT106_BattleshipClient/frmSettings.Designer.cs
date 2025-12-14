@@ -43,9 +43,9 @@
             this.chkAmThanh = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.mtbNhacNen = new NT106_BattleshipClient.ModernTrackBar();
             this.mtbHieuUng = new NT106_BattleshipClient.ModernTrackBar();
+            this.label1 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.pnlNgonNgu.SuspendLayout();
@@ -246,6 +246,7 @@
             this.chkAmThanh.TabIndex = 1;
             this.chkAmThanh.Text = "Bật/Tắt âm thanh";
             this.chkAmThanh.UseVisualStyleBackColor = true;
+            this.chkAmThanh.CheckedChanged += new System.EventHandler(this.chkAmThanh_CheckedChanged);
             // 
             // label3
             // 
@@ -271,17 +272,6 @@
             this.label4.Text = "Hiệu ứng";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(20, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(330, 49);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "CÀI ĐẶT";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // mtbNhacNen
             // 
             this.mtbNhacNen.BackColor = System.Drawing.Color.Transparent;
@@ -293,6 +283,7 @@
             this.mtbNhacNen.Size = new System.Drawing.Size(316, 29);
             this.mtbNhacNen.TabIndex = 5;
             this.mtbNhacNen.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.mtbNhacNen.ValueChanged += new System.EventHandler(this.mtbNhacNen_ValueChanged);
             // 
             // mtbHieuUng
             // 
@@ -305,6 +296,17 @@
             this.mtbHieuUng.Size = new System.Drawing.Size(316, 33);
             this.mtbHieuUng.TabIndex = 6;
             this.mtbHieuUng.TickStyle = System.Windows.Forms.TickStyle.None;
+            // 
+            // label1
+            // 
+            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(20, 20);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(330, 49);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "CÀI ĐẶT";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // frmSettings
             // 

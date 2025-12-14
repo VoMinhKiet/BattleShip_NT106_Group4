@@ -21,9 +21,9 @@ namespace NT106_BattleshipClient
             _currentUserId = GlobalData.UserId;
             InitializeComponent();
 
-            // chống nháy form
-            EnableFormDoubleBuffering();
-            SetUseComposited(true);
+            //// chống nháy form
+            //EnableFormDoubleBuffering();
+            //SetUseComposited(true);
         }
 
         private async void frmLobby_Load(object sender, EventArgs e)
@@ -79,8 +79,6 @@ namespace NT106_BattleshipClient
             // Bỏ chọn ô
             dgvDanhSachPhong.ClearSelection();
             dgvDanhSachPhong.CurrentCell = null;
-
-            txtTimTaoPhong.Text = "Nhập ID hoặc tên chủ phòng";
         }
 
         private void UpdateScrollBar()
@@ -100,7 +98,6 @@ namespace NT106_BattleshipClient
                 guna2VScrollBar1.LargeChange = 1;
             }
         }
-
 
         private async Task LoadRoomsFromServer()
         {
@@ -190,6 +187,17 @@ namespace NT106_BattleshipClient
             await LoadRoomsFromServer();
         }
 
+        private void frmLobby_Shown(object sender, EventArgs e)
+        {
+            SetPlaceholder();
+        }
+
+        private void SetPlaceholder()
+        {
+            txtTimTaoPhong.Text = "Nhập ID hoặc tên chủ phòng";
+            txtTimTaoPhong.ForeColor = Color.SteelBlue;
+        }
+
         private void txtTimTaoPhong_Enter(object sender, EventArgs e)
         {
             // Placeholder
@@ -201,7 +209,10 @@ namespace NT106_BattleshipClient
         {
             // Khôi phục placeholder
             if (string.IsNullOrWhiteSpace(txtTimTaoPhong.Text))
+            {
                 txtTimTaoPhong.Text = "Nhập ID hoặc tên chủ phòng";
+                txtTimTaoPhong.ForeColor = Color.SteelBlue;
+            }
         }
 
         private void dgvDanhSachPhong_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
@@ -259,8 +270,53 @@ namespace NT106_BattleshipClient
 
 
             //SetControlDoubleBuffered(ucChatBox1);
-            SetDoubleBufferedForAllChildren(this);
+            SetDoubleBufferedForAllChildrenExceptTextBox(this);
+        }
 
+        private void SetDoubleBufferedForAllChildrenExceptTextBox(Control parent)
+        {
+            foreach (Control c in parent.Controls)
+            {
+                // BỎ QUA TextBox
+                if (c is TextBox) continue;
+
+                SetControlDoubleBuffered(c);
+
+                if (c.HasChildren)
+                    SetDoubleBufferedForAllChildrenExceptTextBox(c);
+            }
+        }
+
+        private void btnTimPhong_Click(object sender, EventArgs e)
+        {
+            string keyword = txtTimTaoPhong.Text.Trim().ToLower();
+
+            // Nếu chưa nhập gì hoặc còn placeholder → hiện lại tất cả
+            if (string.IsNullOrWhiteSpace(keyword) || keyword == "nhập id hoặc tên chủ phòng")
+            {
+                foreach (DataGridViewRow row in dgvDanhSachPhong.Rows)
+                    row.Visible = true;
+
+                UpdateScrollBar();
+                return;
+            }
+
+            foreach (DataGridViewRow row in dgvDanhSachPhong.Rows)
+            {
+                if (row.IsNewRow) continue;
+
+                string roomId = row.Cells["colID"].Value?.ToString().ToLower() ?? "";
+                string hostName = row.Cells["colTenChuPhong"].Value?.ToString().ToLower() ?? "";
+
+                // Match nếu chứa keyword
+                bool match =
+                    roomId.Contains(keyword) ||
+                    hostName.Contains(keyword);
+
+                row.Visible = match;
+            }
+
+            UpdateScrollBar();
         }
     }
 }

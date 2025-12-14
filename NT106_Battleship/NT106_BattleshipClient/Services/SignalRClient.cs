@@ -30,23 +30,25 @@ namespace NT106_BattleshipClient.Services
             _started = true;
         }
 
-        public static void RegisterHandlers(
-            Action<RoomDto> onRoomUpdated,
-            Action onRoomListUpdated,
-            Action<int> onRoomDeleted)
-        {
-            if (_handlersRegistered) return;           // Tránh đăng ký trùng
+        //NOTE: Hiện tại handlers được đăng ký trực tiếp trong từng Form.
+        // RegisterHandlers giữ lại để mở rộng sau.
+        //public static void RegisterHandlers(
+        //    Action<RoomDto> onRoomUpdated,
+        //    Action onRoomListUpdated,
+        //    Action<int> onRoomDeleted)
+        //{
+        //    if (_handlersRegistered) return;           // Tránh đăng ký trùng
 
-            // Nhận sự kiện cập nhật danh sách phòng
-            Connection.On("RoomListUpdated", onRoomListUpdated);
+        //    // Nhận sự kiện cập nhật danh sách phòng
+        //    Connection.On("RoomListUpdated", onRoomListUpdated);
 
-            // Nhận sự kiện phòng bị xoá
-            Connection.On<int>("RoomDeleted", onRoomDeleted);
+        //    // Nhận sự kiện phòng bị xoá
+        //    Connection.On<int>("RoomDeleted", onRoomDeleted);
 
-            // Nhận sự kiện phòng thay đổi
-            Connection.On<RoomDto>("RoomUpdated", onRoomUpdated);
+        //    // Nhận sự kiện phòng thay đổi
+        //    Connection.On<RoomDto>("RoomUpdated", onRoomUpdated);
 
-            _handlersRegistered = true;
-        }
+        //    _handlersRegistered = true;
+        //}
     }
 }
