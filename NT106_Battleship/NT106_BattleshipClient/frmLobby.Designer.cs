@@ -38,8 +38,8 @@
             this.tblTimTaoPhong = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.txtTimTaoPhong = new System.Windows.Forms.TextBox();
-            this.btnTimPhong = new System.Windows.Forms.Button();
             this.btnTaoPhong = new System.Windows.Forms.Button();
+            this.btnTimPhong = new System.Windows.Forms.Button();
             this.dgvDanhSachPhong = new System.Windows.Forms.DataGridView();
             this.colID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colTenChuPhong = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -134,12 +134,12 @@
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.ColumnCount = 3;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.83822F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 9.26143F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 44.90035F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 76.49123F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 5.02924F));
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 18.36257F));
             this.tableLayoutPanel2.Controls.Add(this.txtTimTaoPhong, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.btnTimPhong, 1, 0);
             this.tableLayoutPanel2.Controls.Add(this.btnTaoPhong, 2, 0);
+            this.tableLayoutPanel2.Controls.Add(this.btnTimPhong, 1, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
@@ -159,24 +159,11 @@
             this.txtTimTaoPhong.Location = new System.Drawing.Point(0, 10);
             this.txtTimTaoPhong.Margin = new System.Windows.Forms.Padding(0, 10, 0, 0);
             this.txtTimTaoPhong.Name = "txtTimTaoPhong";
-            this.txtTimTaoPhong.Size = new System.Drawing.Size(391, 31);
+            this.txtTimTaoPhong.Size = new System.Drawing.Size(654, 31);
             this.txtTimTaoPhong.TabIndex = 0;
             this.txtTimTaoPhong.Text = "Nhập ID hoặc tên chủ phòng";
             this.txtTimTaoPhong.Enter += new System.EventHandler(this.txtTimTaoPhong_Enter);
             this.txtTimTaoPhong.Leave += new System.EventHandler(this.txtTimTaoPhong_Leave);
-            // 
-            // btnTimPhong
-            // 
-            this.btnTimPhong.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnTimPhong.BackgroundImage")));
-            this.btnTimPhong.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.btnTimPhong.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnTimPhong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTimPhong.Location = new System.Drawing.Point(391, 9);
-            this.btnTimPhong.Margin = new System.Windows.Forms.Padding(0, 9, 0, 9);
-            this.btnTimPhong.Name = "btnTimPhong";
-            this.btnTimPhong.Size = new System.Drawing.Size(43, 33);
-            this.btnTimPhong.TabIndex = 1;
-            this.btnTimPhong.UseVisualStyleBackColor = true;
             // 
             // btnTaoPhong
             // 
@@ -193,6 +180,19 @@
             this.btnTaoPhong.Text = "Tạo phòng";
             this.btnTaoPhong.UseVisualStyleBackColor = false;
             this.btnTaoPhong.Click += new System.EventHandler(this.btnTaoPhong_Click);
+            // 
+            // btnTimPhong
+            // 
+            this.btnTimPhong.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("btnTimPhong.BackgroundImage")));
+            this.btnTimPhong.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnTimPhong.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTimPhong.Location = new System.Drawing.Point(654, 9);
+            this.btnTimPhong.Margin = new System.Windows.Forms.Padding(0, 9, 0, 9);
+            this.btnTimPhong.Name = "btnTimPhong";
+            this.btnTimPhong.Size = new System.Drawing.Size(43, 33);
+            this.btnTimPhong.TabIndex = 1;
+            this.btnTimPhong.UseVisualStyleBackColor = true;
+            this.btnTimPhong.Click += new System.EventHandler(this.btnTimPhong_Click);
             // 
             // dgvDanhSachPhong
             // 
@@ -380,6 +380,7 @@
             this.Name = "frmLobby";
             this.Text = "frmLobby";
             this.Load += new System.EventHandler(this.frmLobby_Load);
+            this.Shown += new System.EventHandler(this.frmLobby_Shown);
             this.pnlTimTaoPhong.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
