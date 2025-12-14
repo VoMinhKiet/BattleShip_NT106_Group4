@@ -306,7 +306,7 @@ namespace NT106_BattleshipClient
                 if (row.IsNewRow) continue;
 
                 string roomId = row.Cells["colID"].Value?.ToString().ToLower() ?? "";
-                string hostName = row.Cells["colChuPhong"].Value?.ToString().ToLower() ?? "";
+                string hostName = row.Cells["colTenChuPhong"].Value?.ToString().ToLower() ?? "";
 
                 // Match nếu chứa keyword
                 bool match =
