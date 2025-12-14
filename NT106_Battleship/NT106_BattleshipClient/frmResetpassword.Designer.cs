@@ -68,6 +68,7 @@
             this.pnlResetpassword.Name = "pnlResetpassword";
             this.pnlResetpassword.Size = new System.Drawing.Size(618, 561);
             this.pnlResetpassword.TabIndex = 0;
+            this.pnlResetpassword.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlResetpassword_Paint);
             // 
             // lblor
             // 
@@ -75,7 +76,7 @@
             this.lblor.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblor.Location = new System.Drawing.Point(169, 435);
             this.lblor.Name = "lblor";
-            this.lblor.Size = new System.Drawing.Size(29, 25);
+            this.lblor.Size = new System.Drawing.Size(23, 20);
             this.lblor.TabIndex = 12;
             this.lblor.Text = "or";
             // 
@@ -86,7 +87,7 @@
             this.linkCreateAccount.LinkColor = System.Drawing.Color.DimGray;
             this.linkCreateAccount.Location = new System.Drawing.Point(113, 460);
             this.linkCreateAccount.Name = "linkCreateAccount";
-            this.linkCreateAccount.Size = new System.Drawing.Size(155, 25);
+            this.linkCreateAccount.Size = new System.Drawing.Size(129, 20);
             this.linkCreateAccount.TabIndex = 11;
             this.linkCreateAccount.TabStop = true;
             this.linkCreateAccount.Text = "Tạo tài khoản mới";
@@ -99,7 +100,7 @@
             this.linkLogin.LinkColor = System.Drawing.Color.DimGray;
             this.linkLogin.Location = new System.Drawing.Point(113, 410);
             this.linkLogin.Name = "linkLogin";
-            this.linkLogin.Size = new System.Drawing.Size(150, 25);
+            this.linkLogin.Size = new System.Drawing.Size(124, 20);
             this.linkLogin.TabIndex = 10;
             this.linkLogin.TabStop = true;
             this.linkLogin.Text = "Trở về đăng nhập";
@@ -135,7 +136,7 @@
             this.chkShowpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkShowpassword.Location = new System.Drawing.Point(393, 274);
             this.chkShowpassword.Name = "chkShowpassword";
-            this.chkShowpassword.Size = new System.Drawing.Size(149, 29);
+            this.chkShowpassword.Size = new System.Drawing.Size(124, 24);
             this.chkShowpassword.TabIndex = 7;
             this.chkShowpassword.Text = "Hiện mật khẩu";
             this.chkShowpassword.UseVisualStyleBackColor = true;
@@ -167,7 +168,7 @@
             this.lblConfirmpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblConfirmpassword.Location = new System.Drawing.Point(93, 209);
             this.lblConfirmpassword.Name = "lblConfirmpassword";
-            this.lblConfirmpassword.Size = new System.Drawing.Size(185, 25);
+            this.lblConfirmpassword.Size = new System.Drawing.Size(154, 20);
             this.lblConfirmpassword.TabIndex = 4;
             this.lblConfirmpassword.Text = "Xác nhận lại mật khẩu";
             // 
@@ -177,7 +178,7 @@
             this.lblNewpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblNewpassword.Location = new System.Drawing.Point(93, 127);
             this.lblNewpassword.Name = "lblNewpassword";
-            this.lblNewpassword.Size = new System.Drawing.Size(170, 25);
+            this.lblNewpassword.Size = new System.Drawing.Size(140, 20);
             this.lblNewpassword.TabIndex = 3;
             this.lblNewpassword.Text = "Nhập mật khẩu mới";
             // 
@@ -187,7 +188,7 @@
             this.txtConfirmpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtConfirmpassword.Location = new System.Drawing.Point(98, 237);
             this.txtConfirmpassword.Name = "txtConfirmpassword";
-            this.txtConfirmpassword.Size = new System.Drawing.Size(444, 31);
+            this.txtConfirmpassword.Size = new System.Drawing.Size(444, 27);
             this.txtConfirmpassword.TabIndex = 2;
             // 
             // txtNewpassword
@@ -196,7 +197,7 @@
             this.txtNewpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtNewpassword.Location = new System.Drawing.Point(98, 155);
             this.txtNewpassword.Name = "txtNewpassword";
-            this.txtNewpassword.Size = new System.Drawing.Size(444, 31);
+            this.txtNewpassword.Size = new System.Drawing.Size(444, 27);
             this.txtNewpassword.TabIndex = 1;
             // 
             // lblResetpassword
@@ -205,13 +206,13 @@
             this.lblResetpassword.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblResetpassword.Location = new System.Drawing.Point(118, 30);
             this.lblResetpassword.Name = "lblResetpassword";
-            this.lblResetpassword.Size = new System.Drawing.Size(404, 54);
+            this.lblResetpassword.Size = new System.Drawing.Size(327, 45);
             this.lblResetpassword.TabIndex = 0;
             this.lblResetpassword.Text = "Tạo lại mật khẩu mới ";
             // 
             // frmResetpassword
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;

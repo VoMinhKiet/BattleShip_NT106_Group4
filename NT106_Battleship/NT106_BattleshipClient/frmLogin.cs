@@ -82,7 +82,7 @@ namespace NT106_BattleshipClient
         private void frmLogin_Load(object sender, EventArgs e)
         {
             //Ẩn thanh tiêu đề nếu cần
-            this.FormBorderStyle = FormBorderStyle.None;
+            // this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -121,5 +121,6 @@ namespace NT106_BattleshipClient
             f.Show();
             this.Hide();
         }
+
     }
 }

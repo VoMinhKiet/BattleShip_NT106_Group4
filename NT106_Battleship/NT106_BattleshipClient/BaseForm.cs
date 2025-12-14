@@ -233,5 +233,6 @@ namespace NT106_BattleshipClient
                 AttachMouseEventsRecursive(this);
             }
         }
+
     }
 }

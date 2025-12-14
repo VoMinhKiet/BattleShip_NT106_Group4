@@ -39,7 +39,7 @@ namespace NT106_BattleshipClient
                                              // Đường dẫn tương đối từ thư mục bin/Debug đến file
 
             //Ẩn thanh tiêu đề nếu cần
-            this.FormBorderStyle = FormBorderStyle.None;
+            // this.FormBorderStyle = FormBorderStyle.None;
         }
         
         private void btnHoSo_Click(object sender, EventArgs e)

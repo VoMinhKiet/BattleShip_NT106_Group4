@@ -64,6 +64,13 @@ namespace NT106_BattleshipClient
             this.Size = screen.Size;
             this.Location = new Point(0, 0);
 
+            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            this.ControlBox = true;
+            this.MinimizeBox = true;
+            this.MaximizeBox = true;
+
+            this.WindowState = FormWindowState.Normal;
+
             await UpdateRoomUIAsync(_room, firstLoad: true);
 
             try

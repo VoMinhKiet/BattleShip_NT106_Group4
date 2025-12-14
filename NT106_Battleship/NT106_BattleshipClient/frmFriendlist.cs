@@ -31,7 +31,7 @@ namespace NT106_BattleshipClient
             cbStatus.SelectedIndex = 0;
 
             //Ẩn thanh tiêu đề nếu cần
-            this.FormBorderStyle = FormBorderStyle.None;
+           // this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnExit_Click(object sender, EventArgs e)

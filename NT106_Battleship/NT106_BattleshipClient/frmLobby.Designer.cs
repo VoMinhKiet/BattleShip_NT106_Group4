@@ -73,7 +73,7 @@
             this.pnlTimTaoPhong.Margin = new System.Windows.Forms.Padding(0);
             this.pnlTimTaoPhong.Name = "pnlTimTaoPhong";
             this.pnlTimTaoPhong.Padding = new System.Windows.Forms.Padding(22, 24, 22, 24);
-            this.pnlTimTaoPhong.Size = new System.Drawing.Size(1167, 718);
+            this.pnlTimTaoPhong.Size = new System.Drawing.Size(1556, 884);
             this.pnlTimTaoPhong.TabIndex = 0;
             // 
             // panel2
@@ -287,7 +287,7 @@
             this.panel1.Location = new System.Drawing.Point(22, 24);
             this.panel1.Margin = new System.Windows.Forms.Padding(0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1123, 217);
+            this.panel1.Size = new System.Drawing.Size(1512, 217);
             this.panel1.TabIndex = 0;
             // 
             // tableLayoutPanel1
@@ -305,7 +305,7 @@
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 217F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1123, 217);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1512, 217);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tlpTieuDe
@@ -316,13 +316,13 @@
             this.tlpTieuDe.Controls.Add(this.label1, 0, 0);
             this.tlpTieuDe.Controls.Add(this.label2, 0, 1);
             this.tlpTieuDe.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpTieuDe.Location = new System.Drawing.Point(358, 0);
+            this.tlpTieuDe.Location = new System.Drawing.Point(482, 0);
             this.tlpTieuDe.Margin = new System.Windows.Forms.Padding(0);
             this.tlpTieuDe.Name = "tlpTieuDe";
             this.tlpTieuDe.RowCount = 2;
             this.tlpTieuDe.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 51.31086F));
             this.tlpTieuDe.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.68914F));
-            this.tlpTieuDe.Size = new System.Drawing.Size(351, 217);
+            this.tlpTieuDe.Size = new System.Drawing.Size(473, 217);
             this.tlpTieuDe.TabIndex = 0;
             // 
             // label1
@@ -334,7 +334,7 @@
             this.label1.Location = new System.Drawing.Point(2, 16);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 16, 2, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(347, 95);
+            this.label1.Size = new System.Drawing.Size(469, 95);
             this.label1.TabIndex = 0;
             this.label1.Text = "CHỌN";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -348,7 +348,7 @@
             this.label2.Location = new System.Drawing.Point(2, 111);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 16);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(347, 90);
+            this.label2.Size = new System.Drawing.Size(469, 90);
             this.label2.TabIndex = 1;
             this.label2.Text = "ĐỐI THỦ";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -367,8 +367,6 @@
             this.btnThoat.UseVisualStyleBackColor = false;
             this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
-            //
-            //
             // frmLobby
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);

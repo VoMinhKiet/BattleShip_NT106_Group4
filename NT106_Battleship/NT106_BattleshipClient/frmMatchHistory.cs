@@ -25,6 +25,14 @@ namespace NT106_BattleshipClient
 
         private void frmMatchHistory_Load(object sender, EventArgs e)
         {
+
+            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            this.ControlBox = true;
+            this.MinimizeBox = true;
+            this.MaximizeBox = true;
+
+            this.WindowState = FormWindowState.Normal;
+
             // Lấy kích thước màn hình chính
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
 
