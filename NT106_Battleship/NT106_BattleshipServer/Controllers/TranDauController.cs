@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NT106_BattleshipServer.Data;
+using NT106_BattleshipServer.DTOs;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -181,4 +182,38 @@ public class TranDauController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpGet("history/{userId:int}")]
+    public async Task<ActionResult<List<MatchHistoryDto>>> GetHistory(int userId)
+    {
+        var list = await (
+            from t in _db.TranDau
+            join p1 in _db.NguoiDungs on t.IdPlayer1 equals p1.Id
+            join p2 in _db.NguoiDungs on t.IdPlayer2 equals p2.Id
+            join nv1 in _db.NhanVat on t.IdNhanVat1 equals nv1.Id
+            join nv2 in _db.NhanVat on t.IdNhanVat2 equals nv2.Id
+            where t.IdPlayer1 == userId || t.IdPlayer2 == userId
+            orderby t.TimeStart descending
+            select new MatchHistoryDto
+            {
+                Id1 = p1.Id,
+                NguoiChoi1 = p1.TenDangNhap,
+                NhanVat1 = nv1.TenNhanVat,
+
+                Id2 = p2.Id,
+                NguoiChoi2 = p2.TenDangNhap,
+                NhanVat2 = nv2.TenNhanVat,
+
+                KetQua =
+                    t.Winner == null ? "Chưa kết thúc" :
+                    t.Winner == userId ? "Thắng" : "Thua",
+
+                TimeStart = t.TimeStart,
+                TimeEnd = t.TimeEnd
+            }
+        ).AsNoTracking().ToListAsync();
+
+        return Ok(list);
+    }
+
 }

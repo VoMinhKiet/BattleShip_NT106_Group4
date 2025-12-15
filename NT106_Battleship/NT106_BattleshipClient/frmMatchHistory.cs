@@ -1,7 +1,9 @@
-﻿using System;
+﻿using NT106_BattleshipClient.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -23,7 +25,10 @@ namespace NT106_BattleshipClient
 
         }
 
-        private void frmMatchHistory_Load(object sender, EventArgs e)
+        private TranDauApiService _tranDauService = new TranDauApiService();
+
+
+        private async void frmMatchHistory_Load(object sender, EventArgs e)
         {
 
             this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
@@ -40,31 +45,6 @@ namespace NT106_BattleshipClient
             this.Size = screen.Size;
             this.Location = new Point(0, 0);
 
-            // Dữ liệu mẫu để hiển thị trong dgvBangXepHang
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Elizabeth Swan", "2", "PlayerB", "Captain Kid", "Thắng", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
-            dgvLichSuDau.Rows.Add("1", "PlayerA", "Hector Barbossa", "2", "PlayerB", "Will Turner", "Thua", "00:00:00 01/01/2222", "00:00:00 01/01/3333");
 
             // Đồng bộ scrollbar
             guna2VScrollBar1.Scroll += (s, E) =>
@@ -81,7 +61,37 @@ namespace NT106_BattleshipClient
             // Chỉ hiện scrollbar nếu cần
             guna2VScrollBar1.Visible = totalRows >= visibleRows;
             guna2VScrollBar1.Maximum = totalRows;
+
+
+            await LoadMatchHistoryAsync();
         }
+
+        private async Task LoadMatchHistoryAsync()
+        {
+            int userId = GlobalData.UserId;
+
+            var list = await _tranDauService.GetHistoryAsync(userId);
+
+            dgvLichSuDau.Rows.Clear();
+
+            foreach (var m in list)
+            {
+                dgvLichSuDau.Rows.Add(
+                    m.Id1,
+                    m.NguoiChoi1,
+                    m.NhanVat1,
+
+                    m.Id2,
+                    m.NguoiChoi2,
+                    m.NhanVat2,
+
+                    m.KetQua,
+                    m.TimeStart.ToString("dd/MM/yyyy HH:mm"),
+                    m.TimeEnd?.ToString("dd/MM/yyyy HH:mm") ?? ""
+                );
+            }
+        }
+
 
         private void dgvLichSuDau_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
