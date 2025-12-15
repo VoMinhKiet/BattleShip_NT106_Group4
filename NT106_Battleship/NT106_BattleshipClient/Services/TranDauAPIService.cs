@@ -1,5 +1,6 @@
 ﻿using NT106_BattleshipClient.Models;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -66,5 +67,22 @@ namespace NT106_BattleshipClient.Services
             var resp = await _http.PostAsync($"api/trandau/end/{id}", null);
             return resp.IsSuccessStatusCode;
         }
+
+        // GET api/trandau/history/{userId}
+        public async Task<List<MatchHistoryDto>> GetHistoryAsync(int userId)
+        {
+            var resp = await _http.GetAsync($"api/trandau/history/{userId}");
+            resp.EnsureSuccessStatusCode();
+
+            string json = await resp.Content.ReadAsStringAsync();
+
+            return JsonSerializer.Deserialize<List<MatchHistoryDto>>(
+                json,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+        }
+
     }
 }
