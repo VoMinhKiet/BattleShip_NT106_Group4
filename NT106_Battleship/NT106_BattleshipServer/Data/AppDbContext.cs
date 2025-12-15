@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NT106_BattleshipServer.Data.Entities;
 using NT106_BattleshipServer.Models;
 
 namespace NT106_BattleshipServer.Data
@@ -12,6 +13,7 @@ namespace NT106_BattleshipServer.Data
         public DbSet<NguoiDung> NguoiDungs { get; set; }
         public DbSet<Room> Rooms { get; set; }
         // (sau này bạn có thể thêm các bảng khác như PhongCho, TranDau,...)
+        public DbSet<TinNhan> TinNhans { get; set; }
         public DbSet<TranDau> TranDau { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

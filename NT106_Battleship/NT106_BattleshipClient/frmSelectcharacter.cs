@@ -150,7 +150,12 @@ namespace NT106_BattleshipClient
         private void frmSelectcharacter_Load(object sender, EventArgs e)
         {
             //Ẩn thanh tiêu đề nếu cần
-            this.FormBorderStyle = FormBorderStyle.None;
+          //  this.FormBorderStyle = FormBorderStyle.None;
+        }
+
+        private void picJS_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

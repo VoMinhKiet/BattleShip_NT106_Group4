@@ -72,7 +72,7 @@ namespace NT106_BattleshipClient
         private void frmResetpassword_Load(object sender, EventArgs e)
         {
             //Ẩn thanh tiêu đề nếu cần
-            this.FormBorderStyle = FormBorderStyle.None;
+         //   this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private async void btnReset_Click(object sender, EventArgs e)
@@ -129,6 +129,11 @@ namespace NT106_BattleshipClient
             {
                 MessageBox.Show("Lỗi kết nối API: " + ex.Message);
             }
+        }
+
+        private void pnlResetpassword_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

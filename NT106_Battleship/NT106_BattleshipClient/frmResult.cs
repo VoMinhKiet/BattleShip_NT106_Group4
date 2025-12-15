@@ -102,7 +102,12 @@ namespace NT106_BattleshipClient
 
         private void frmResult_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            this.ControlBox = true;
+            this.MinimizeBox = true;
+            this.MaximizeBox = true;
 
+            this.WindowState = FormWindowState.Normal;
         }
     }
 }

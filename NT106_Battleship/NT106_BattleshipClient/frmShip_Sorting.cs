@@ -235,6 +235,13 @@ namespace NT106_BattleshipClient
             leftTime = TimeSpan.FromSeconds(45);
             rightTime = TimeSpan.FromSeconds(45);
 
+            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            this.ControlBox = true;
+            this.MinimizeBox = true;
+            this.MaximizeBox = true;
+
+            this.WindowState = FormWindowState.Normal;
+
             timer = new Timer();
             timer.Interval = 1000; // every second
             timer.Tick += Timer_Tick;

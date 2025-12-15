@@ -30,7 +30,7 @@ namespace NT106_BattleshipClient.Services
             var resp = await _http.GetAsync("api/room/list");
 
             // Ném lỗi nếu mã status không phải 200 OK
-            resp.EnsureSuccessStatusCode();
+                resp.EnsureSuccessStatusCode();
 
             string json = await resp.Content.ReadAsStringAsync();
 

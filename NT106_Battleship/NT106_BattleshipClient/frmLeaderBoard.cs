@@ -22,7 +22,7 @@ namespace NT106_BattleshipClient
 
         private void frmLeaderBoard_Load(object sender, EventArgs e)
         {
-            this.FormBorderStyle = FormBorderStyle.None;
+          //  this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnThoat_Click(object sender, EventArgs e)

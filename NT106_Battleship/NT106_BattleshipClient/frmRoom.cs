@@ -34,7 +34,18 @@ namespace NT106_BattleshipClient
 
         public frmRoom(RoomDto room, int userId, string username)
         {
+            // Tối ưu vẽ form
+            this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint |
+                          ControlStyles.AllPaintingInWmPaint, true);
+
+            _currentUserId = GlobalData.UserId;
             InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+            SetUseComposited(true);
+
+
             _room = room ?? throw new ArgumentNullException(nameof(room));
             _currentUserId = userId;
             _currentUsername = username;
@@ -54,6 +65,13 @@ namespace NT106_BattleshipClient
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
             this.Size = screen.Size;
             this.Location = new Point(0, 0);
+
+            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            this.ControlBox = true;
+            this.MinimizeBox = true;
+            this.MaximizeBox = true;
+
+            this.WindowState = FormWindowState.Normal;
 
             await UpdateRoomUIAsync(_room, firstLoad: true);
 
@@ -305,11 +323,18 @@ namespace NT106_BattleshipClient
         // ============================
         // Chat + chọn nhân vật
         // ============================
-
-        private void btnTinNhan_Click(object sender, EventArgs e)
+        private ucChatBox _chatBox;
+        private async void btnTinNhan_Click(object sender, EventArgs e)
         {
-            ucChatBox1.Visible = !ucChatBox1.Visible;
-            if (ucChatBox1.Visible) ucChatBox1.BringToFront();
+            if (_chatBox == null)
+            {
+                _chatBox = new ucChatBox(_room.Id);
+                this.Controls.Add(_chatBox);
+                await _chatBox.ConnectAsync();
+            }
+
+            _chatBox.BringToFront();
+            _chatBox.Visible = !_chatBox.Visible;
         }
 
         private async void btnNVChuPhong_Click(object sender, EventArgs e)
@@ -458,6 +483,11 @@ namespace NT106_BattleshipClient
 
             await _hub.StartAsync();
             await _hub.InvokeAsync("JoinRoom", _room.Id);
+        }
+
+        private void pnlNenTinNhan_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

@@ -80,6 +80,7 @@
             this.pnlSignup.Name = "pnlSignup";
             this.pnlSignup.Size = new System.Drawing.Size(632, 653);
             this.pnlSignup.TabIndex = 0;
+            this.pnlSignup.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlSignup_Paint);
             // 
             // picConfirmpassword
             // 
@@ -129,7 +130,7 @@
             this.linkForgotPassword.LinkColor = System.Drawing.Color.DimGray;
             this.linkForgotPassword.Location = new System.Drawing.Point(425, 525);
             this.linkForgotPassword.Name = "linkForgotPassword";
-            this.linkForgotPassword.Size = new System.Drawing.Size(134, 25);
+            this.linkForgotPassword.Size = new System.Drawing.Size(109, 20);
             this.linkForgotPassword.TabIndex = 13;
             this.linkForgotPassword.TabStop = true;
             this.linkForgotPassword.Text = "Quên mật khẩu";
@@ -155,7 +156,7 @@
             this.linkLogin.LinkColor = System.Drawing.Color.DimGray;
             this.linkLogin.Location = new System.Drawing.Point(141, 525);
             this.linkLogin.Name = "linkLogin";
-            this.linkLogin.Size = new System.Drawing.Size(150, 25);
+            this.linkLogin.Size = new System.Drawing.Size(124, 20);
             this.linkLogin.TabIndex = 11;
             this.linkLogin.TabStop = true;
             this.linkLogin.Text = "Trở về đăng nhập";
@@ -180,7 +181,7 @@
             this.chkShowpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkShowpassword.Location = new System.Drawing.Point(439, 400);
             this.chkShowpassword.Name = "chkShowpassword";
-            this.chkShowpassword.Size = new System.Drawing.Size(149, 29);
+            this.chkShowpassword.Size = new System.Drawing.Size(124, 24);
             this.chkShowpassword.TabIndex = 9;
             this.chkShowpassword.Text = "Hiện mật khẩu";
             this.chkShowpassword.UseVisualStyleBackColor = true;
@@ -192,7 +193,7 @@
             this.lblConfirmpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblConfirmpassword.Location = new System.Drawing.Point(106, 335);
             this.lblConfirmpassword.Name = "lblConfirmpassword";
-            this.lblConfirmpassword.Size = new System.Drawing.Size(185, 25);
+            this.lblConfirmpassword.Size = new System.Drawing.Size(154, 20);
             this.lblConfirmpassword.TabIndex = 8;
             this.lblConfirmpassword.Text = "Xác nhận lại mật khẩu";
             // 
@@ -202,7 +203,7 @@
             this.lblPassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPassword.Location = new System.Drawing.Point(106, 255);
             this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(86, 25);
+            this.lblPassword.Size = new System.Drawing.Size(70, 20);
             this.lblPassword.TabIndex = 7;
             this.lblPassword.Text = "Mật khẩu";
             // 
@@ -212,7 +213,7 @@
             this.lblEmail.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEmail.Location = new System.Drawing.Point(106, 176);
             this.lblEmail.Name = "lblEmail";
-            this.lblEmail.Size = new System.Drawing.Size(54, 25);
+            this.lblEmail.Size = new System.Drawing.Size(46, 20);
             this.lblEmail.TabIndex = 6;
             this.lblEmail.Text = "Email";
             // 
@@ -222,7 +223,7 @@
             this.lblUsername.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblUsername.Location = new System.Drawing.Point(106, 97);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(137, 25);
+            this.lblUsername.Size = new System.Drawing.Size(113, 20);
             this.lblUsername.TabIndex = 5;
             this.lblUsername.Text = "Tên người dùng";
             // 
@@ -232,7 +233,7 @@
             this.txtConfirmpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtConfirmpassword.Location = new System.Drawing.Point(111, 363);
             this.txtConfirmpassword.Name = "txtConfirmpassword";
-            this.txtConfirmpassword.Size = new System.Drawing.Size(477, 31);
+            this.txtConfirmpassword.Size = new System.Drawing.Size(477, 27);
             this.txtConfirmpassword.TabIndex = 4;
             // 
             // txtPassword
@@ -241,7 +242,7 @@
             this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtPassword.Location = new System.Drawing.Point(111, 283);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(477, 31);
+            this.txtPassword.Size = new System.Drawing.Size(477, 27);
             this.txtPassword.TabIndex = 3;
             // 
             // txtEmail
@@ -250,7 +251,7 @@
             this.txtEmail.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtEmail.Location = new System.Drawing.Point(111, 204);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(477, 31);
+            this.txtEmail.Size = new System.Drawing.Size(477, 27);
             this.txtEmail.TabIndex = 2;
             // 
             // txtUsername
@@ -259,7 +260,7 @@
             this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtUsername.Location = new System.Drawing.Point(111, 125);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(477, 31);
+            this.txtUsername.Size = new System.Drawing.Size(477, 27);
             this.txtUsername.TabIndex = 1;
             // 
             // lblSignup
@@ -268,13 +269,13 @@
             this.lblSignup.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblSignup.Location = new System.Drawing.Point(242, 9);
             this.lblSignup.Name = "lblSignup";
-            this.lblSignup.Size = new System.Drawing.Size(159, 54);
+            this.lblSignup.Size = new System.Drawing.Size(128, 45);
             this.lblSignup.TabIndex = 0;
             this.lblSignup.Text = "Đăng kí";
             // 
             // frmSignup
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;

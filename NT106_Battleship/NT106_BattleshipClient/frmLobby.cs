@@ -28,6 +28,14 @@ namespace NT106_BattleshipClient
 
         private async void frmLobby_Load(object sender, EventArgs e)
         {
+
+            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            this.ControlBox = true;
+            this.MinimizeBox = true;
+            this.MaximizeBox = true;
+
+            this.WindowState = FormWindowState.Normal;
+
             // Fullscreen
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
             this.Size = screen.Size;

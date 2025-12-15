@@ -121,7 +121,7 @@
             this.lblDescribe.AutoSize = true;
             this.lblDescribe.Location = new System.Drawing.Point(0, 4);
             this.lblDescribe.Name = "lblDescribe";
-            this.lblDescribe.Size = new System.Drawing.Size(134, 20);
+            this.lblDescribe.Size = new System.Drawing.Size(108, 15);
             this.lblDescribe.TabIndex = 2;
             this.lblDescribe.Text = "BATTLESHIP GAME";
             // 
@@ -190,6 +190,7 @@
             this.picJS.Size = new System.Drawing.Size(188, 302);
             this.picJS.TabIndex = 20;
             this.picJS.TabStop = false;
+            this.picJS.Click += new System.EventHandler(this.picJS_Click);
             // 
             // picWT
             // 
@@ -323,7 +324,7 @@
             this.lblCharJS.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCharJS.Location = new System.Drawing.Point(671, 359);
             this.lblCharJS.Name = "lblCharJS";
-            this.lblCharJS.Size = new System.Drawing.Size(115, 25);
+            this.lblCharJS.Size = new System.Drawing.Size(95, 20);
             this.lblCharJS.TabIndex = 8;
             this.lblCharJS.Text = "Jack Sparrow";
             // 
@@ -333,7 +334,7 @@
             this.lblCharWT.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCharWT.Location = new System.Drawing.Point(483, 359);
             this.lblCharWT.Name = "lblCharWT";
-            this.lblCharWT.Size = new System.Drawing.Size(96, 25);
+            this.lblCharWT.Size = new System.Drawing.Size(81, 20);
             this.lblCharWT.TabIndex = 7;
             this.lblCharWT.Text = "Will Turner";
             // 
@@ -343,7 +344,7 @@
             this.lblCharHB.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCharHB.Location = new System.Drawing.Point(257, 359);
             this.lblCharHB.Name = "lblCharHB";
-            this.lblCharHB.Size = new System.Drawing.Size(142, 25);
+            this.lblCharHB.Size = new System.Drawing.Size(118, 20);
             this.lblCharHB.TabIndex = 6;
             this.lblCharHB.Text = "Hector Barbossa";
             // 
@@ -353,7 +354,7 @@
             this.lblCharES.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCharES.Location = new System.Drawing.Point(47, 359);
             this.lblCharES.Name = "lblCharES";
-            this.lblCharES.Size = new System.Drawing.Size(139, 25);
+            this.lblCharES.Size = new System.Drawing.Size(117, 20);
             this.lblCharES.TabIndex = 5;
             this.lblCharES.Text = "Elizabeth Swann";
             // 
@@ -363,13 +364,13 @@
             this.lblCharacterlist.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblCharacterlist.Location = new System.Drawing.Point(238, 0);
             this.lblCharacterlist.Name = "lblCharacterlist";
-            this.lblCharacterlist.Size = new System.Drawing.Size(350, 41);
+            this.lblCharacterlist.Size = new System.Drawing.Size(285, 32);
             this.lblCharacterlist.TabIndex = 0;
             this.lblCharacterlist.Text = "Danh sách chọn nhân vật";
             // 
             // frmSelectcharacter
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
