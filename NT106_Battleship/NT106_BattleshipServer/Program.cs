@@ -24,7 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
@@ -32,5 +32,6 @@ app.MapControllers();
 // Map Hub
 app.MapHub<RoomHub>("/roomHub");
 app.MapHub<XepTauHub>("/XepTauHub");
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

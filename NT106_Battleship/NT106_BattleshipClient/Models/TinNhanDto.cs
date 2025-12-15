@@ -1,0 +1,18 @@
+﻿using System;
+
+namespace NT106_BattleshipClient.Models
+{
+    public class TinNhanDto
+    {
+
+        public int IdPhongCho { get; set; }
+
+        public int IdNguoiDung { get; set; }
+
+        public string TenNguoiDung { get; set; } = "";
+
+        public string NoiDung { get; set; } = "";
+
+        public DateTime ThoiGian { get; set; } = DateTime.Now;
+    }
+}

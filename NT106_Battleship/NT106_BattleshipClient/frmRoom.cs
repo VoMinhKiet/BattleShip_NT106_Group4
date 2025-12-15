@@ -324,10 +324,20 @@ namespace NT106_BattleshipClient
         // Chat + chọn nhân vật
         // ============================
 
-        private void btnTinNhan_Click(object sender, EventArgs e)
+        private async void btnTinNhan_Click(object sender, EventArgs e)
         {
+            if (ucChatBox1 == null)
+            {
+                ucChatBox1 = new ucChatBox(_room.Id);
+                ucChatBox1.Dock = DockStyle.Fill;
+                Controls.Add(ucChatBox1);
+
+                await ucChatBox1.ConnectAsync(); // 👈 BẮT BUỘC
+            }
+
             ucChatBox1.Visible = !ucChatBox1.Visible;
-            if (ucChatBox1.Visible) ucChatBox1.BringToFront();
+            if (ucChatBox1.Visible)
+                ucChatBox1.BringToFront();
         }
 
         private async void btnNVChuPhong_Click(object sender, EventArgs e)
