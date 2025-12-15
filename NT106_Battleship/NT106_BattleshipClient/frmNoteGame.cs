@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
@@ -86,7 +79,7 @@ namespace NT106_BattleshipClient
 ⚓══════════════════════════════════════════════════════════════⚓";
 
             //Ẩn thanh tiêu đề nếu cần
-           // this.FormBorderStyle = FormBorderStyle.None;
+            // this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnExit_Click(object sender, EventArgs e)

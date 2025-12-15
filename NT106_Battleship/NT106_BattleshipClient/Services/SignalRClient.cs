@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
-using System;
 using System.Threading.Tasks;
-using NT106_BattleshipClient.Models;
 
 namespace NT106_BattleshipClient.Services
 {

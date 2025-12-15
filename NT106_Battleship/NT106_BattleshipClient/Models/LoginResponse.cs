@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace NT106_BattleshipClient.Models
+﻿namespace NT106_BattleshipClient.Models
 {
     public class LoginResponse
     {

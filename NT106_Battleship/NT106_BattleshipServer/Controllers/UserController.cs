@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NT106_BattleshipServer.Data;
-using NT106_BattleshipServer.Models;
 
 namespace NT106_BattleshipServer.Controllers
 {

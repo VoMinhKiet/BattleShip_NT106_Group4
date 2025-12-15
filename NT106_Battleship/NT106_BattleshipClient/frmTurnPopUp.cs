@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
@@ -38,8 +32,8 @@ namespace NT106_BattleshipClient
                 this.TransparencyKey = Color.Red;
             }
 
-                // Optional: keep it always on top
-                this.TopMost = true;
+            // Optional: keep it always on top
+            this.TopMost = true;
 
             // Optional: don't show on taskbar
             this.ShowInTaskbar = false;

@@ -47,8 +47,8 @@ CREATE TABLE TranDau
 	Id INT IDENTITY(1,1) NOT NULL,
 	IdPlayer1 INT NOT NULL,
 	IdPlayer2 INT NOT NULL,
-	IdNhanVat1 INT NOT NULL,
-	IdNhanVat2 INT NOT NULL,
+	TenNV1 NVARCHAR(50) NOT NULL,
+	TenNV2 NVARCHAR(50) NOT NULL,
 	KichThuoc INT NOT NULL
 		CONSTRAINT CK_TranDau_KichThuoc CHECK
 			(KichThuoc IN (8, 9, 10)),
@@ -64,9 +64,9 @@ CREATE TABLE TranDau
 	CONSTRAINT FK_TranDau_NguoiDung_Player2
 		FOREIGN KEY (IdPlayer2) REFERENCES NguoiDung(Id),
 	CONSTRAINT FK_TranDau_NhanVat_NhanVat1
-		FOREIGN KEY (IdNhanVat1) REFERENCES NhanVat(Id),
+		FOREIGN KEY (TenNV1) REFERENCES NhanVat(TenNhanVat),
 	CONSTRAINT FK_TranDau_NhanVat_NhanVat2
-		FOREIGN KEY (IdNhanVat2) REFERENCES NhanVat(Id),
+		FOREIGN KEY (TenNV2) REFERENCES NhanVat(TenNhanVat),
 	CONSTRAINT FK_TranDau_NguoiDung_Winner
 		FOREIGN KEY (Winner) REFERENCES NguoiDung(Id),
 	CONSTRAINT FK_TranDau_PhongCho_IdPhongCho

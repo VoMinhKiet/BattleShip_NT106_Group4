@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace NT106_BattleshipClient
 {
@@ -31,7 +23,7 @@ namespace NT106_BattleshipClient
             cbStatus.SelectedIndex = 0;
 
             //Ẩn thanh tiêu đề nếu cần
-           // this.FormBorderStyle = FormBorderStyle.None;
+            // this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -70,7 +62,7 @@ namespace NT106_BattleshipClient
 
             SetControlDoubleBuffered(lvFriendlist);
 
-           
+
             SetDoubleBufferedForAllChildren(this);
         }
     }

@@ -15,6 +15,8 @@ namespace NT106_BattleshipServer.Data
         // (sau này bạn có thể thêm các bảng khác như PhongCho, TranDau,...)
         public DbSet<TinNhan> TinNhans { get; set; }
         public DbSet<TranDau> TranDau { get; set; }
+        public DbSet<NhanVat> NhanVat { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

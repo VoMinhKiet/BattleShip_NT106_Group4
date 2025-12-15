@@ -1,11 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO; 
-using System.Media; 
-using System.Windows.Forms;
+using System.IO;
 using System.Reflection; //đang test 
+using System.Windows.Forms;
 
 
 namespace NT106_BattleshipClient
@@ -25,7 +23,7 @@ namespace NT106_BattleshipClient
         {
             InitializeComponent();
 
-           
+
         }
         protected override void OnLoad(EventArgs e)
         {
@@ -76,7 +74,7 @@ namespace NT106_BattleshipClient
             }
         }
 
-    
+
         protected void SetDoubleBufferedForAllChildren(Control parent, bool enabled = true)
         {
             if (parent == null) return;
@@ -214,14 +212,14 @@ namespace NT106_BattleshipClient
                     clickSoundPlayer.Stop();
                     clickSoundPlayer.Play();
                 }*/
-            }   
+            }
         }
 
         protected virtual void OnControlMouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left && cursorDefault != null)
             {
-                this.Cursor = cursorDefault; 
+                this.Cursor = cursorDefault;
             }
         }
 

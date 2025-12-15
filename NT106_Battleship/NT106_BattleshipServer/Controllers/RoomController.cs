@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using NT106_BattleshipServer.Data;
-using NT106_BattleshipServer.Models;
 using NT106_BattleshipServer.Hubs;
+using NT106_BattleshipServer.Models;
 
 namespace NT106_BattleshipServer.Controllers
 {
