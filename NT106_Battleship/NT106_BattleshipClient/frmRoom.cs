@@ -323,21 +323,18 @@ namespace NT106_BattleshipClient
         // ============================
         // Chat + chọn nhân vật
         // ============================
-
+        private ucChatBox _chatBox;
         private async void btnTinNhan_Click(object sender, EventArgs e)
         {
-            if (ucChatBox1 == null)
+            if (_chatBox == null)
             {
-                ucChatBox1 = new ucChatBox(_room.Id);
-                ucChatBox1.Dock = DockStyle.Fill;
-                Controls.Add(ucChatBox1);
-
-                await ucChatBox1.ConnectAsync(); // 👈 BẮT BUỘC
+                _chatBox = new ucChatBox(_room.Id);
+                this.Controls.Add(_chatBox);
+                await _chatBox.ConnectAsync();
             }
 
-            ucChatBox1.Visible = !ucChatBox1.Visible;
-            if (ucChatBox1.Visible)
-                ucChatBox1.BringToFront();
+            _chatBox.BringToFront();
+            _chatBox.Visible = !_chatBox.Visible;
         }
 
         private async void btnNVChuPhong_Click(object sender, EventArgs e)
@@ -486,6 +483,11 @@ namespace NT106_BattleshipClient
 
             await _hub.StartAsync();
             await _hub.InvokeAsync("JoinRoom", _room.Id);
+        }
+
+        private void pnlNenTinNhan_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

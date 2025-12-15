@@ -229,4 +229,4 @@ ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'pl
 
 ALTER TABLE PhongCho DROP COLUMN TenChuPhong
 
-SELECT * FROM NguoiDung
+SELECT * FROM TinNhan

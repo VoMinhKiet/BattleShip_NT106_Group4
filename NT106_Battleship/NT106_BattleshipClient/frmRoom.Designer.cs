@@ -486,6 +486,7 @@
             this.pnlNenTinNhan.Padding = new System.Windows.Forms.Padding(8);
             this.pnlNenTinNhan.Size = new System.Drawing.Size(73, 67);
             this.pnlNenTinNhan.TabIndex = 7;
+            this.pnlNenTinNhan.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlNenTinNhan_Paint);
             // 
             // btnTinNhan
             // 

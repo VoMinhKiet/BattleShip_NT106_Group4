@@ -44,7 +44,7 @@
             this.pnlNhapLieu.Controls.Add(this.btnGui);
             this.pnlNhapLieu.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pnlNhapLieu.Location = new System.Drawing.Point(0, 348);
-            this.pnlNhapLieu.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pnlNhapLieu.Margin = new System.Windows.Forms.Padding(2);
             this.pnlNhapLieu.Name = "pnlNhapLieu";
             this.pnlNhapLieu.Size = new System.Drawing.Size(625, 81);
             this.pnlNhapLieu.TabIndex = 0;
@@ -55,7 +55,7 @@
             this.txtTinNhan.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtTinNhan.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTinNhan.Location = new System.Drawing.Point(13, 2);
-            this.txtTinNhan.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.txtTinNhan.Margin = new System.Windows.Forms.Padding(2);
             this.txtTinNhan.Multiline = true;
             this.txtTinNhan.Name = "txtTinNhan";
             this.txtTinNhan.Size = new System.Drawing.Size(469, 79);
@@ -68,7 +68,7 @@
             this.btnGui.Font = new System.Drawing.Font("Segoe UI", 19.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnGui.ForeColor = System.Drawing.SystemColors.ControlText;
             this.btnGui.Location = new System.Drawing.Point(516, 17);
-            this.btnGui.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnGui.Margin = new System.Windows.Forms.Padding(2);
             this.btnGui.Name = "btnGui";
             this.btnGui.Size = new System.Drawing.Size(101, 45);
             this.btnGui.TabIndex = 0;
@@ -81,8 +81,9 @@
             this.rtbLichSuTinNhan.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.rtbLichSuTinNhan.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.rtbLichSuTinNhan.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.rtbLichSuTinNhan.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbLichSuTinNhan.Location = new System.Drawing.Point(20, 18);
-            this.rtbLichSuTinNhan.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rtbLichSuTinNhan.Margin = new System.Windows.Forms.Padding(2);
             this.rtbLichSuTinNhan.Name = "rtbLichSuTinNhan";
             this.rtbLichSuTinNhan.ReadOnly = true;
             this.rtbLichSuTinNhan.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
@@ -98,7 +99,7 @@
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.Controls.Add(this.rtbLichSuTinNhan);
             this.Controls.Add(this.pnlNhapLieu);
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ucChatBox";
             this.Size = new System.Drawing.Size(625, 429);
             this.pnlNhapLieu.ResumeLayout(false);

@@ -15,66 +15,49 @@ namespace NT106_BattleshipClient
 {
     public partial class ucChatBox : UserControl
     {
-        private readonly int _roomId;
         private HubConnection _hub;
-        private bool _connected = false;
+        private int _roomId;
+        private bool _connected;
         public ucChatBox()
         {
             InitializeComponent();
-            btnGui.Enabled = false;
         }
 
         public ucChatBox(int roomId) : this()
         {
             _roomId = roomId;
+            btnGui.Enabled = false;
         }
         public async Task ConnectAsync()
         {
             if (_connected) return;
 
-            try
-            {
-                _hub = new HubConnectionBuilder()
-                    .WithUrl("http://localhost:5074/chatHub")
-                    .WithAutomaticReconnect()
-                    .Build();
+            _hub = new HubConnectionBuilder()
+                .WithUrl("http://localhost:5074/chatHub")
+                .WithAutomaticReconnect()
+                .Build();
 
-                // Nhận tin nhắn
-                _hub.On<TinNhanDto>("NhanTinNhan", tin =>
+            _hub.On<TinNhanDto>("NhanTinNhan", tin =>
+            {
+                BeginInvoke(new Action(() =>
                 {
-                    if (IsDisposed) return;
+                    AppendMessage($"[{tin.TenNguoiDung}] : {tin.NoiDung}");
+                }));
+            });
 
-                    BeginInvoke(new Action(() =>
-                    {
-                        AppendMessage($"[{tin.TenNguoiDung}] : {tin.NoiDung}");
-                    }));
-                });
+            await _hub.StartAsync();
+            await _hub.InvokeAsync("JoinPhong", _roomId);
 
-                await _hub.StartAsync();
-
-                // Join phòng chat
-                await _hub.InvokeAsync("JoinPhong", _roomId);
-
-                _connected = true;
-                btnGui.Enabled = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "Không kết nối được ChatHub:\n" + ex.Message,
-                    "CHAT ERROR",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-            }
+            _connected = true;
+            btnGui.Enabled = true;
         }
 
         private async void btnGui_Click(object sender, EventArgs e)
         {
-            if (!_connected || _hub == null) return;
+            if (!_connected) return;
             if (string.IsNullOrWhiteSpace(txtTinNhan.Text)) return;
 
-            var tinNhan = new TinNhanDto
+            var dto = new TinNhanDto
             {
                 IdPhongCho = _roomId,
                 IdNguoiDung = GlobalData.UserId,
@@ -82,32 +65,19 @@ namespace NT106_BattleshipClient
                 NoiDung = txtTinNhan.Text.Trim()
             };
 
-            await _hub.InvokeAsync("GuiTinNhan", tinNhan);
+            await _hub.InvokeAsync("GuiTinNhan", dto);
 
             txtTinNhan.Clear();
-            txtTinNhan.Focus();
 
         }
-        private void AppendMessage(string message)
+        private void AppendMessage(string msg)
         {
             if (rtbLichSuTinNhan.TextLength > 0)
                 rtbLichSuTinNhan.AppendText(Environment.NewLine);
 
-            rtbLichSuTinNhan.AppendText(message);
-            rtbLichSuTinNhan.SelectionStart = rtbLichSuTinNhan.Text.Length;
+            rtbLichSuTinNhan.AppendText(msg);
             rtbLichSuTinNhan.ScrollToCaret();
         }
 
-        public async Task DisconnectAsync()
-        {
-            if (_hub != null)
-            {
-                await _hub.StopAsync();
-                await _hub.DisposeAsync();
-                _hub = null;
-            }
-
-            _connected = false;
-        }
     }
 }
