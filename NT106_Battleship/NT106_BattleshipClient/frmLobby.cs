@@ -9,8 +9,12 @@ namespace NT106_BattleshipClient
 {
     public partial class frmLobby : BaseForm
     {
+        public event Action LobbyReadyToShow;
+
         private readonly RoomApiService _roomApi = new RoomApiService();
         private int _currentUserId;
+        private bool _signalRInitialized = false;
+
 
         public frmLobby()
         {
@@ -24,47 +28,58 @@ namespace NT106_BattleshipClient
             //// chống nháy form
             //EnableFormDoubleBuffering();
             //SetUseComposited(true);
+
+            this.Opacity = 0; // ẨN FORM ĐI
         }
 
         private async void frmLobby_Load(object sender, EventArgs e)
         {
+            this.SuspendLayout();
 
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
-            this.ControlBox = true;
-            this.MinimizeBox = true;
-            this.MaximizeBox = true;
-
-            this.WindowState = FormWindowState.Normal;
-
-            // Fullscreen
-            Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-            this.Size = screen.Size;
-            this.Location = new Point(0, 0);
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
 
             // Kết nối SignalR
-            try
+            if (!_signalRInitialized)
             {
-                SignalRClient.Init("http://localhost:5074/roomHub");
-                await SignalRClient.StartAsync();
-
-                // Reload danh sách phòng khi server báo thay đổi
-                SignalRClient.Connection.On("RoomListUpdated", () =>
+                try
                 {
-                    this.BeginInvoke(new Action(async () => { await LoadRoomsFromServer(); }));
-                });
+                    SignalRClient.Init("http://localhost:5074/roomHub");
+                    await SignalRClient.StartAsync();
 
-                // Khi phòng bị xoá
-                SignalRClient.Connection.On<int>("RoomDeleted", (roomId) =>
+                    SignalRClient.Connection.On("RoomListUpdated", () =>
+                    {
+                        if (this.IsDisposed) return;
+
+                        this.BeginInvoke(new Action(async () =>
+                        {
+                            await LoadRoomsFromServer();
+                        }));
+                    });
+
+                    SignalRClient.Connection.On<int>("RoomDeleted", (_) =>
+                    {
+                        if (this.IsDisposed) return;
+
+                        this.BeginInvoke(new Action(async () =>
+                        {
+                            await LoadRoomsFromServer();
+                        }));
+                    });
+
+                    _signalRInitialized = true;
+                }
+                catch (Exception ex)
                 {
-                    this.BeginInvoke(new Action(async () => { await LoadRoomsFromServer(); }));
-                });
+                    MessageBox.Show(ex.Message);
+                }
             }
-            catch
-            {
-                // Bỏ qua nếu SignalR lỗi
-            }
+
+
 
             await LoadRoomsFromServer();
+
+            this.ResumeLayout(true);
 
             label1.Focus();
 
@@ -109,11 +124,16 @@ namespace NT106_BattleshipClient
 
         private async Task LoadRoomsFromServer()
         {
+            dgvDanhSachPhong.SuspendLayout();
+
             dgvDanhSachPhong.Rows.Clear();
 
             var rooms = await _roomApi.GetRoomsAsync();
-            if (rooms == null) return;
-
+            if (rooms == null)
+            {
+                dgvDanhSachPhong.ResumeLayout();
+                return;
+            }
             foreach (var r in rooms)
             {
                 string trangThaiHienThi = "";
@@ -137,6 +157,8 @@ namespace NT106_BattleshipClient
             }
 
             UpdateScrollBar();
+
+            dgvDanhSachPhong.ResumeLayout();
         }
 
         private async void dgvDanhSachPhong_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -165,13 +187,16 @@ namespace NT106_BattleshipClient
                 // Mở form phòng
                 using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
                 {
-                    this.Hide();
+                    roomForm.RoomReadyToShow += () =>
+                    {
+                        this.Hide();
+                    };
                     roomForm.ShowDialog();
                 }
 
                 this.Show();
 
-                await LoadRoomsFromServer();
+                //await LoadRoomsFromServer();
             }
         }
 
@@ -186,18 +211,28 @@ namespace NT106_BattleshipClient
             var room = await _roomApi.CreateRoomAsync(_currentUserId);
             using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
             {
-                this.Hide();
+                roomForm.RoomReadyToShow += () =>
+                {
+                    this.Hide();
+                };
                 roomForm.ShowDialog();
             }
 
             this.Show();
             // Load lại danh sách phòng mới nhất
-            await LoadRoomsFromServer();
+            //await LoadRoomsFromServer();
         }
 
         private void frmLobby_Shown(object sender, EventArgs e)
         {
             SetPlaceholder();
+
+            // Cho WinForms vẽ xong hết rồi mới hiện
+            this.BeginInvoke(new Action(() =>
+            {
+                LobbyReadyToShow?.Invoke(); // Báo hiệu cho bên gọi biết là Lobby đã sẵn sàng hiển thị
+                this.Opacity = 1; //HIỆN FORM
+            }));
         }
 
         private void SetPlaceholder()
@@ -268,14 +303,11 @@ namespace NT106_BattleshipClient
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+            SetControlDoubleBuffered(dgvDanhSachPhong);
             SetControlDoubleBuffered(pnlTimTaoPhong);
             SetControlDoubleBuffered(panel2);
             SetControlDoubleBuffered(panel3);
             SetControlDoubleBuffered(panel1);
-
-
-            SetControlDoubleBuffered(dgvDanhSachPhong);
-
 
             //SetControlDoubleBuffered(ucChatBox1);
             SetDoubleBufferedForAllChildrenExceptTextBox(this);

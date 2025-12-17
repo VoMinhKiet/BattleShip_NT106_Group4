@@ -15,7 +15,7 @@ namespace NT106_BattleshipClient
 {
     public partial class frmMainMenu : BaseForm
     {
-       
+
         public frmMainMenu()
         {
             this.SetStyle(ControlStyles.DoubleBuffer |
@@ -105,7 +105,11 @@ namespace NT106_BattleshipClient
         {
             using (frmLobby Lobby = new frmLobby())
             {
-                this.Hide();
+                Lobby.LobbyReadyToShow += () =>
+                {
+                    this.Hide();
+                };
+                //this.Hide();
                 Lobby.ShowDialog();
             }
 
@@ -116,10 +120,30 @@ namespace NT106_BattleshipClient
         {
             using (frmLobby Lobby = new frmLobby())
             {
-                this.Hide();
+                Lobby.LobbyReadyToShow += () =>
+                {
+                    this.Hide();
+                };
+                //this.Hide();
                 Lobby.ShowDialog();
             }
             this.Show();
+
+            //frmLobby lobby = new frmLobby();
+
+            //// Khi lobby sắp hiện → mới hide MainMenu
+            //lobby.LobbyReadyToShow += () =>
+            //{
+            //    this.Hide();
+            //};
+
+            //// Khi lobby đóng → MainMenu hiện lại
+            //lobby.FormClosed += (s, args) =>
+            //{
+            //    this.Show();
+            //};
+
+            //lobby.Show();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
