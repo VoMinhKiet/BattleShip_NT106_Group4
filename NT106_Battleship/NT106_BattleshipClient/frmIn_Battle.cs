@@ -843,5 +843,18 @@ namespace NT106_BattleshipClient
             _currentMatch.TimeEnd = DateTime.Now;
 
         }
+        private ucChatBox _chatBox;
+        private async void btnTinNhan_Click(object sender, EventArgs e)
+        {
+            if (_chatBox == null)
+            {
+                _chatBox = new ucChatBox(_room.Id);
+                this.Controls.Add(_chatBox);
+                await _chatBox.ConnectAsync();
+            }
+
+            _chatBox.BringToFront();
+            _chatBox.Visible = !_chatBox.Visible;
+        }
     }
 }
