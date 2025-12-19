@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using NT106_BattleshipClient.Models;
+using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.AspNetCore.SignalR.Client;
-using NT106_BattleshipClient.Models;
 
 
 namespace NT106_BattleshipClient

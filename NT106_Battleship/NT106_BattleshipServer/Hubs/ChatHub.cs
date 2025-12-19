@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using NT106_BattleshipServer.DTOs;
 using NT106_BattleshipServer.Data;
 using NT106_BattleshipServer.Data.Entities;
+using NT106_BattleshipServer.DTOs;
 
 namespace NT106_BattleshipServer.Hubs
 {

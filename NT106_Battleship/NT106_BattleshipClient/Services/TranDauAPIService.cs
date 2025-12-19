@@ -39,7 +39,7 @@ namespace NT106_BattleshipClient.Services
         }
 
         // POST api/trandau/create
-        public async Task<TranDauDto> CreateMatchAsync(TaoTranDauRequest req)
+        /*public async Task<TranDauDto> CreateMatchAsync(TaoTranDauRequest req)
         {
             string json = JsonSerializer.Serialize(req);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -49,7 +49,7 @@ namespace NT106_BattleshipClient.Services
 
             string respJson = await resp.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<TranDauDto>(respJson);
-        }
+        }*/
 
         // PATCH api/trandau/winner/{id}
         public async Task<bool> UpdateWinnerAsync(int id, int winnerId)

@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.Extensions.Logging;
 using NT106_BattleshipClient.Models;
 using NT106_BattleshipClient.Services;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static Guna.UI2.Native.WinApi;
 
 namespace NT106_BattleshipClient
 {
@@ -14,6 +14,7 @@ namespace NT106_BattleshipClient
         public event Action RoomReadyToShow;
 
         private RoomDto _room;
+        private TranDauDto _currentMatch;
         private int _currentUserId;
         private string _currentUsername;
         private string _myCharacterName = "";
@@ -31,9 +32,8 @@ namespace NT106_BattleshipClient
         private bool _isGoingToGame = false; // Cờ đánh dấu đang vào game
 
         private HubConnection _hub;
-        //private TranDauDto _size;
         public int mapsize;
-
+        public int roomId;
         public frmRoom(RoomDto room, int userId, string username)
         {
             // Tối ưu vẽ form
@@ -51,7 +51,8 @@ namespace NT106_BattleshipClient
             _room = room ?? throw new ArgumentNullException(nameof(room));
             _currentUserId = userId;
             _currentUsername = username;
-
+            roomId = _room.Id;
+            _currentMatch = new TranDauDto();
             this.FormClosing += frmRoom_FormClosing;
 
             _isHost = (_currentUserId == room.IDChuPhong);
@@ -94,7 +95,8 @@ namespace NT106_BattleshipClient
                 }
             }
             catch { }
-            await ConnectXepTau();
+            await XepTauConnector();
+            GameStartedHandler();
         }
 
         private void frmRoom_Shown(object sender, EventArgs e)
@@ -357,6 +359,7 @@ namespace NT106_BattleshipClient
             if (f.ShowDialog() == DialogResult.OK)
             {
                 string ten = f.TenNhanVatDaChon;
+                _currentMatch.TenNV1 = ten;
                 _myCharacterName = ten;
                 lblNhanVatChuPhong.Text = "Nhân vật: " + ten;
                 await SendUISyncCommand("SET_HOST_CHAR", ten);
@@ -375,6 +378,7 @@ namespace NT106_BattleshipClient
             if (f.ShowDialog() == DialogResult.OK)
             {
                 string ten = f.TenNhanVatDaChon;
+                _currentMatch.TenNV2 = ten;
                 lblNhanVatKhach.Text = "Nhân vật: " + ten;
                 await SendUISyncCommand("SET_GUEST_CHAR", ten);
             }
@@ -458,40 +462,44 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            //SignalRClient.Connection.InvokeAsync("StartGame", _room.Id);
             await _hub.InvokeAsync("StartGame", _room.Id);
         }
-        private async Task ConnectXepTau()
+        private async Task XepTauConnector()
         {
+            if (_hub != null)
+                return;
+
             _hub = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5074/xepTauHub")
                 .WithAutomaticReconnect()
-                .Build();
-
-            _hub.On("GameStarted", () =>
-            {
-                this.Invoke(new Action(() =>
+                .ConfigureLogging(logging =>
                 {
-                    try
-                    {
-                        _isGoingToGame = true;
-
-                        frmShip_Sorting formShip_Sorting =
-                            new frmShip_Sorting(_room, mapsize);
-
-                        formShip_Sorting.Show();
-                        this.Hide();
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show(ex.ToString(), "ERROR");
-                    }
-                }));
-            });
+                    logging.SetMinimumLevel(LogLevel.Debug);
+                    //logging.AddDebug();
+                })
+                .Build();
 
             await _hub.StartAsync();
             await _hub.InvokeAsync("JoinRoom", _room.Id);
         }
+
+        private void GameStartedHandler()
+        {
+            _hub.Remove("GameStarted");
+
+            _hub.On("GameStarted", () =>
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    _isGoingToGame = true;
+
+                    this.Hide();
+                    frmShip_Sorting frmShip_Sorting = new frmShip_Sorting(_room, _currentMatch, mapsize, _hub);
+                    frmShip_Sorting.ShowDialog();
+                }));
+            });
+        }
+
 
         private void pnlNenTinNhan_Paint(object sender, PaintEventArgs e)
         {

@@ -329,7 +329,6 @@
     <Compile Include="Models\MatchHistoryDto.cs" />
     <Compile Include="Models\LoginResponse.cs" />
     <Compile Include="Models\RoomDto.cs" />
-    <Compile Include="Models\TaoTranDauRequest.cs" />
     <Compile Include="Models\TinNhanDto.cs" />
     <Compile Include="Models\TranDauDto.cs" />
     <Compile Include="Models\UserDto.cs" />

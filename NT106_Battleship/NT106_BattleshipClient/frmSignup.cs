@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
 
 namespace NT106_BattleshipClient
 {
@@ -159,7 +153,7 @@ namespace NT106_BattleshipClient
         private void frmSignup_Load(object sender, EventArgs e)
         {
             //Ẩn thanh tiêu đề nếu cần
-          //  this.FormBorderStyle = FormBorderStyle.None;
+            //  this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void pnlSignup_Paint(object sender, PaintEventArgs e)

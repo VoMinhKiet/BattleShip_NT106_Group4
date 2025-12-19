@@ -1,5 +1,4 @@
-﻿using BCrypt.Net;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NT106_BattleshipServer.Data;
 using NT106_BattleshipServer.Models;

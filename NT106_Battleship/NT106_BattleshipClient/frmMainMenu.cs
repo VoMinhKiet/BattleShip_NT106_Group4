@@ -1,14 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Media;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
@@ -43,7 +34,7 @@ namespace NT106_BattleshipClient
 
             MusicManager.PlayMenuMusic();
         }
-        
+
         private void btnHoSo_Click(object sender, EventArgs e)
         {
             frmUserInfo MoForm = new frmUserInfo();
@@ -59,10 +50,10 @@ namespace NT106_BattleshipClient
         MessageBoxIcon.Question
     );
 
-            
+
             if (result == DialogResult.Yes)
             {
-                Application.Exit(); 
+                Application.Exit();
             }
         }
 
@@ -72,7 +63,7 @@ namespace NT106_BattleshipClient
             frmLeaderBoard formBXH = new frmLeaderBoard();
 
             formBXH.Show();
-  
+
 
 
         }

@@ -1,13 +1,11 @@
-﻿using NT106_BattleshipClient.Models;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using NT106_BattleshipClient.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 //using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
@@ -22,6 +20,8 @@ namespace NT106_BattleshipClient
         private bool isLeftTimerRunning = true;
         private bool isRightTimerRunning = true;
         private Button[,] playerGrid = new Button[10, 10];
+        private int[,] ShipPos = new int[11, 11]; //1 = có tàu ở ô [x, y]
+        private int[,] otherShipPos = new int[11, 11];
         private bool dragging = false;
         private Point dragCursor;
         private Point dragStart;
@@ -29,24 +29,19 @@ namespace NT106_BattleshipClient
         private const int SnapDistance = 40;
         private enum ShipOrientation { Vertical, Horizontal };
         private Dictionary<Panel, ShipOrientation> shipOrientation = new Dictionary<Panel, ShipOrientation>();
-        public int rowIndex5;
-        public int rowIndex4;
-        public int rowIndex3;
-        public int rowIndex2;
-        public int colIndex5;
-        public int colIndex4;
-        public int colIndex3;
-        public int colIndex2;
-        public int Ori5;
-        public int Ori4;
-        public int Ori3;
-        public int Ori2;
+        int[] rowIndices = new int[6];
+        int[] colIndices = new int[6];
+        int[] orientations = new int[6]; // 1 = Vertical, 0 = Horizontal
+        int[] otherRow = new int[6];
+        int[] otherCol = new int[6];
+        int[] otherOrientations = new int[6];
         public int mapsize;
-        private readonly TranDauDto _size;
+        private readonly TranDauDto _currentMatch;
         private readonly RoomDto _room;
-        public frmShip_Sorting(RoomDto room, int size)
+        private HubConnection _hub;
+        public frmShip_Sorting(RoomDto room, TranDauDto currentMatch, int size, HubConnection hub)
         {
-            
+
             this.FormBorderStyle = FormBorderStyle.None; // removes title bar
             this.WindowState = FormWindowState.Maximized; // maximize to full screen
             this.ShowInTaskbar = true;
@@ -60,6 +55,8 @@ namespace NT106_BattleshipClient
 
             mapsize = size;
             _room = room;
+            _hub = hub;
+            _currentMatch = currentMatch ?? throw new ArgumentNullException(nameof(currentMatch));
             this.KeyPreview = true;               //check nhấn bàn phím
             this.KeyDown += FrmShip_Sorting_KeyDown;
 
@@ -204,7 +201,8 @@ namespace NT106_BattleshipClient
             if (GlobalData.Username == _room.TenKhach)
             {
                 txtRightName.Text = _room.TenChuPhong; //will be changed with a variable storing player's name
-            } else txtRightName.Text = _room.TenKhach;
+            }
+            else txtRightName.Text = _room.TenKhach;
             topPanel.Controls.Add(txtRightName);
 
             // Ready Button
@@ -246,12 +244,14 @@ namespace NT106_BattleshipClient
             timer.Interval = 1000; // every second
             timer.Tick += Timer_Tick;
             timer.Start(); // start automatically
+            ReceivedShipPositions();
+            ReadyUpFlag();
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (isLeftTimerRunning)
             {
-                if(leftTime.TotalSeconds <= 0)
+                if (leftTime.TotalSeconds <= 0)
                 {
                     lblLeftTimer.Text = "Ready";
                     isLeftTimerRunning = false;
@@ -261,7 +261,7 @@ namespace NT106_BattleshipClient
             }
             if (isRightTimerRunning)
             {
-                if(rightTime.TotalSeconds <= 0)
+                if (rightTime.TotalSeconds <= 0)
                 {
                     lblRightTimer.Text = "Ready";
                     isRightTimerRunning = false;
@@ -270,20 +270,39 @@ namespace NT106_BattleshipClient
                 lblRightTimer.Text = rightTime.ToString(@"ss");
             }
         }
-        private void BtnReady_Click(object sender, EventArgs e)
+        private async void BtnReady_Click(object sender, EventArgs e)
         {
             isLeftTimerRunning = false;
+
             Button btn = sender as Button;
-            lblLeftTimer.Text = "Ready";
-            //adding ships check
-
-            //frmIn_Battle here 
-            /*frmIn_Battle in_battle= new frmIn_Battle();
-            in_battle.Show();
-            this.Close();*/
-            
-
-
+            //tinh toan ship pos cua minh
+            for (int size = 2; size <= 5; size++)
+            {
+                if (orientations[size] == 1)
+                {
+                    for (int i = rowIndices[size]; i <= rowIndices[size] + size - 1; i++)
+                    {
+                        ShipPos[i, colIndices[size]] = 1;
+                    }
+                }
+                else
+                {
+                    for (int i = colIndices[size]; i <= colIndices[size] + size - 1; i++)
+                    {
+                        ShipPos[rowIndices[size], i] = 1;
+                    }
+                }
+            }
+            //MessageBox.Show($"Character {_currentMatch.TenNV1} , {_currentMatch.TenNV2}" );
+            lblLeftTimer.Text = "Ready!";
+            await _hub.SendAsync("SendShipPos", _room.Id, rowIndices, colIndices, orientations);
+            await _hub.InvokeAsync("UpdateReadyFlag", _room.Id, true);
+            if (isRightTimerRunning == false)
+            {
+                frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, _hub);
+                frmIn_Battle.Show();
+                this.Hide();
+            }
         }
 
         public void CreateGrid(Panel container, Button[,] grid)
@@ -317,30 +336,6 @@ namespace NT106_BattleshipClient
                 }
             }
         }
-        /*private void GridButton_Click(object sender, EventArgs e)
-        {
-            Button btn = sender as Button;
-            Point pos = (Point)btn.Tag;
-
-            int row = pos.X;
-            int col = pos.Y;
-            // Check if already placed
-            if (isLeftTimerRunning != true)
-            {
-                return;
-            }
-            else if (playerShips[row, col]) //need a way to index ship location. database require
-            {
-                MessageBox.Show("Ship already placed here!");// need to fix again as click anywhere = close
-                return;
-            }
-            else
-            {
-                // Place the ship
-                playerShips[row, col] = true;
-                btn.BackColor = Color.Lime; // indicate ship visually
-            }
-        }*/
         private void BtnAutoSort_Click(object sender, EventArgs e)
         {
             //autosort function here
@@ -348,7 +343,7 @@ namespace NT106_BattleshipClient
 
         private Panel CreateShip(int col, int row, int offset)
         {
-            int size = 500 / mapsize; 
+            int size = 500 / mapsize;
             Panel ship = new Panel();
             ship.Size = new Size(col * size, row * size);
             ship.Left = this.ClientSize.Width - 92 - -500 + size * offset;
@@ -394,12 +389,11 @@ namespace NT106_BattleshipClient
         //Handler nhấn phím R
         private void FrmShip_Sorting_KeyDown(object sender, KeyEventArgs e)
         {
-            // Use the same dragging flag and panel you already have
+
             if (dragging && dragPanel != null && e.KeyCode == Keys.R)
             {
                 RotateShip(dragPanel);
 
-                // Reset drag start so movement continues smoothly after rotation
                 dragCursor = Cursor.Position;
                 dragStart = dragPanel.Location;
 
@@ -501,65 +495,16 @@ namespace NT106_BattleshipClient
             // snap, magic and stuffs
             ship.Left = formNearest.X - first.Left;
             ship.Top = formNearest.Y - first.Top;
-            if (ship.Controls.Count == 5)
+
+            //Phần này lấy vị trí từng tàu
+            int size = ship.Controls.Count;
+            if (size >= 2 && size <= 5)
             {
-                // Lấy button được snap
                 Point snappedMatrixPos = (Point)nearest.Tag;
 
-                // Lấy cụ thể x và y, truyền vào index
-                rowIndex5 = snappedMatrixPos.X;   // row in playerGrid
-                colIndex5 = snappedMatrixPos.Y;   // column in playerGrid
-                if (shipOrientation[ship] == ShipOrientation.Vertical)
-                {
-                    Ori5 = 1;
-                }
-                else Ori5 = 0;
-
-            }
-            if (ship.Controls.Count == 4)
-            {
-                // Lấy button được snap
-                Point snappedMatrixPos = (Point)nearest.Tag;
-
-                // Lấy cụ thể x và y, truyền vào index
-                rowIndex4 = snappedMatrixPos.X;   // row in playerGrid
-                colIndex4 = snappedMatrixPos.Y;   // column in playerGrid
-                if (shipOrientation[ship] == ShipOrientation.Vertical)
-                {
-                    Ori4 = 1;
-                }
-                else Ori4 = 0;
-
-            }
-            if (ship.Controls.Count == 3)
-            {
-                // Lấy button được snap
-                Point snappedMatrixPos = (Point)nearest.Tag;
-
-                // Lấy cụ thể x và y, truyền vào index
-                rowIndex3 = snappedMatrixPos.X;   // row in playerGrid
-                colIndex3 = snappedMatrixPos.Y;   // column in playerGrid
-                if (shipOrientation[ship] == ShipOrientation.Vertical)
-                {
-                    Ori3 = 1;
-                }
-                else Ori3 = 0;
-
-            }
-            if (ship.Controls.Count == 2)
-            {
-                // Lấy button được snap
-                Point snappedMatrixPos = (Point)nearest.Tag;
-
-                // Lấy cụ thể x và y, truyền vào index
-                rowIndex2 = snappedMatrixPos.X;   // row in playerGrid
-                colIndex2 = snappedMatrixPos.Y;   // column in playerGrid
-                if (shipOrientation[ship] == ShipOrientation.Vertical)
-                {
-                    Ori2 = 1;
-                }
-                else Ori2 = 0;
-
+                rowIndices[size] = snappedMatrixPos.X;
+                colIndices[size] = snappedMatrixPos.Y;
+                orientations[size] = (shipOrientation[ship] == ShipOrientation.Vertical) ? 1 : 0;
             }
         }
         //Xoay tàu
@@ -601,8 +546,59 @@ namespace NT106_BattleshipClient
                     btn.Top = i * size;
                 }
             }
-            
+
         }
+        private void ReceivedShipPositions()
+        {
+            _hub.On<int[], int[], int[]>("ReceivedShips", (rows, cols, oris) =>
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    // tinh toan ship pos cua doi thu nhan ve
+                    for (int size = 2; size <= 5; size++)
+                    {
+                        if (oris[size] == 1)
+                        {
+                            for (int i = rows[size]; i <= rows[size] + size - 1; i++)
+                            {
+                                otherShipPos[i, cols[size]] = 1;
+                            }
+                        }
+                        else
+                        {
+                            for (int i = cols[size]; i <= cols[size] + size - 1; i++)
+                            {
+                                otherShipPos[rows[size], i] = 1;
+                            }
+                        }
+                    }
+                }));
+            });
+        }
+        private void ReadyUpFlag()
+        {
+            _hub.On<bool>("ReceiveReadyFlag", (flag) =>
+            {
+                this.BeginInvoke(new Action(() =>
+                {
+                    isRightTimerRunning = false;
+                    lblRightTimer.Text = "Ready!";
+                    if (isLeftTimerRunning == false)
+                    {
+
+                        frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, _hub);
+                        frmIn_Battle.Show();
+                        this.Hide();
+                        
+                        
+                        
+
+                    }
+                }));
+            });
+        }
+
+
         private void frmShip_Sorting_Load_1(object sender, EventArgs e)
         {
 

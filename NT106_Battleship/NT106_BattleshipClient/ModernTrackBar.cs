@@ -1,8 +1,8 @@
 ﻿using System;
+using System.ComponentModel; // Cần thiết cho Designer
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.ComponentModel; // Cần thiết cho Designer
 
 namespace NT106_BattleshipClient // <<< ĐÃ KHẮC PHỤC LỖI THIẾU NAMESPACE
 {
