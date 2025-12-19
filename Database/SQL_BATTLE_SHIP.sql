@@ -230,3 +230,13 @@ ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'pl
 ALTER TABLE PhongCho DROP COLUMN TenChuPhong
 
 SELECT * FROM TinNhan
+
+ALTER TABLE BangXepHang
+DROP CONSTRAINT DF_BangXepHang_BacRank;
+
+ALTER TABLE BangXepHang
+DROP CONSTRAINT CK_BangXepHang_BacRank;
+ALTER TABLE BangXepHang
+DROP COLUMN BacRank;
+
+

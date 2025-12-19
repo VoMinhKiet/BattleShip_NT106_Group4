@@ -21,6 +21,8 @@ namespace NT106_BattleshipClient
 
         private void frmMainMenu_Load(object sender, EventArgs e)
         {
+            lblXinChao.Text = $"Xin chào {GlobalData.Username}";
+
             // Lấy kích thước màn hình chính
             Rectangle screen = Screen.PrimaryScreen.WorkingArea;
 
