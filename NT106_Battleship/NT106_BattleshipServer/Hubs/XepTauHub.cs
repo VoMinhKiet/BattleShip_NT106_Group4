@@ -37,9 +37,6 @@ namespace NT106_BattleshipServer.Hubs
         }
         public async Task Turn(int roomId, bool turnIsHost)
         {
-            // persist the turn state for the room
-            _roomTurn.AddOrUpdate(roomId, turnIsHost, (k, v) => turnIsHost);
-
             // broadcast to others in group
             await Clients.Group($"room-{roomId}").SendAsync("Turn", turnIsHost);
         }

@@ -300,9 +300,8 @@ namespace NT106_BattleshipClient
             if (isRightTimerRunning == false)
             {
                 frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, _hub);
-                this.Hide();
-                this.BeginInvoke((Action)(() => this.Close()));
                 frmIn_Battle.Show();
+                this.Hide();
             }
         }
 
@@ -588,9 +587,10 @@ namespace NT106_BattleshipClient
                     {
 
                         frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, _hub);
-                        this.Hide();
-                        this.BeginInvoke((Action)(() => this.Close()));
                         frmIn_Battle.Show();
+                        this.Hide();
+                        
+                        
                         
 
                     }

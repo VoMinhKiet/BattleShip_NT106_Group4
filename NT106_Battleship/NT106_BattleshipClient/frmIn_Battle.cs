@@ -37,7 +37,7 @@ namespace NT106_BattleshipClient
         private readonly RoomDto _room;
         private HubConnection _hub;
         private bool _turnPopupOpen = false;
-
+        int random = new Random().Next(0, 2);       
 
 
         public frmIn_Battle(int[,] ShipPos, int[,] otherShipPos, RoomDto room, TranDauDto currentMatch, int size, HubConnection hub)
@@ -120,35 +120,17 @@ namespace NT106_BattleshipClient
             btnSkill.Top = pnlOpponentGrid.Bottom; // below your grid panel
             btnSkill.Click += BtnSkill_Click;
             this.Controls.Add(btnSkill);
-            _ = InitializeAsync();
-            
+            DecideTurn();
+            //ReceiveTurn();
+            ReceiveHit();
         }
-        private async Task InitializeAsync()
-        {
-            if (_hub == null) return;
-
-            // ensure connection started earlier by caller; join group first
-            try
-            {
-                await _hub.InvokeAsync("JoinRoom", _room.Id);
-            }
-            catch
-            {
-                // fail-safe: continue, but log in debug if needed
-            }
-
-            // register handler before querying canonical state
-            ReceiveTurn();
-
-            // fetch canonical state and apply it
-            await SubscribeAndSyncTurnAsync();
+        
+           
 
             // register other handlers (hits)
-            ReceiveHit();
+            
 
-            // now it's safe for host to decide/start turn
-            DecideTurn();
-        }
+            // now it's safe for host to decide/start tur
         private void FrmIn_Battle_KeyDown(object sender, KeyEventArgs e)
         {
             // Toggle orientation when user presses 'R' (no UI indicator required)
@@ -157,10 +139,9 @@ namespace NT106_BattleshipClient
                 _ElizabethSwannSkillOrientationRow = !_ElizabethSwannSkillOrientationRow;
             }
         }
-        private void ReceiveTurn()
+        /*private void ReceiveTurn()
         {
-            // register once and safely marshal to UI thread
-            if (_hub == null) return;
+            _hub.Remove("Turn");
 
             _hub.On<bool>("Turn", (isHostTurn) =>
             {
@@ -169,9 +150,9 @@ namespace NT106_BattleshipClient
                 else
                     HandleTurnMessage(isHostTurn);
             });
-        }
+        }*/
 
-        private void HandleTurnMessage(bool isHostTurn)
+        /*private void HandleTurnMessage(bool isHostTurn)
         {
             // prevent multiple concurrent popups / handle reuse errors
             if (_turnPopupOpen) return;
@@ -196,13 +177,14 @@ namespace NT106_BattleshipClient
                 _turnPopupOpen = false;
             }
         }
+        */
 
-        private async Task SubscribeAndSyncTurnAsync()
+        /* private async Task SubscribeAndSyncTurnAsync()
         {
             if (_hub == null) return;
 
             // register handler immediately (so server pushes won't be missed)
-            ReceiveTurn();
+            //ReceiveTurn();
 
             // query server for the current turn state (server keeps canonical state)
             try
@@ -216,10 +198,9 @@ namespace NT106_BattleshipClient
             {
                 //bat loi exception hoac log lai tuy y 
             }
-        }
+        } */
         public async void DecideTurn()
         {
-            int random = new Random().Next(0, 2);
             if (random == 0 && _isHost)
             {
                 isYourTurn = true;
@@ -234,18 +215,21 @@ namespace NT106_BattleshipClient
                 using (var p = new frmTurnPopUp("Opponent Turn!")) p.ShowDialog(this);
                 isRightTimerRunning = true;
             }
-
-            // ensure client subscribes only once to avoid duplicate popups / handle conflicts
-            if (!_turnHandlerRegistered && _hub != null && !_isHost)
+            if(!_isHost)
             {
-                _turnHandlerRegistered = true;
                 _hub.On<bool>("Turn", (isHostTurn) =>
                 {
-                    // marshal to UI thread safely
-                    if (this.IsHandleCreated && this.InvokeRequired)
-                        this.BeginInvoke(new Action(() => HandleTurnMessage(isHostTurn)));
-                    else
-                        HandleTurnMessage(isHostTurn);
+                    isYourTurn = !isHostTurn;
+                    if (isYourTurn == true)
+                    {
+                        isRightTimerRunning = false;
+                        isLeftTimerRunning = true;
+                    }
+                    if (isYourTurn == false)
+                    {
+                        isLeftTimerRunning = false;
+                        isRightTimerRunning = true;
+                    }
                 });
             }
         }
@@ -419,7 +403,7 @@ namespace NT106_BattleshipClient
                 }
             }
         }
-        private async void GridButton_Click(object sender, EventArgs e)
+        /*private async void GridButton_Click(object sender, EventArgs e)
         {
             var btn = sender as Button;
             if (btn == null) return;
@@ -444,8 +428,8 @@ namespace NT106_BattleshipClient
             }
 
             await HandleShotAsync(pos.X, pos.Y);
-        }
-        private async Task HandleShotAsync(int row, int col, bool suppressTurnSwitch = false)
+        }*/
+       /*private async Task HandleShotAsync(int row, int col, bool suppressTurnSwitch = false)
         {
             // bounds
             if (row < 0 || col < 0 || row >= opponentGrid.GetLength(0) || col >= opponentGrid.GetLength(1))
@@ -488,11 +472,11 @@ namespace NT106_BattleshipClient
             }
             else
             {
-                //if (!suppressTurnSwitch)
-                    await TurnSwitchAsync();
+                if (!suppressTurnSwitch)
+                TurnSwitch();
             }
-        }
-        public void ElizabethSwann(int row, int col)
+        }*/
+        /*public void ElizabethSwann(int row, int col)
         {
             // marshal to UI thread and run the async sequence
             if (this.IsHandleCreated && this.InvokeRequired)
@@ -503,9 +487,9 @@ namespace NT106_BattleshipClient
             {
                 _ = ElizabethSwannAsync(row, col);
             }
-        }
+        }*/
 
-        private async Task ElizabethSwannAsync(int row, int col)
+        /*private async Task ElizabethSwannAsync(int row, int col)
         {
             if (!isYourTurn) return;
 
@@ -535,10 +519,10 @@ namespace NT106_BattleshipClient
             }
 
             // Always switch turn after using the skill (regardless of hit/miss)
-            await TurnSwitchAsync();
-        }
+            TurnSwitch();
+        }*/
 
-        public void HectorBarbossa(int row, int col)
+        /*public void HectorBarbossa(int row, int col)
         {
             if (this.IsHandleCreated && this.InvokeRequired)
             {
@@ -548,8 +532,8 @@ namespace NT106_BattleshipClient
             {
                 _ = HectorBarbossaAsync(row, col);
             }
-        }
-        private async Task HectorBarbossaAsync(int row, int col)
+        }*/
+        /*private async Task HectorBarbossaAsync(int row, int col)
         {
             if (!isYourTurn) return;
 
@@ -576,9 +560,9 @@ namespace NT106_BattleshipClient
             }
 
             // Always switch turn after using the skill (regardless of hit/miss)
-            await TurnSwitchAsync();
-        }
-        /*private async void GridButton_Click(object sender, EventArgs e)
+            TurnSwitch();
+        }*/
+        private async void GridButton_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
             if (btn == null) return;
@@ -621,11 +605,11 @@ namespace NT106_BattleshipClient
                         yourScore++;
                         ScoreTracking();
                         isHit = false;
-                        return;
-                        //TurnSwitch();
+                        //return;
+                        TurnSwitch();
 
                     }
-                    if (!isHit)
+                    else if (!isHit)
                     {
                         btn.BackColor = Color.Green; // miss
                         await _hub.InvokeAsync("Hit", _room.Id, row, col, false);
@@ -639,7 +623,23 @@ namespace NT106_BattleshipClient
                     btn.Enabled = true;
                     MessageBox.Show($"Failed to send hit: {ex.Message}", "SignalR Invoke Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-        }*/
+        }
+        private void ReceiveHit()
+        {
+            // Ensure callback updates the YOUR grid and marshals to UI thread
+            _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
+            {
+                if (YourShipPos[row, col] == 1 && isHit)
+                {
+                    playerGrid[row, col].BackColor = Color.Red;
+                    TurnSwitch();
+                } else
+                {
+                    playerGrid[row, col].BackColor = Color.Green;
+                    TurnSwitch();
+                }
+            });
+        }
         public void BtnSkill_Click(object sender, EventArgs e)
         {
             if (!isYourTurn)
@@ -711,7 +711,7 @@ namespace NT106_BattleshipClient
                 lblRightTimer.Text = rightTime.ToString(@"mm\:ss");
             }
         }
-        private void ReceiveHit()
+        /*private void ReceiveHit()
         {
             _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
             {
@@ -728,8 +728,8 @@ namespace NT106_BattleshipClient
                     _ = ProcessReceiveHitAsync(row, col, isHit);
                 }
             });
-        }
-        private async Task ProcessReceiveHitAsync(int row, int col, bool isHit)
+        }*/
+        /*private async Task ProcessReceiveHitAsync(int row, int col, bool isHit)
         {
             Button btn = playerGrid[row, col];
             if (btn != null)
@@ -746,68 +746,35 @@ namespace NT106_BattleshipClient
                 {
                     btn.BackColor = Color.Green;
                     // fire-and-forget turn switch (TurnSwitchAsync returns completed task)
-                    _ = TurnSwitchAsync();
+                    TurnSwitch();
                 }
             }
-        }
-        private void ShowTurnPopupNonModal(bool nowYourTurn, string message = null)
+        }*/
+        private void TurnSwitch()
         {
-            // update state first
-            isYourTurn = nowYourTurn;
-            isLeftTimerRunning = isYourTurn;
-            isRightTimerRunning = !isYourTurn;
+            // flip local flag
+            isYourTurn = !isYourTurn;
 
-            // prevent overlapping popups
-            if (_turnPopupOpen) return;
-            _turnPopupOpen = true;
-
-            try
+            if (isYourTurn)
             {
-                var popup = new frmTurnPopUp(message ?? (isYourTurn ? "Your Turn!" : "Opponent Turn!"), 900);
-                popup.FormClosed += (s, e) =>
+                using (var popup = new frmTurnPopUp("Your Turn!"))
                 {
-                    try { popup.Dispose(); } catch { }
-                    _turnPopupOpen = false;
-                };
-
-                // show non-modal so UI keeps processing messages
-                popup.Show(this);
-            }
-            catch
-            {
-                _turnPopupOpen = false;
-            }
-        }
-        private Task TurnSwitchAsync()
-        {
-            // compute next local state
-            bool nextYourTurn = !isYourTurn;
-
-            // update UI on UI thread
-            if (this.IsHandleCreated && this.InvokeRequired)
-            {
-                this.BeginInvoke(new Action(() => ShowTurnPopupNonModal(nextYourTurn)));
+                    isLeftTimerRunning = true;
+                    isRightTimerRunning = false;
+                    popup.ShowDialog(this);
+                }
             }
             else
             {
-                ShowTurnPopupNonModal(nextYourTurn);
+                using (var popup = new frmTurnPopUp("Opponent Turn!"))
+                {
+                    isRightTimerRunning = true;
+                    isLeftTimerRunning = false;
+                    popup.ShowDialog(this);
+                }
             }
 
-            // compute canonical host-turn value (hostTurn = true when it's host's turn)
-            bool hostTurn = _isHost ? nextYourTurn : !nextYourTurn;
-
-            // fire-and-forget the hub call so UI is not blocked by network
-            if (_hub != null)
-            {
-                _ = _hub.InvokeAsync("Turn", _room.Id, hostTurn)
-                    .ContinueWith(t =>
-                    {
-                        // optional: log t.Exception if needed
-                        var ignored = t.Exception;
-                    }, TaskContinuationOptions.OnlyOnFaulted);
-            }
-
-            return Task.CompletedTask;
+            // NOTE: original did NOT call the hub to broadcast the change
         }
 
         private void ScoreTracking()
@@ -842,7 +809,7 @@ namespace NT106_BattleshipClient
         {
             // Implement skill logic here
         }
-        private void frmIn_Battle_Load(object sender, EventArgs e)
+        private async void frmIn_Battle_Load(object sender, EventArgs e)
         {
             leftTime = TimeSpan.FromSeconds(180);
             rightTime = TimeSpan.FromSeconds(180);
@@ -861,6 +828,7 @@ namespace NT106_BattleshipClient
             timer.Interval = 1000; // every second
             timer.Tick += Timer_Tick;
             timer.Start(); // start automatically
+           //await SubscribeAndSyncTurnAsync();
         }
         private void IndexCurrentMatch()
         {
