@@ -63,10 +63,6 @@ CREATE TABLE TranDau
 		FOREIGN KEY (IdPlayer1) REFERENCES NguoiDung(Id),
 	CONSTRAINT FK_TranDau_NguoiDung_Player2
 		FOREIGN KEY (IdPlayer2) REFERENCES NguoiDung(Id),
-	CONSTRAINT FK_TranDau_NhanVat_NhanVat1
-		FOREIGN KEY (TenNV1) REFERENCES NhanVat(TenNhanVat),
-	CONSTRAINT FK_TranDau_NhanVat_NhanVat2
-		FOREIGN KEY (TenNV2) REFERENCES NhanVat(TenNhanVat),
 	CONSTRAINT FK_TranDau_NguoiDung_Winner
 		FOREIGN KEY (Winner) REFERENCES NguoiDung(Id),
 	CONSTRAINT FK_TranDau_PhongCho_IdPhongCho
@@ -223,3 +219,18 @@ ALTER TABLE PhongCho
 ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'playing', 'empty'));
 
 SELECT * FROM TinNhan
+
+-- Xóa constraint của TranDau với NhanVat
+ALTER TABLE TranDau
+DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat1;
+
+ALTER TABLE TranDau
+DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat2;
+
+-- Xóa bảng NhanVat
+DROP TABLE NhanVat;
+
+-- Xóa bảng TranDau
+DROP TABLE TranDau;
+
+-- Sau đó chịu khó tạo bảng trận đấu mới dựa vào query khởi tạo của trận đấu ở phía trên nhé
