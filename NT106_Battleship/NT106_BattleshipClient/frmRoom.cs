@@ -11,6 +11,8 @@ namespace NT106_BattleshipClient
 {
     public partial class frmRoom : BaseForm
     {
+        public event Action RoomReadyToShow;
+
         private RoomDto _room;
         private TranDauDto _currentMatch;
         private int _currentUserId;
@@ -55,24 +57,19 @@ namespace NT106_BattleshipClient
 
             _isHost = (_currentUserId == room.IDChuPhong);
             _isGuestReady = false;
+
+            this.Opacity = 0; // ẨN FORM ĐI
         }
 
         private async void frmRoom_Load(object sender, EventArgs e)
         {
-            // FIX 1: Đảm bảo handle đã được tạo
+            // Đảm bảo handle đã được tạo
             if (!this.IsHandleCreated)
                 this.CreateControl();
 
-            Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-            this.Size = screen.Size;
-            this.Location = new Point(0, 0);
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
 
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
-            this.ControlBox = true;
-            this.MinimizeBox = true;
-            this.MaximizeBox = true;
-
-            this.WindowState = FormWindowState.Normal;
 
             await UpdateRoomUIAsync(_room, firstLoad: true);
 
@@ -101,6 +98,17 @@ namespace NT106_BattleshipClient
             await XepTauConnector();
             GameStartedHandler();
         }
+
+        private void frmRoom_Shown(object sender, EventArgs e)
+        {
+            // Cho WinForms vẽ xong hết rồi mới hiện
+            this.BeginInvoke(new Action(() =>
+            {
+                RoomReadyToShow?.Invoke(); // Báo hiệu cho bên gọi biết là Room đã sẵn sàng hiển thị
+                this.Opacity = 1; //HIỆN FORM
+            }));
+        }
+
         private void SetupSignalREvents()
         {
             // ================================
@@ -497,5 +505,19 @@ namespace NT106_BattleshipClient
         {
 
         }
+
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            SetControlDoubleBuffered(pnlChuPhong);
+            SetControlDoubleBuffered(pnlKhach);
+            SetControlDoubleBuffered(pnlNenChuPhong);
+            SetControlDoubleBuffered(pnlNenKhach);
+            SetControlDoubleBuffered(pnlPhongCho);
+            SetControlDoubleBuffered(pnlTieuDeChuPhong);
+            SetControlDoubleBuffered(pnlTieuDeKhach);
+
+        }
     }
+
 }
