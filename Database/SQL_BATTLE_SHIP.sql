@@ -196,37 +196,30 @@ ALTER TABLE NguoiDung
 ADD ResetCode VARCHAR(10) NULL,
     ResetCodeExpire DATETIME NULL;
 
+-- 1. Thêm cột IDKhach
 
-	ALTER TABLE PhongCho
-
+ALTER TABLE PhongCho
 ADD IDKhach INT NULL;
-
-
 
 -- 2. Thêm cột NgayTao với giá trị mặc định
 
 ALTER TABLE PhongCho
-
 ADD NgayTao DATETIME NOT NULL
+CONSTRAINT DF_PhongCho_NgayTao DEFAULT GETDATE();
 
-    CONSTRAINT DF_PhongCho_NgayTao DEFAULT GETDATE();
+-- 3. Xoá cột tên chủ phòng
 
+ALTER TABLE PHONGCHO DROPCLOUMN TenChuPhong
 
-
--- 3. Sửa/Thay thế Constraint CK_PhongCho_TrangThai
-
+--4. Đổi constraint TrangThai
 -- Xóa Constraint cũ (cần chạy nếu Constraint cũ đã tồn tại)
 
 ALTER TABLE PhongCho
-
 DROP CONSTRAINT CK_PhongCho_TrangThai; 
 
 -- Thêm Constraint mới
 
 ALTER TABLE PhongCho
-
-ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'playing'));
-
-ALTER TABLE PhongCho DROP COLUMN TenChuPhong
+ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'playing', 'empty'));
 
 SELECT * FROM TinNhan
