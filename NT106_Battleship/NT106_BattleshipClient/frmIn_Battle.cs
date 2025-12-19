@@ -60,6 +60,9 @@ namespace NT106_BattleshipClient
             mapsize = size;
             _currentMatch = currentMatch;
             _room = room;
+            _idPhongCho = room.Id;
+            _idTranDau = currentMatch.Id;
+
             _hub = hub;
             YourShipPos = ShipPos;
             OpponentShipPos = otherShipPos;
@@ -844,17 +847,38 @@ namespace NT106_BattleshipClient
 
         }
         private ucChatBox _chatBox;
+        private int _idPhongCho;
+        private int _idTranDau;
+
+
         private async void btnTinNhan_Click(object sender, EventArgs e)
         {
+          
+
             if (_chatBox == null)
             {
-                _chatBox = new ucChatBox(_room.Id);
+
+                _chatBox = new ucChatBox(_idPhongCho, _idTranDau);
+
+                _chatBox.Dock = DockStyle.None;
+                _chatBox.Anchor = AnchorStyles.None;
+
+                _chatBox.Location = new Point(
+                    (this.ClientSize.Width - _chatBox.Width) / 2,
+                (this.ClientSize.Height - _chatBox.Height) / 2
+                );
+
+                _chatBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+
                 this.Controls.Add(_chatBox);
+
                 await _chatBox.ConnectAsync();
             }
 
-            _chatBox.BringToFront();
             _chatBox.Visible = !_chatBox.Visible;
+            _chatBox.BringToFront();
         }
+
+
     }
 }
