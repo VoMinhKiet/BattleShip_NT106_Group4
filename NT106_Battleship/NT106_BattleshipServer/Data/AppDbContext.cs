@@ -2,6 +2,7 @@
 using NT106_BattleshipServer.Data.Entities;
 using NT106_BattleshipServer.Models;
 
+
 namespace NT106_BattleshipServer.Data
 {
     public class AppDbContext : DbContext
@@ -16,6 +17,9 @@ namespace NT106_BattleshipServer.Data
         public DbSet<TinNhan> TinNhans { get; set; }
         public DbSet<TranDau> TranDau { get; set; }
         public DbSet<NhanVat> NhanVat { get; set; }
+
+        public DbSet<BangXepHang> BangXepHang { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

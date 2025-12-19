@@ -10,17 +10,27 @@ namespace NT106_BattleshipClient
     public partial class ucChatBox : UserControl
     {
         private HubConnection _hub;
-        private int _roomId;
-        private bool _connected;
+
+        private int? _idPhongCho;
+        private int? _idTranDau;
+
+        private bool _connected = false;
         public ucChatBox()
         {
             InitializeComponent();
         }
 
-        public ucChatBox(int roomId) : this()
+        public ucChatBox(int idPhongCho) : this()
         {
-            _roomId = roomId;
+            _idPhongCho = idPhongCho;
             btnGui.Enabled = false;
+        }
+
+
+        public ucChatBox(int idPhongCho, int idTranDau) : this()
+        {
+            _idPhongCho = idPhongCho;
+            _idTranDau = idTranDau;
         }
         public async Task ConnectAsync()
         {
@@ -31,8 +41,11 @@ namespace NT106_BattleshipClient
                 .WithAutomaticReconnect()
                 .Build();
 
+            // Nhận tin nhắn từ server
             _hub.On<TinNhanDto>("NhanTinNhan", tin =>
             {
+                if (IsDisposed) return;
+
                 BeginInvoke(new Action(() =>
                 {
                     AppendMessage($"[{tin.TenNguoiDung}] : {tin.NoiDung}");
@@ -40,7 +53,16 @@ namespace NT106_BattleshipClient
             });
 
             await _hub.StartAsync();
-            await _hub.InvokeAsync("JoinPhong", _roomId);
+
+            // Join đúng group
+            if (_idTranDau != null)
+            {
+                await _hub.InvokeAsync("JoinTranDau", _idTranDau.Value);
+            }
+            else if (_idPhongCho != null)
+            {
+                await _hub.InvokeAsync("JoinPhong", _idPhongCho.Value);
+            }
 
             _connected = true;
             btnGui.Enabled = true;
@@ -48,12 +70,13 @@ namespace NT106_BattleshipClient
 
         private async void btnGui_Click(object sender, EventArgs e)
         {
-            if (!_connected) return;
-            if (string.IsNullOrWhiteSpace(txtTinNhan.Text)) return;
+            if (!_connected || string.IsNullOrWhiteSpace(txtTinNhan.Text))
+                return;
 
             var dto = new TinNhanDto
             {
-                IdPhongCho = _roomId,
+                IdPhongCho = _idPhongCho,
+                IdTranDau = _idTranDau,
                 IdNguoiDung = GlobalData.UserId,
                 TenNguoiDung = GlobalData.Username,
                 NoiDung = txtTinNhan.Text.Trim()
@@ -62,6 +85,7 @@ namespace NT106_BattleshipClient
             await _hub.InvokeAsync("GuiTinNhan", dto);
 
             txtTinNhan.Clear();
+            txtTinNhan.Focus();
 
         }
         private void AppendMessage(string msg)
@@ -70,8 +94,20 @@ namespace NT106_BattleshipClient
                 rtbLichSuTinNhan.AppendText(Environment.NewLine);
 
             rtbLichSuTinNhan.AppendText(msg);
+            rtbLichSuTinNhan.SelectionStart = rtbLichSuTinNhan.Text.Length;
             rtbLichSuTinNhan.ScrollToCaret();
         }
+        public async Task DisconnectAsync()
+        {
+            if (_hub != null)
+            {
+                await _hub.StopAsync();
+                await _hub.DisposeAsync();
+                _hub = null;
+            }
 
+            _connected = false;
+            btnGui.Enabled = false;
+        }
     }
 }

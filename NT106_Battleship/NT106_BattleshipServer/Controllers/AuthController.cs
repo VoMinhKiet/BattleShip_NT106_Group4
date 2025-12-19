@@ -4,6 +4,8 @@ using NT106_BattleshipServer.Data;
 using NT106_BattleshipServer.Models;
 using System.Net;
 using System.Net.Mail;
+using NT106_BattleshipServer.Data.Entities;
+
 
 namespace NT106_BattleshipServer.Controllers
 {
@@ -43,6 +45,15 @@ namespace NT106_BattleshipServer.Controllers
             _context.NguoiDungs.Add(user);
             await _context.SaveChangesAsync();
 
+            _context.BangXepHang.Add(new BangXepHang
+            {
+                IdNguoiDung = user.Id,
+                CapSao = 0,
+                SoTranThang = 0,
+                SoTranThua = 0
+            });
+
+            await _context.SaveChangesAsync();
             return Ok(new { message = "Đăng ký thành công!" });
         }
 

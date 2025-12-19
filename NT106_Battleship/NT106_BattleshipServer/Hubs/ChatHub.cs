@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using NT106_BattleshipServer.Data;
 using NT106_BattleshipServer.Data.Entities;
 using NT106_BattleshipServer.DTOs;
@@ -21,29 +22,63 @@ namespace NT106_BattleshipServer.Hubs
                 $"phong_{idPhongCho}"
             );
         }
+        public async Task JoinTranDau(int idTranDau)
+        {
+            await Groups.AddToGroupAsync(
+                Context.ConnectionId,
+                $"trandau_{idTranDau}"
+            );
+        }
 
         public async Task GuiTinNhan(TinNhanDto dto)
         {
-
-            var tinNhan = new TinNhan
+            try
             {
-                IdTranDau = dto.IdTranDau,
-                IdPhongCho = dto.IdPhongCho,
-                IdNguoiDung = dto.IdNguoiDung,
-                NoiDung = dto.NoiDung,
-                ThoiGian = DateTime.Now
-            };
+                if (dto.IdTranDau != null)
+                {
+                    bool tranDauTonTai = await _db.TranDau
+                        .AnyAsync(t => t.Id == dto.IdTranDau.Value);
 
-            _db.TinNhans.Add(tinNhan);
-            await _db.SaveChangesAsync();
+                    if (!tranDauTonTai)
+                    {
 
-            dto.ThoiGian = tinNhan.ThoiGian;
+                        await Clients.Group($"trandau_{dto.IdTranDau}")
+                            .SendAsync("NhanTinNhan", dto);
+                        return;
+                    }
+                }
 
-            if (dto.IdPhongCho.HasValue)
+                var tinNhan = new TinNhan
+                {
+                    IdTranDau = dto.IdTranDau,
+                    IdPhongCho = dto.IdPhongCho,
+                    IdNguoiDung = dto.IdNguoiDung,
+                    NoiDung = dto.NoiDung,
+                    ThoiGian = DateTime.Now
+                };
+
+                _db.TinNhans.Add(tinNhan);
+                await _db.SaveChangesAsync();
+
+                dto.ThoiGian = tinNhan.ThoiGian;
+
+                if (dto.IdPhongCho != null)
+                {
+                    await Clients.Group($"phong_{dto.IdPhongCho}")
+                        .SendAsync("NhanTinNhan", dto);
+                }
+                else if (dto.IdTranDau != null)
+                {
+                    await Clients.Group($"trandau_{dto.IdTranDau}")
+                        .SendAsync("NhanTinNhan", dto);
+                }
+            }
+            catch (Exception ex)
             {
-                await Clients.Group($"phong_{dto.IdPhongCho}")
-                    .SendAsync("NhanTinNhan", dto);
+                Console.WriteLine(ex.ToString());
+                throw;
             }
         }
+
     }
 }

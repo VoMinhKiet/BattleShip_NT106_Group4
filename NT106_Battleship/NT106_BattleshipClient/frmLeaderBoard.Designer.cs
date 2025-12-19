@@ -35,7 +35,6 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.STT = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TenNguoiChoi = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Hang = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SoSao = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TiLeThang = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TongSoTran = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -70,7 +69,6 @@
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.STT,
             this.TenNguoiChoi,
-            this.Hang,
             this.SoSao,
             this.TiLeThang,
             this.TongSoTran});
@@ -91,6 +89,7 @@
             this.dataGridView1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dataGridView1.Size = new System.Drawing.Size(1692, 585);
             this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // STT
             // 
@@ -107,14 +106,6 @@
             this.TenNguoiChoi.Name = "TenNguoiChoi";
             this.TenNguoiChoi.ReadOnly = true;
             this.TenNguoiChoi.Width = 350;
-            // 
-            // Hang
-            // 
-            this.Hang.HeaderText = "Hạng";
-            this.Hang.MinimumWidth = 6;
-            this.Hang.Name = "Hang";
-            this.Hang.ReadOnly = true;
-            this.Hang.Width = 200;
             // 
             // SoSao
             // 
@@ -181,7 +172,6 @@
         private System.Windows.Forms.Button btnThoat;
         private System.Windows.Forms.DataGridViewTextBoxColumn STT;
         private System.Windows.Forms.DataGridViewTextBoxColumn TenNguoiChoi;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Hang;
         private System.Windows.Forms.DataGridViewTextBoxColumn SoSao;
         private System.Windows.Forms.DataGridViewTextBoxColumn TiLeThang;
         private System.Windows.Forms.DataGridViewTextBoxColumn TongSoTran;

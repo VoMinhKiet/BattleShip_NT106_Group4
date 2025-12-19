@@ -32,7 +32,7 @@ namespace NT106_BattleshipClient
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
 
-            MusicManager.PlayMenuMusic();
+            //MusicManager.PlayMenuMusic();
         }
 
         private void btnHoSo_Click(object sender, EventArgs e)
