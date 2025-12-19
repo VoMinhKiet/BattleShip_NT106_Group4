@@ -10,5 +10,10 @@
 
         // Lưu email người dùng
         public static string Email { get; set; }
+
+        public static int SoSao { get; set; }
+        public static int TongSoTran { get; set; }
+        public static double TiLeThang { get; set; }
+
     }
 }

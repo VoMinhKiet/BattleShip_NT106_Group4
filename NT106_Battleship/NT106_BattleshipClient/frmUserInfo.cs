@@ -10,6 +10,21 @@ namespace NT106_BattleshipClient
 
             // chống nháy form
             EnableFormDoubleBuffering();
+            LoadUserInfo();
+
+        }
+
+        private void LoadUserInfo()
+        {
+            lblID.Text = $"ID : {GlobalData.UserId}";
+            lblTen.Text = $"Tên : {GlobalData.Username}";
+            lblEmail.Text = $"Email : {GlobalData.Email}";
+
+
+            lblSao.Text = $"Số Sao : {GlobalData.SoSao}";
+            lblTongSoTran.Text = $"Tổng số trận : {GlobalData.TongSoTran}";
+            lblTiLeThang.Text = $"Tỉ lệ thắng : {GlobalData.TiLeThang}%";
+
 
         }
 
@@ -30,6 +45,11 @@ namespace NT106_BattleshipClient
             frmMatchHistory matchHistoryForm = new frmMatchHistory();
             matchHistoryForm.ShowDialog();
             this.Show();
+        }
+
+        private void panelUserInfo_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
+        {
+
         }
     }
 }

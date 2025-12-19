@@ -33,7 +33,6 @@
             this.lblID = new System.Windows.Forms.Label();
             this.lblTen = new System.Windows.Forms.Label();
             this.lblEmail = new System.Windows.Forms.Label();
-            this.lblRank = new System.Windows.Forms.Label();
             this.lblSao = new System.Windows.Forms.Label();
             this.lblTongSoTran = new System.Windows.Forms.Label();
             this.lblTiLeThang = new System.Windows.Forms.Label();
@@ -48,7 +47,7 @@
             this.lblTieuDe.AutoSize = true;
             this.lblTieuDe.BackColor = System.Drawing.Color.Transparent;
             this.lblTieuDe.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTieuDe.Location = new System.Drawing.Point(37, 30);
+            this.lblTieuDe.Location = new System.Drawing.Point(101, 24);
             this.lblTieuDe.Name = "lblTieuDe";
             this.lblTieuDe.Size = new System.Drawing.Size(257, 38);
             this.lblTieuDe.TabIndex = 0;
@@ -87,23 +86,12 @@
             this.lblEmail.TabIndex = 3;
             this.lblEmail.Text = "Email: ";
             // 
-            // lblRank
-            // 
-            this.lblRank.AutoSize = true;
-            this.lblRank.BackColor = System.Drawing.Color.Transparent;
-            this.lblRank.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblRank.Location = new System.Drawing.Point(11, 213);
-            this.lblRank.Name = "lblRank";
-            this.lblRank.Size = new System.Drawing.Size(81, 31);
-            this.lblRank.TabIndex = 4;
-            this.lblRank.Text = "Rank: ";
-            // 
             // lblSao
             // 
             this.lblSao.AutoSize = true;
             this.lblSao.BackColor = System.Drawing.Color.Transparent;
             this.lblSao.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSao.Location = new System.Drawing.Point(157, 213);
+            this.lblSao.Location = new System.Drawing.Point(11, 216);
             this.lblSao.Name = "lblSao";
             this.lblSao.Size = new System.Drawing.Size(98, 31);
             this.lblSao.TabIndex = 5;
@@ -136,7 +124,7 @@
             this.btnThoat.BackColor = System.Drawing.Color.Tomato;
             this.btnThoat.Font = new System.Drawing.Font("Segoe UI", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnThoat.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnThoat.Location = new System.Drawing.Point(258, 441);
+            this.btnThoat.Location = new System.Drawing.Point(321, 441);
             this.btnThoat.Name = "btnThoat";
             this.btnThoat.Size = new System.Drawing.Size(125, 62);
             this.btnThoat.TabIndex = 8;
@@ -164,13 +152,13 @@
             this.panelUserInfo.Controls.Add(this.lblEmail);
             this.panelUserInfo.Controls.Add(this.lblTieuDe);
             this.panelUserInfo.Controls.Add(this.lblTiLeThang);
-            this.panelUserInfo.Controls.Add(this.lblRank);
             this.panelUserInfo.Controls.Add(this.lblTongSoTran);
             this.panelUserInfo.Controls.Add(this.lblSao);
             this.panelUserInfo.Location = new System.Drawing.Point(12, 12);
             this.panelUserInfo.Name = "panelUserInfo";
-            this.panelUserInfo.Size = new System.Drawing.Size(378, 343);
+            this.panelUserInfo.Size = new System.Drawing.Size(449, 343);
             this.panelUserInfo.TabIndex = 10;
+            this.panelUserInfo.Paint += new System.Windows.Forms.PaintEventHandler(this.panelUserInfo_Paint);
             // 
             // frmUserInfo
             // 
@@ -178,7 +166,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(402, 553);
+            this.ClientSize = new System.Drawing.Size(473, 553);
             this.Controls.Add(this.panelUserInfo);
             this.Controls.Add(this.btnLichSuDau);
             this.Controls.Add(this.btnThoat);
@@ -198,7 +186,6 @@
         private System.Windows.Forms.Label lblID;
         private System.Windows.Forms.Label lblTen;
         private System.Windows.Forms.Label lblEmail;
-        private System.Windows.Forms.Label lblRank;
         private System.Windows.Forms.Label lblSao;
         private System.Windows.Forms.Label lblTongSoTran;
         private System.Windows.Forms.Label lblTiLeThang;
