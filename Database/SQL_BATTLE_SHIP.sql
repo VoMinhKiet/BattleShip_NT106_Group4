@@ -248,6 +248,17 @@ DROP TABLE NhanVat;
 -- Xóa bảng TranDau
 DROP TABLE TranDau;
 
+SELECT * FROM TinNhan
+
+ALTER TABLE BangXepHang
+DROP CONSTRAINT DF_BangXepHang_BacRank;
+
+ALTER TABLE BangXepHang
+DROP CONSTRAINT CK_BangXepHang_BacRank;
+ALTER TABLE BangXepHang
+DROP COLUMN BacRank;
+
+
 -- Sau đó chịu khó tạo bảng trận đấu mới dựa vào query khởi tạo của trận đấu ở phía trên nhé
 -- Khôi phục các constraint từ bảng con của TranDau
 ALTER TABLE Tau

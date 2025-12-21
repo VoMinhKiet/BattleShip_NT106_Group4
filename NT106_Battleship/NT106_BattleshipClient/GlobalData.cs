@@ -1,4 +1,6 @@
-﻿namespace NT106_BattleshipClient
+﻿using System;
+
+namespace NT106_BattleshipClient
 {
     public static class GlobalData
     {
@@ -10,5 +12,16 @@
 
         // Lưu email người dùng
         public static string Email { get; set; }
+
+        public static int SoSao { get; set; }
+        public static int TongSoTran { get; set; }
+        public static double TiLeThang { get; set; }
+
+        public static event Action UserInfoUpdated;
+
+        public static void NotifyUserInfoUpdated()
+        {
+            UserInfoUpdated?.Invoke();
+        }
     }
 }

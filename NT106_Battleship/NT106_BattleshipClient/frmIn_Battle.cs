@@ -36,6 +36,10 @@ namespace NT106_BattleshipClient
         private readonly TranDauDto _currentMatch;
         private readonly RoomDto _room;
         private HubConnection _hub;
+        private HubConnection _rankingHub;
+        private bool _battleEnded = false;
+
+
         private bool _turnPopupOpen = false;
         int random = new Random().Next(0, 2);       
 
@@ -64,6 +68,14 @@ namespace NT106_BattleshipClient
             _idTranDau = currentMatch.Id;
 
             _hub = hub;
+
+                    _rankingHub = new HubConnectionBuilder()
+              .WithUrl("http://localhost:5074/battleRankingHub")
+              .WithAutomaticReconnect()
+              .Build();
+
+            RegisterBattleRankingHandler();
+
             YourShipPos = ShipPos;
             OpponentShipPos = otherShipPos;
             _currentUserId = GlobalData.UserId;
@@ -202,6 +214,12 @@ namespace NT106_BattleshipClient
                 //bat loi exception hoac log lai tuy y 
             }
         } */
+
+
+
+
+
+
         public async void DecideTurn()
         {
             if (random == 0 && _isHost)
@@ -683,7 +701,7 @@ namespace NT106_BattleshipClient
 
             }
         }
-        private void Timer_Tick(object sender, EventArgs e)
+        private async void Timer_Tick(object sender, EventArgs e)
         {
             if (isLeftTimerRunning)
             {
@@ -693,6 +711,7 @@ namespace NT106_BattleshipClient
                     isLeftTimerRunning = false;
                     isRightTimerRunning = false;
                     MessageBox.Show("Time's up! You lose!!."); // ket thuc tran dau o day
+                    await SendBattleResultAsync(false);
                     IndexCurrentMatch();
                     this.Close();
                 }
@@ -707,6 +726,7 @@ namespace NT106_BattleshipClient
                     isRightTimerRunning = false;
                     isLeftTimerRunning = false;
                     MessageBox.Show("Time's up! You win!!."); // ket thuc tran dau o day
+                    await SendBattleResultAsync(true);
                     IndexCurrentMatch();
                     this.Close();
                 }
@@ -780,7 +800,7 @@ namespace NT106_BattleshipClient
             // NOTE: original did NOT call the hub to broadcast the change
         }
 
-        private void ScoreTracking()
+        private async void ScoreTracking()
         {
             if (yourScore == 14)
             {
@@ -789,6 +809,7 @@ namespace NT106_BattleshipClient
                 isLeftTimerRunning = false;
                 isRightTimerRunning = false;
                 IndexCurrentMatch();
+                await SendBattleResultAsync(true);
                 // ket thuc tran dau o day
             }
             if (opponentScore == 14)
@@ -797,6 +818,7 @@ namespace NT106_BattleshipClient
                 isLeftTimerRunning = false;
                 isRightTimerRunning = false;
                 IndexCurrentMatch();
+                await SendBattleResultAsync(false);
                 // ket thuc tran dau o day
             }
         }
@@ -831,7 +853,13 @@ namespace NT106_BattleshipClient
             timer.Interval = 1000; // every second
             timer.Tick += Timer_Tick;
             timer.Start(); // start automatically
-           //await SubscribeAndSyncTurnAsync();
+                           //await SubscribeAndSyncTurnAsync();
+
+            if (_rankingHub.State == HubConnectionState.Disconnected)
+            {
+                await _rankingHub.StartAsync();
+            }
+
         }
         private void IndexCurrentMatch()
         {
@@ -877,6 +905,59 @@ namespace NT106_BattleshipClient
 
             _chatBox.Visible = !_chatBox.Visible;
             _chatBox.BringToFront();
+        }
+
+        private void RegisterBattleRankingHandler()
+        {
+            _rankingHub.On<dynamic>("BattleRankingUpdated", data =>
+            {
+                int soTranThang = (int)data.SoTranThang;
+                int soTranThua = (int)data.SoTranThua;
+
+                // cập nhật cache
+                GlobalData.SoSao = (int)data.CapSao;
+                GlobalData.TongSoTran = soTranThang + soTranThua;
+
+                if (GlobalData.TongSoTran > 0)
+                {
+                    GlobalData.TiLeThang =
+                        Math.Round(soTranThang * 100.0 / GlobalData.TongSoTran, 2);
+                }
+                else
+                {
+                    GlobalData.TiLeThang = 0;
+                }
+
+
+                GlobalData.NotifyUserInfoUpdated();
+            });
+        }
+
+
+
+        private async Task SendBattleResultAsync(bool isWin)
+        {
+            if (_battleEnded) return;
+            _battleEnded = true;
+
+            // gửi cho bản thân
+            await _rankingHub.InvokeAsync("FinishBattle", new
+            {
+                IdNguoiDung = GlobalData.UserId,
+                IsWin = isWin
+            });
+
+            // gửi cho đối thủ (đảo ngược kết quả)
+            int opponentId = (_currentUserId == _room.IDChuPhong)
+                ? _room.IDKhach.GetValueOrDefault()
+                : _room.IDChuPhong;
+
+
+            await _rankingHub.InvokeAsync("FinishBattle", new
+            {
+                IdNguoiDung = opponentId,
+                IsWin = !isWin
+            });
         }
 
 
