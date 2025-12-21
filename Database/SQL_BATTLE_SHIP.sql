@@ -220,12 +220,27 @@ ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'pl
 
 SELECT * FROM TinNhan
 
--- Xóa constraint của TranDau với NhanVat
+-- Xóa constraint của TranDau và các bảng liên quan
 ALTER TABLE TranDau
 DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat1;
 
 ALTER TABLE TranDau
 DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat2;
+
+ALTER TABLE TranDau
+DROP CONSTRAINT CK_TranDau_KichThuoc;
+
+ALTER TABLE TranDau
+DROP CONSTRAINT DF_TranDau_TimeStart;
+
+ALTER TABLE Tau
+DROP CONSTRAINT FK_Tau_TranDau_IdTranDau;
+
+ALTER TABLE NuocDi
+DROP CONSTRAINT FK_NuocDi_TranDau_IdTranDau;
+
+ALTER TABLE TinNhan
+DROP CONSTRAINT FK_TinNhan_TranDau_IdTranDau;
 
 -- Xóa bảng NhanVat
 DROP TABLE NhanVat;
@@ -244,3 +259,16 @@ ALTER TABLE BangXepHang
 DROP COLUMN BacRank;
 
 
+-- Sau đó chịu khó tạo bảng trận đấu mới dựa vào query khởi tạo của trận đấu ở phía trên nhé
+-- Khôi phục các constraint từ bảng con của TranDau
+ALTER TABLE Tau
+ADD CONSTRAINT FK_Tau_TranDau_IdTranDau
+FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
+
+ALTER TABLE NuocDi
+ADD CONSTRAINT FK_NuocDi_TranDau_IdTranDau
+FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
+
+ALTER TABLE TinNhan
+ADD CONSTRAINT FK_TinNhan_TranDau_IdTranDau
+FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
