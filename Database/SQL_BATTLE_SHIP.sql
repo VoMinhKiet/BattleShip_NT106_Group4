@@ -243,3 +243,4 @@ DROP CONSTRAINT CK_BangXepHang_BacRank;
 ALTER TABLE BangXepHang
 DROP COLUMN BacRank;
 
+
