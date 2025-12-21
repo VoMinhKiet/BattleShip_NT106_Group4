@@ -1,4 +1,6 @@
-﻿namespace NT106_BattleshipClient
+﻿using System;
+
+namespace NT106_BattleshipClient
 {
     public static class GlobalData
     {
@@ -15,5 +17,11 @@
         public static int TongSoTran { get; set; }
         public static double TiLeThang { get; set; }
 
+        public static event Action UserInfoUpdated;
+
+        public static void NotifyUserInfoUpdated()
+        {
+            UserInfoUpdated?.Invoke();
+        }
     }
 }

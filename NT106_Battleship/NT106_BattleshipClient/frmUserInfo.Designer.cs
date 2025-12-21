@@ -173,6 +173,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmUserInfo";
             this.Text = "frmUserInfo";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmUserInfo_FormClosed);
             this.Load += new System.EventHandler(this.frmUserInfo_Load);
             this.panelUserInfo.ResumeLayout(false);
             this.panelUserInfo.PerformLayout();

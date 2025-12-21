@@ -34,5 +34,6 @@ app.MapHub<RoomHub>("/roomHub");
 app.MapHub<XepTauHub>("/xepTauHub");
 app.MapHub<ChatHub>("/chatHub");
 app.MapHub<TranDauHub>("/tranDauHub");
+app.MapHub<BattleRankingHub>("/battleRankingHub");
 
 app.Run();
