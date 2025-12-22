@@ -811,6 +811,7 @@ namespace NT106_BattleshipClient
                 IndexCurrentMatch();
                 await SendBattleResultAsync(true);
                 // ket thuc tran dau o day
+                this.Close();
             }
             if (opponentScore == 14)
             {
@@ -820,6 +821,7 @@ namespace NT106_BattleshipClient
                 IndexCurrentMatch();
                 await SendBattleResultAsync(false);
                 // ket thuc tran dau o day
+                this.Close();
             }
         }
         private void SkillJackSparrow()
@@ -836,18 +838,21 @@ namespace NT106_BattleshipClient
         }
         private async void frmIn_Battle_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+
             leftTime = TimeSpan.FromSeconds(180);
             rightTime = TimeSpan.FromSeconds(180);
 
             lblLeftTimer.Text = leftTime.ToString(@"mm\:ss");
             lblRightTimer.Text = rightTime.ToString(@"mm\:ss");
 
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
-            this.ControlBox = true;
-            this.MinimizeBox = true;
-            this.MaximizeBox = true;
+            //this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            //this.ControlBox = true;
+            //this.MinimizeBox = true;
+            //this.MaximizeBox = true;
 
-            this.WindowState = FormWindowState.Normal;
+            //this.WindowState = FormWindowState.Normal;
 
             timer = new Timer();
             timer.Interval = 1000; // every second

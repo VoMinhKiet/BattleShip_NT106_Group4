@@ -38,10 +38,15 @@ namespace NT106_BattleshipClient
 
                     MessageBox.Show($"Đăng nhập thành công!");
 
+                    //frmMainMenu f = new frmMainMenu();
+                    //this.Hide();
+                    //f.ShowDialog();
+                    //this.Show();
+
                     frmMainMenu f = new frmMainMenu();
+                    f.FormClosed += (s, e) => this.Show();
                     this.Hide();
-                    f.ShowDialog();
-                    this.Show();
+                    f.Show();
                 }
 
                 else

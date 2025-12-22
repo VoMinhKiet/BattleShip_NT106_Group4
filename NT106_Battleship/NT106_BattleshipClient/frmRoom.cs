@@ -495,7 +495,11 @@ namespace NT106_BattleshipClient
 
                     this.Hide();
                     frmShip_Sorting frmShip_Sorting = new frmShip_Sorting(_room, _currentMatch, mapsize, _hub);
-                    frmShip_Sorting.ShowDialog();
+                    frmShip_Sorting.FormClosed += (s, args) =>
+                    {
+                        this.Close();
+                    };
+                    frmShip_Sorting.Show();
                 }));
             });
         }
