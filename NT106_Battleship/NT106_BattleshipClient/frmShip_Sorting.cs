@@ -42,8 +42,6 @@ namespace NT106_BattleshipClient
         public frmShip_Sorting(RoomDto room, TranDauDto currentMatch, int size, HubConnection hub)
         {
 
-            this.FormBorderStyle = FormBorderStyle.None; // removes title bar
-            this.WindowState = FormWindowState.Maximized; // maximize to full screen
             this.ShowInTaskbar = true;
             this.BackgroundImage = Properties.Resources.In_Battle_Background;
             this.BackgroundImageLayout = ImageLayout.Stretch;
@@ -57,6 +55,7 @@ namespace NT106_BattleshipClient
             _room = room;
             _hub = hub;
             _currentMatch = currentMatch ?? throw new ArgumentNullException(nameof(currentMatch));
+
             this.KeyPreview = true;               //check nhấn bàn phím
             this.KeyDown += FrmShip_Sorting_KeyDown;
 
@@ -230,15 +229,11 @@ namespace NT106_BattleshipClient
         //timer's here
         private void frmShip_Sorting_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None; // removes title bar
+            this.WindowState = FormWindowState.Maximized; // maximize to full screen
+
             leftTime = TimeSpan.FromSeconds(45);
             rightTime = TimeSpan.FromSeconds(45);
-
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
-            this.ControlBox = true;
-            this.MinimizeBox = true;
-            this.MaximizeBox = true;
-
-            this.WindowState = FormWindowState.Normal;
 
             timer = new Timer();
             timer.Interval = 1000; // every second
