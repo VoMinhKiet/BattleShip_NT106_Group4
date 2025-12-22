@@ -648,7 +648,7 @@
             this.ClientSize = new System.Drawing.Size(1539, 837);
             this.Controls.Add(this.pnlPhongCho);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmRoom";
             this.Text = "frmRoom";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmRoom_FormClosing);

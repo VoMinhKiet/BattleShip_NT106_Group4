@@ -47,25 +47,7 @@ namespace NT106_BattleshipClient
                     SignalRClient.Init("http://localhost:5074/roomHub");
                     await SignalRClient.StartAsync();
 
-                    SignalRClient.Connection.On("RoomListUpdated", () =>
-                    {
-                        if (this.IsDisposed) return;
-
-                        this.BeginInvoke(new Action(async () =>
-                        {
-                            await LoadRoomsFromServer();
-                        }));
-                    });
-
-                    SignalRClient.Connection.On<int>("RoomDeleted", (_) =>
-                    {
-                        if (this.IsDisposed) return;
-
-                        this.BeginInvoke(new Action(async () =>
-                        {
-                            await LoadRoomsFromServer();
-                        }));
-                    });
+                    RegisterLobbySignalREvents();
 
                     _signalRInitialized = true;
                 }
@@ -74,8 +56,6 @@ namespace NT106_BattleshipClient
                     MessageBox.Show(ex.Message);
                 }
             }
-
-
 
             await LoadRoomsFromServer();
 
@@ -103,6 +83,37 @@ namespace NT106_BattleshipClient
             dgvDanhSachPhong.ClearSelection();
             dgvDanhSachPhong.CurrentCell = null;
         }
+
+        private void RegisterLobbySignalREvents()
+        {
+            var conn = SignalRClient.Connection;
+
+            // Gỡ bỏ các handler cũ nếu có
+            conn.Remove("RoomListUpdated");
+            conn.Remove("RoomDeleted");
+
+            // Đăng ký các handler mới
+            conn.On("RoomListUpdated", () =>
+            {
+                if (IsDisposed || !IsHandleCreated) return;
+
+                BeginInvoke(new Action(async () =>
+                {
+                    await LoadRoomsFromServer();
+                }));
+            });
+
+            conn.On<int>("RoomDeleted", (_) =>
+            {
+                if (IsDisposed || !IsHandleCreated) return;
+
+                BeginInvoke(new Action(async () =>
+                {
+                    await LoadRoomsFromServer();
+                }));
+            });
+        }
+
 
         private void UpdateScrollBar()
         {
@@ -185,18 +196,19 @@ namespace NT106_BattleshipClient
                 var room = await _roomApi.JoinRoomAsync(roomId, _currentUserId);
 
                 // Mở form phòng
-                using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
+                frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
+
+                roomForm.RoomReadyToShow += () =>
                 {
-                    roomForm.RoomReadyToShow += () =>
-                    {
-                        this.Hide();
-                    };
-                    roomForm.ShowDialog();
-                }
+                    this.Hide();
+                };
 
-                this.Show();
+                roomForm.FormClosed += (s, args) =>
+                {
+                    this.Show();
+                };
 
-                //await LoadRoomsFromServer();
+                roomForm.Show();
             }
         }
 
@@ -209,18 +221,20 @@ namespace NT106_BattleshipClient
         {
             // Tạo phòng mới → user là host
             var room = await _roomApi.CreateRoomAsync(_currentUserId);
-            using (frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username))
-            {
-                roomForm.RoomReadyToShow += () =>
-                {
-                    this.Hide();
-                };
-                roomForm.ShowDialog();
-            }
+            // Mở form phòng
+            frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
 
-            this.Show();
-            // Load lại danh sách phòng mới nhất
-            //await LoadRoomsFromServer();
+            roomForm.RoomReadyToShow += () =>
+            {
+                this.Hide();
+            };
+
+            roomForm.FormClosed += (s, args) =>
+            {
+                this.Show();
+            };
+
+            roomForm.Show();
         }
 
         private void frmLobby_Shown(object sender, EventArgs e)
