@@ -47,8 +47,8 @@ CREATE TABLE TranDau
 	Id INT IDENTITY(1,1) NOT NULL,
 	IdPlayer1 INT NOT NULL,
 	IdPlayer2 INT NOT NULL,
-	IdNhanVat1 INT NOT NULL,
-	IdNhanVat2 INT NOT NULL,
+	TenNV1 NVARCHAR(50) NOT NULL,
+	TenNV2 NVARCHAR(50) NOT NULL,
 	KichThuoc INT NOT NULL
 		CONSTRAINT CK_TranDau_KichThuoc CHECK
 			(KichThuoc IN (8, 9, 10)),
@@ -63,10 +63,6 @@ CREATE TABLE TranDau
 		FOREIGN KEY (IdPlayer1) REFERENCES NguoiDung(Id),
 	CONSTRAINT FK_TranDau_NguoiDung_Player2
 		FOREIGN KEY (IdPlayer2) REFERENCES NguoiDung(Id),
-	CONSTRAINT FK_TranDau_NhanVat_NhanVat1
-		FOREIGN KEY (IdNhanVat1) REFERENCES NhanVat(Id),
-	CONSTRAINT FK_TranDau_NhanVat_NhanVat2
-		FOREIGN KEY (IdNhanVat2) REFERENCES NhanVat(Id),
 	CONSTRAINT FK_TranDau_NguoiDung_Winner
 		FOREIGN KEY (Winner) REFERENCES NguoiDung(Id),
 	CONSTRAINT FK_TranDau_PhongCho_IdPhongCho
@@ -192,3 +188,87 @@ CREATE TABLE BanBe
 );
 
 
+ALTER TABLE NguoiDung
+ADD ResetCode VARCHAR(10) NULL,
+    ResetCodeExpire DATETIME NULL;
+
+-- 1. Thêm cột IDKhach
+
+ALTER TABLE PhongCho
+ADD IDKhach INT NULL;
+
+-- 2. Thêm cột NgayTao với giá trị mặc định
+
+ALTER TABLE PhongCho
+ADD NgayTao DATETIME NOT NULL
+CONSTRAINT DF_PhongCho_NgayTao DEFAULT GETDATE();
+
+-- 3. Xoá cột tên chủ phòng
+
+ALTER TABLE PHONGCHO DROPCLOUMN TenChuPhong
+
+--4. Đổi constraint TrangThai
+-- Xóa Constraint cũ (cần chạy nếu Constraint cũ đã tồn tại)
+
+ALTER TABLE PhongCho
+DROP CONSTRAINT CK_PhongCho_TrangThai; 
+
+-- Thêm Constraint mới
+
+ALTER TABLE PhongCho
+ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'playing', 'empty'));
+
+SELECT * FROM TinNhan
+
+-- Xóa constraint của TranDau và các bảng liên quan
+ALTER TABLE TranDau
+DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat1;
+
+ALTER TABLE TranDau
+DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat2;
+
+ALTER TABLE TranDau
+DROP CONSTRAINT CK_TranDau_KichThuoc;
+
+ALTER TABLE TranDau
+DROP CONSTRAINT DF_TranDau_TimeStart;
+
+ALTER TABLE Tau
+DROP CONSTRAINT FK_Tau_TranDau_IdTranDau;
+
+ALTER TABLE NuocDi
+DROP CONSTRAINT FK_NuocDi_TranDau_IdTranDau;
+
+ALTER TABLE TinNhan
+DROP CONSTRAINT FK_TinNhan_TranDau_IdTranDau;
+
+-- Xóa bảng NhanVat
+DROP TABLE NhanVat;
+
+-- Xóa bảng TranDau
+DROP TABLE TranDau;
+
+SELECT * FROM TinNhan
+
+ALTER TABLE BangXepHang
+DROP CONSTRAINT DF_BangXepHang_BacRank;
+
+ALTER TABLE BangXepHang
+DROP CONSTRAINT CK_BangXepHang_BacRank;
+ALTER TABLE BangXepHang
+DROP COLUMN BacRank;
+
+
+-- Sau đó chịu khó tạo bảng trận đấu mới dựa vào query khởi tạo của trận đấu ở phía trên nhé
+-- Khôi phục các constraint từ bảng con của TranDau
+ALTER TABLE Tau
+ADD CONSTRAINT FK_Tau_TranDau_IdTranDau
+FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
+
+ALTER TABLE NuocDi
+ADD CONSTRAINT FK_NuocDi_TranDau_IdTranDau
+FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
+
+ALTER TABLE TinNhan
+ADD CONSTRAINT FK_TinNhan_TranDau_IdTranDau
+FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);

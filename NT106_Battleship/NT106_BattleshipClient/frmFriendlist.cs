@@ -1,0 +1,69 @@
+﻿using System;
+using System.Windows.Forms;
+
+namespace NT106_BattleshipClient
+{
+    public partial class frmFriendlist : BaseForm
+    {
+        public frmFriendlist()
+        {
+            InitializeComponent();
+
+            // chống nháy form
+            EnableFormDoubleBuffering();
+            SetUseComposited(true);
+        }
+
+        private void frmFriendlist_Load(object sender, EventArgs e)
+        {
+            cbStatus.Items.Clear();
+            cbStatus.Items.Add("All");
+            cbStatus.Items.Add("Online");
+            cbStatus.Items.Add("Offline");
+            cbStatus.SelectedIndex = 0;
+
+            //Ẩn thanh tiêu đề nếu cần
+            // this.FormBorderStyle = FormBorderStyle.None;
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void cbStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlFriendlist_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void btnFind_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnView_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        //test chống nháy
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+
+
+            SetControlDoubleBuffered(pnlFriendlist);
+
+
+            SetControlDoubleBuffered(lvFriendlist);
+
+
+            SetDoubleBufferedForAllChildren(this);
+        }
+    }
+}

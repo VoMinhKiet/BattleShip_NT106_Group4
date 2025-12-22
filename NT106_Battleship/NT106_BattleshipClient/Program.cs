@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
@@ -16,7 +13,7 @@ namespace NT106_BattleshipClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmResult());
+            Application.Run(new frmLogin());
         }
     }
 }

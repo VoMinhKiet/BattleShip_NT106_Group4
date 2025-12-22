@@ -1,0 +1,6 @@
+@NT106_BattleshipServer_HostAddress = http://localhost:5074
+
+GET {{NT106_BattleshipServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
