@@ -96,47 +96,29 @@ namespace NT106_BattleshipClient
 
         private void btnChoiVoiMay_Click(object sender, EventArgs e)
         {
-            using (frmLobby Lobby = new frmLobby())
-            {
-                Lobby.LobbyReadyToShow += () =>
-                {
-                    this.Hide();
-                };
-                //this.Hide();
-                Lobby.ShowDialog();
-            }
-
-            this.Show();
+            OpenLobby();
         }
 
         private void btnChoiVoiNguoi_Click(object sender, EventArgs e)
         {
-            using (frmLobby Lobby = new frmLobby())
+            OpenLobby();
+        }
+
+        private void OpenLobby()
+        {
+            frmLobby lobby = new frmLobby();
+
+            lobby.LobbyReadyToShow += () =>
             {
-                Lobby.LobbyReadyToShow += () =>
-                {
-                    this.Hide();
-                };
-                //this.Hide();
-                Lobby.ShowDialog();
-            }
-            this.Show();
+                this.Hide();
+            };
 
-            //frmLobby lobby = new frmLobby();
+            lobby.FormClosed += (s, e) =>
+            {
+                this.Show();
+            };
 
-            //// Khi lobby sắp hiện → mới hide MainMenu
-            //lobby.LobbyReadyToShow += () =>
-            //{
-            //    this.Hide();
-            //};
-
-            //// Khi lobby đóng → MainMenu hiện lại
-            //lobby.FormClosed += (s, args) =>
-            //{
-            //    this.Show();
-            //};
-
-            //lobby.Show();
+            lobby.Show();
         }
 
         private void btnLogout_Click(object sender, EventArgs e)
