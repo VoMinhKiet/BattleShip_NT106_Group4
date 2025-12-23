@@ -36,12 +36,13 @@ namespace NT106_BattleshipClient
         {
             if (_connected) return;
 
+            btnGui.Enabled = false;
+
             _hub = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5074/chatHub")
                 .WithAutomaticReconnect()
                 .Build();
 
-            // Nhận tin nhắn từ server
             _hub.On<TinNhanDto>("NhanTinNhan", tin =>
             {
                 if (IsDisposed) return;
@@ -82,7 +83,20 @@ namespace NT106_BattleshipClient
                 NoiDung = txtTinNhan.Text.Trim()
             };
 
-            await _hub.InvokeAsync("GuiTinNhan", dto);
+            try
+            {
+                await _hub.InvokeAsync("GuiTinNhan", dto);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Không gửi được tin nhắn. Vui lòng thử lại!",
+                    "Chat Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return;
+            }
 
             txtTinNhan.Clear();
             txtTinNhan.Focus();

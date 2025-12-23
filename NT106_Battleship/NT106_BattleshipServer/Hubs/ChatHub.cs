@@ -32,51 +32,32 @@ namespace NT106_BattleshipServer.Hubs
 
         public async Task GuiTinNhan(TinNhanDto dto)
         {
-            try
+            if (dto == null || string.IsNullOrWhiteSpace(dto.NoiDung))
+                return;
+
+            var tinNhan = new TinNhan
             {
-                if (dto.IdTranDau != null)
-                {
-                    bool tranDauTonTai = await _db.TranDau
-                        .AnyAsync(t => t.Id == dto.IdTranDau.Value);
+                IdTranDau = dto.IdTranDau,
+                IdPhongCho = dto.IdPhongCho,
+                IdNguoiDung = dto.IdNguoiDung,
+                NoiDung = dto.NoiDung,
+                ThoiGian = DateTime.Now
+            };
 
-                    if (!tranDauTonTai)
-                    {
+            _db.TinNhans.Add(tinNhan);
+            await _db.SaveChangesAsync();
 
-                        await Clients.Group($"trandau_{dto.IdTranDau}")
-                            .SendAsync("NhanTinNhan", dto);
-                        return;
-                    }
-                }
+            dto.ThoiGian = tinNhan.ThoiGian;
 
-                var tinNhan = new TinNhan
-                {
-                    IdTranDau = dto.IdTranDau,
-                    IdPhongCho = dto.IdPhongCho,
-                    IdNguoiDung = dto.IdNguoiDung,
-                    NoiDung = dto.NoiDung,
-                    ThoiGian = DateTime.Now
-                };
-
-                _db.TinNhans.Add(tinNhan);
-                await _db.SaveChangesAsync();
-
-                dto.ThoiGian = tinNhan.ThoiGian;
-
-                if (dto.IdPhongCho != null)
-                {
-                    await Clients.Group($"phong_{dto.IdPhongCho}")
-                        .SendAsync("NhanTinNhan", dto);
-                }
-                else if (dto.IdTranDau != null)
-                {
-                    await Clients.Group($"trandau_{dto.IdTranDau}")
-                        .SendAsync("NhanTinNhan", dto);
-                }
+            if (dto.IdTranDau != null)
+            {
+                await Clients.Group($"trandau_{dto.IdTranDau}")
+                    .SendAsync("NhanTinNhan", dto);
             }
-            catch (Exception ex)
+            else if (dto.IdPhongCho != null)
             {
-                Console.WriteLine(ex.ToString());
-                throw;
+                await Clients.Group($"phong_{dto.IdPhongCho}")
+                    .SendAsync("NhanTinNhan", dto);
             }
         }
 
