@@ -709,6 +709,9 @@ namespace NT106_BattleshipClient
         }
         private async void Timer_Tick(object sender, EventArgs e)
         {
+            if (this.IsDisposed || !this.IsHandleCreated)
+                return;
+
             if (isLeftTimerRunning)
             {
                 if (leftTime.TotalSeconds <= 0)
@@ -814,23 +817,27 @@ namespace NT106_BattleshipClient
 
         private async void ScoreTracking()
         {
-            isLeftTimerRunning = false;
-            isRightTimerRunning = false;
+            if (opponentScore == 14)
+            {
 
-            IndexCurrentMatch();
-
+                isLeftTimerRunning = false;
+                isRightTimerRunning = false;
+                IndexCurrentMatch();
+                await SendBattleResultAsync(false);
+                frmResult frmResult = new frmResult("You LOSE", -1);
+                frmResult.ShowDialog();
+                this.Close();
+            }
             if (yourScore == 14)
             {
+                isLeftTimerRunning = false;
+                isRightTimerRunning = false;
+                IndexCurrentMatch();
                 await SendBattleResultAsync(true);
-                new frmResult("You WON!", 1).ShowDialog();
+                frmResult frmResult = new frmResult("You WON!", 1);
+                frmResult.ShowDialog();
+                this.Close();
             }
-            else if (opponentScore == 14)
-            {
-                await SendBattleResultAsync(false);
-                new frmResult("You LOSE", -1).ShowDialog();
-            }
-
-            this.Close();
         }
         private void SkillJackSparrow()
         {
