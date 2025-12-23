@@ -856,7 +856,7 @@ namespace NT106_BattleshipClient
 
         private async void frmIn_Battle_Load(object sender, EventArgs e)
         {
-            ChatSession.ChatBox.SetBattleContext(_idTranDau);
+            await ChatSession.ChatBox.SetBattleContextAsync(_idTranDau);
             ChatSession.ChatBox.LoadHistory();
 
 

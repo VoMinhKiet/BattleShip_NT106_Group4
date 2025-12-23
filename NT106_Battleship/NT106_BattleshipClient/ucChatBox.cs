@@ -82,15 +82,16 @@ namespace NT106_BattleshipClient
             }
         }
 
-        public async void SetBattleContext(int idTranDau)
+        public async Task SetBattleContextAsync(int idTranDau)
         {
             _idTranDau = idTranDau;
 
-            if (_hub.State == HubConnectionState.Connected)
+            if (_hub != null && _hub.State == HubConnectionState.Connected)
             {
                 await _hub.InvokeAsync("JoinTranDau", idTranDau);
             }
         }
+
 
         private async void btnGui_Click(object sender, EventArgs e)
         {
