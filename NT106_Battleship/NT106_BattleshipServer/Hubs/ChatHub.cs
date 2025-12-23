@@ -35,20 +35,6 @@ namespace NT106_BattleshipServer.Hubs
             if (dto == null || string.IsNullOrWhiteSpace(dto.NoiDung))
                 return;
 
-            var tinNhan = new TinNhan
-            {
-                IdTranDau = dto.IdTranDau,
-                IdPhongCho = dto.IdPhongCho,
-                IdNguoiDung = dto.IdNguoiDung,
-                NoiDung = dto.NoiDung,
-                ThoiGian = DateTime.Now
-            };
-
-            _db.TinNhans.Add(tinNhan);
-            await _db.SaveChangesAsync();
-
-            dto.ThoiGian = tinNhan.ThoiGian;
-
             if (dto.IdTranDau != null)
             {
                 await Clients.Group($"trandau_{dto.IdTranDau}")

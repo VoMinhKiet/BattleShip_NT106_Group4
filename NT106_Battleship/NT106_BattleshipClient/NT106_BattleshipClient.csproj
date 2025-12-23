@@ -191,6 +191,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatSession.cs" />
     <Compile Include="frmConnectionLost.cs">
       <SubType>Form</SubType>
     </Compile>

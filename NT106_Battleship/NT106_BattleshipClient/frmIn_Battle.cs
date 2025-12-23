@@ -852,8 +852,15 @@ namespace NT106_BattleshipClient
         {
             // Implement skill logic here
         }
+
+
         private async void frmIn_Battle_Load(object sender, EventArgs e)
         {
+            ChatSession.ChatBox.SetBattleContext(_idTranDau);
+            ChatSession.ChatBox.LoadHistory();
+
+
+
             this.FormBorderStyle = FormBorderStyle.None; // removes title bar
             this.WindowState = FormWindowState.Maximized; // maximize to full screen
 
@@ -897,28 +904,14 @@ namespace NT106_BattleshipClient
         {
 
 
-            if (_chatBox == null)
-            {
+            var chat = ChatSession.ChatBox;
 
-                _chatBox = new ucChatBox(_idPhongCho, _idTranDau);
+            if (!this.Controls.Contains(chat))
+                this.Controls.Add(chat);
 
-                _chatBox.Dock = DockStyle.None;
-                _chatBox.Anchor = AnchorStyles.None;
-
-                _chatBox.Location = new Point(
-                    (this.ClientSize.Width - _chatBox.Width) / 2,
-                (this.ClientSize.Height - _chatBox.Height) / 2
-                );
-
-                _chatBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-                this.Controls.Add(_chatBox);
-
-                await _chatBox.ConnectAsync();
-            }
-
-            _chatBox.Visible = !_chatBox.Visible;
-            _chatBox.BringToFront();
+            chat.LoadHistory();
+            chat.Visible = !chat.Visible;
+            chat.BringToFront();
         }
 
         private void RegisterBattleRankingHandler()

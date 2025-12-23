@@ -49,7 +49,10 @@ namespace NT106_BattleshipClient
 
                 BeginInvoke(new Action(() =>
                 {
-                    AppendMessage($"[{tin.TenNguoiDung}] : {tin.NoiDung}");
+                    string msg = $"[{tin.TenNguoiDung}] : {tin.NoiDung}";
+                    ChatSession.MessageHistory.Add(msg);
+                    AppendMessage(msg);
+
                 }));
             });
 
@@ -67,6 +70,26 @@ namespace NT106_BattleshipClient
 
             _connected = true;
             btnGui.Enabled = true;
+        }
+
+        public void LoadHistory()
+        {
+            rtbLichSuTinNhan.Clear();
+
+            foreach (var msg in ChatSession.MessageHistory)
+            {
+                AppendMessage(msg);
+            }
+        }
+
+        public async void SetBattleContext(int idTranDau)
+        {
+            _idTranDau = idTranDau;
+
+            if (_hub.State == HubConnectionState.Connected)
+            {
+                await _hub.InvokeAsync("JoinTranDau", idTranDau);
+            }
         }
 
         private async void btnGui_Click(object sender, EventArgs e)
