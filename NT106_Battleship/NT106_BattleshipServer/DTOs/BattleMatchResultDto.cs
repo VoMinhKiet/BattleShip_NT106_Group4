@@ -5,4 +5,6 @@
         public int IdNguoiDung { get; set; }
         public bool IsWin { get; set; }
     }
+
+
 }
