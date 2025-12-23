@@ -35,13 +35,16 @@ namespace NT106_BattleshipClient
         private bool _turnHandlerRegistered = false;
         private readonly TranDauDto _currentMatch;
         private readonly RoomDto _room;
+        private readonly LeaderBoardDto _LeaderBoard;
         private HubConnection _hub;
         private HubConnection _rankingHub;
         private bool _battleEnded = false;
+        private frmRoom _frmRoom;
+        private frmShip_Sorting _frmShip_Sorting;
 
 
         private bool _turnPopupOpen = false;
-        int random = new Random().Next(0, 2);       
+        int random = new Random().Next(0, 2);
 
 
         public frmIn_Battle(int[,] ShipPos, int[,] otherShipPos, RoomDto room, TranDauDto currentMatch, int size, HubConnection hub)
@@ -66,10 +69,9 @@ namespace NT106_BattleshipClient
             _room = room;
             _idPhongCho = room.Id;
             _idTranDau = currentMatch.Id;
-
             _hub = hub;
 
-                    _rankingHub = new HubConnectionBuilder()
+            _rankingHub = new HubConnectionBuilder()
               .WithUrl("http://localhost:5074/battleRankingHub")
               .WithAutomaticReconnect()
               .Build();
@@ -139,13 +141,13 @@ namespace NT106_BattleshipClient
             //ReceiveTurn();
             ReceiveHit();
         }
-        
-           
 
-            // register other handlers (hits)
-            
 
-            // now it's safe for host to decide/start tur
+
+        // register other handlers (hits)
+
+
+        // now it's safe for host to decide/start tur
         private void FrmIn_Battle_KeyDown(object sender, KeyEventArgs e)
         {
             // Toggle orientation when user presses 'R' (no UI indicator required)
@@ -236,7 +238,7 @@ namespace NT106_BattleshipClient
                 using (var p = new frmTurnPopUp("Opponent Turn!")) p.ShowDialog(this);
                 isRightTimerRunning = true;
             }
-            if(!_isHost)
+            if (!_isHost)
             {
                 _hub.On<bool>("Turn", (isHostTurn) =>
                 {
@@ -450,53 +452,53 @@ namespace NT106_BattleshipClient
 
             await HandleShotAsync(pos.X, pos.Y);
         }*/
-       /*private async Task HandleShotAsync(int row, int col, bool suppressTurnSwitch = false)
-        {
-            // bounds
-            if (row < 0 || col < 0 || row >= opponentGrid.GetLength(0) || col >= opponentGrid.GetLength(1))
-                return;
+        /*private async Task HandleShotAsync(int row, int col, bool suppressTurnSwitch = false)
+         {
+             // bounds
+             if (row < 0 || col < 0 || row >= opponentGrid.GetLength(0) || col >= opponentGrid.GetLength(1))
+                 return;
 
-            var btn = opponentGrid[row, col];
-            if (btn == null) return;
+             var btn = opponentGrid[row, col];
+             if (btn == null) return;
 
-            // only act on unrevealed cells
-            if (btn.BackColor != Color.LightBlue) return;
+             // only act on unrevealed cells
+             if (btn.BackColor != Color.LightBlue) return;
 
-            // disable to prevent double actions
-            btn.Enabled = false;
+             // disable to prevent double actions
+             btn.Enabled = false;
 
-            bool isHit = OpponentShipPos != null &&
-                         row >= 0 && row < OpponentShipPos.GetLength(0) &&
-                         col >= 0 && col < OpponentShipPos.GetLength(1) &&
-                         OpponentShipPos[row, col] == 1;
+             bool isHit = OpponentShipPos != null &&
+                          row >= 0 && row < OpponentShipPos.GetLength(0) &&
+                          col >= 0 && col < OpponentShipPos.GetLength(1) &&
+                          OpponentShipPos[row, col] == 1;
 
-            // update UI immediately
-            btn.BackColor = isHit ? Color.Red : Color.Green;
+             // update UI immediately
+             btn.BackColor = isHit ? Color.Red : Color.Green;
 
-            try
-            {
-                await _hub.InvokeAsync("Hit", _room.Id, row, col, isHit);
-            }
-            catch (Exception ex)
-            {
-                // revert UI on failure
-                btn.Enabled = true;
-                btn.BackColor = Color.LightBlue;
-                MessageBox.Show($"Failed to send hit for {row},{col}: {ex.Message}", "SignalR Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+             try
+             {
+                 await _hub.InvokeAsync("Hit", _room.Id, row, col, isHit);
+             }
+             catch (Exception ex)
+             {
+                 // revert UI on failure
+                 btn.Enabled = true;
+                 btn.BackColor = Color.LightBlue;
+                 MessageBox.Show($"Failed to send hit for {row},{col}: {ex.Message}", "SignalR Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                 return;
+             }
 
-            if (isHit)
-            {
-                yourScore++;
-                ScoreTracking();
-            }
-            else
-            {
-                if (!suppressTurnSwitch)
-                TurnSwitch();
-            }
-        }*/
+             if (isHit)
+             {
+                 yourScore++;
+                 ScoreTracking();
+             }
+             else
+             {
+                 if (!suppressTurnSwitch)
+                 TurnSwitch();
+             }
+         }*/
         /*public void ElizabethSwann(int row, int col)
         {
             // marshal to UI thread and run the async sequence
@@ -609,7 +611,7 @@ namespace NT106_BattleshipClient
             else if (OpponentShipPos[row, col] == 0 && btn.BackColor == Color.LightBlue)
             {
                 isHit = false;
-                
+
             }
             else if (btn.BackColor == Color.Red)
             {
@@ -617,49 +619,51 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-                try
+            try
+            {
+                if (isHit)
                 {
-                    if (isHit)
-                    {
-                        btn.BackColor = Color.Red; // hit
-                        await _hub.InvokeAsync("Hit", _room.Id, row, col, true);
-                        yourScore++;
-                        ScoreTracking();
-                        isHit = false;
-                        //return;
-                        TurnSwitch();
+                    btn.BackColor = Color.Red; // hit
+                    await _hub.InvokeAsync("Hit", _room.Id, row, col, true);
+                    yourScore++;
+                    ScoreTracking();
+                    isHit = false;
+                    //return;
+                    //TurnSwitch();
 
-                    }
-                    else if (!isHit)
-                    {
-                        btn.BackColor = Color.Green; // miss
-                        await _hub.InvokeAsync("Hit", _room.Id, row, col, false);
-                        TurnSwitch();
-
-                    }
                 }
-                catch (Exception ex)
+                else if (!isHit)
                 {
-                    // re-enable button on failure and show error for debugging
-                    btn.Enabled = true;
-                    MessageBox.Show($"Failed to send hit: {ex.Message}", "SignalR Invoke Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btn.BackColor = Color.Green; // miss
+                    await _hub.InvokeAsync("Hit", _room.Id, row, col, false);
+                    TurnSwitch();
+
                 }
+
+            }
+            catch (Exception ex)
+            {
+                // re-enable button on failure and show error for debugging
+                btn.Enabled = true;
+                MessageBox.Show($"Failed to send hit: {ex.Message}", "SignalR Invoke Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void ReceiveHit()
         {
-            // Ensure callback updates the YOUR grid and marshals to UI thread
             _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
+        {
+            if (YourShipPos[row, col] == 1 && isHit)
             {
-                if (YourShipPos[row, col] == 1 && isHit)
-                {
-                    playerGrid[row, col].BackColor = Color.Red;
-                    TurnSwitch();
-                } else
-                {
-                    playerGrid[row, col].BackColor = Color.Green;
-                    TurnSwitch();
-                }
-            });
+                playerGrid[row, col].BackColor = Color.Red;
+                opponentScore++;
+                ScoreTracking();
+            }
+            else
+            {
+                playerGrid[row, col].BackColor = Color.Green;
+                TurnSwitch();
+            }
+        });
         }
         public void BtnSkill_Click(object sender, EventArgs e)
         {
@@ -710,9 +714,18 @@ namespace NT106_BattleshipClient
                     lblLeftTimer.Text = "0";
                     isLeftTimerRunning = false;
                     isRightTimerRunning = false;
-                    MessageBox.Show("Time's up! You lose!!."); // ket thuc tran dau o day
+                    await Task.Delay(500);
                     await SendBattleResultAsync(false);
                     IndexCurrentMatch();
+                    int point = 1;
+                    if (_LeaderBoard.CapSao == 0)
+                    {
+                        point = 0;
+                    }
+                    else point = -1;
+
+                    frmResult frmResult = new frmResult("You LOSE", point);
+                    frmResult.Show();
                     this.Close();
                 }
                 leftTime = leftTime.Subtract(TimeSpan.FromSeconds(1));
@@ -725,15 +738,18 @@ namespace NT106_BattleshipClient
                     lblRightTimer.Text = "0";
                     isRightTimerRunning = false;
                     isLeftTimerRunning = false;
-                    MessageBox.Show("Time's up! You win!!."); // ket thuc tran dau o day
+                    await Task.Delay(500);
                     await SendBattleResultAsync(true);
                     IndexCurrentMatch();
+                    frmResult frmResult = new frmResult("You WON!", 1);
+                    frmResult.Show();
                     this.Close();
                 }
                 rightTime = rightTime.Subtract(TimeSpan.FromSeconds(1));
                 lblRightTimer.Text = rightTime.ToString(@"mm\:ss");
             }
         }
+
         /*private void ReceiveHit()
         {
             _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
@@ -802,24 +818,26 @@ namespace NT106_BattleshipClient
 
         private async void ScoreTracking()
         {
-            if (yourScore == 14)
-            {
-
-                MessageBox.Show("You Win!");
-                isLeftTimerRunning = false;
-                isRightTimerRunning = false;
-                IndexCurrentMatch();
-                await SendBattleResultAsync(true);
-                // ket thuc tran dau o day
-            }
             if (opponentScore == 14)
             {
-                MessageBox.Show("You Lose!");
+
                 isLeftTimerRunning = false;
                 isRightTimerRunning = false;
                 IndexCurrentMatch();
                 await SendBattleResultAsync(false);
-                // ket thuc tran dau o day
+                frmResult frmResult = new frmResult("You LOSE", 1);
+                frmResult.ShowDialog();
+                this.Close();
+            }
+            if (yourScore == 14)
+            {
+                isLeftTimerRunning = false;
+                isRightTimerRunning = false;
+                IndexCurrentMatch();
+                await SendBattleResultAsync(true);
+                frmResult frmResult = new frmResult("You WON!", 1);
+                frmResult.ShowDialog();
+                this.Close();
             }
         }
         private void SkillJackSparrow()
@@ -836,24 +854,20 @@ namespace NT106_BattleshipClient
         }
         private async void frmIn_Battle_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None; // removes title bar
+            this.WindowState = FormWindowState.Maximized; // maximize to full screen
+
             leftTime = TimeSpan.FromSeconds(180);
             rightTime = TimeSpan.FromSeconds(180);
 
             lblLeftTimer.Text = leftTime.ToString(@"mm\:ss");
             lblRightTimer.Text = rightTime.ToString(@"mm\:ss");
 
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
-            this.ControlBox = true;
-            this.MinimizeBox = true;
-            this.MaximizeBox = true;
-
-            this.WindowState = FormWindowState.Normal;
-
             timer = new Timer();
             timer.Interval = 1000; // every second
             timer.Tick += Timer_Tick;
             timer.Start(); // start automatically
-                           //await SubscribeAndSyncTurnAsync();
+
 
             if (_rankingHub.State == HubConnectionState.Disconnected)
             {
@@ -881,7 +895,7 @@ namespace NT106_BattleshipClient
 
         private async void btnTinNhan_Click(object sender, EventArgs e)
         {
-          
+
 
             if (_chatBox == null)
             {

@@ -230,15 +230,18 @@ namespace NT106_BattleshipClient
         //timer's here
         private void frmShip_Sorting_Load(object sender, EventArgs e)
         {
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
+
             leftTime = TimeSpan.FromSeconds(45);
             rightTime = TimeSpan.FromSeconds(45);
 
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
-            this.ControlBox = true;
-            this.MinimizeBox = true;
-            this.MaximizeBox = true;
+            //this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            //this.ControlBox = true;
+            //this.MinimizeBox = true;
+            //this.MaximizeBox = true;
 
-            this.WindowState = FormWindowState.Normal;
+            //this.WindowState = FormWindowState.Normal;
 
             timer = new Timer();
             timer.Interval = 1000; // every second
@@ -587,12 +590,14 @@ namespace NT106_BattleshipClient
                     {
 
                         frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, _hub);
+
+                        frmIn_Battle.FormClosed += (s, args) =>
+                        {
+                            this.Close();
+                        };
+
                         frmIn_Battle.Show();
                         this.Hide();
-                        
-                        
-                        
-
                     }
                 }));
             });

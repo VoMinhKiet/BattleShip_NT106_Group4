@@ -11,7 +11,7 @@ namespace NT106_BattleshipClient
         private Button btnPlayAgain;
         private Button btnReturn;
 
-        public frmResult(string resultText = "YOU WON/LOSE!", string pointText = "Point + ", int Point = 0)
+        public frmResult(string resultText = "YOU WON/LOSE!", int Point = 0)
         {
             InitializeComponent();
             // chống nháy form
@@ -39,7 +39,7 @@ namespace NT106_BattleshipClient
             // Point
             lbPoint = new Label()
             {
-                Text = pointText + Point,
+                Text = "Point " + Point,
                 Font = new Font("Segoe UI", 12, FontStyle.Regular),
                 AutoSize = false,
                 TextAlign = ContentAlignment.MiddleCenter,
@@ -82,7 +82,7 @@ namespace NT106_BattleshipClient
         {
             frmLobby LobbyControl = new frmLobby();
             LobbyControl.Show();
-            this.Hide(); //Should change to Close after testing
+            this.Close(); //Should change to Close after testing
 
 
         }
@@ -91,7 +91,7 @@ namespace NT106_BattleshipClient
         {
             frmMainMenu MainMenuControl = new frmMainMenu();
             MainMenuControl.Show();
-            this.Hide();
+            this.Close();
         }
 
         private void frmResult_Load(object sender, EventArgs e)
