@@ -205,7 +205,7 @@ CONSTRAINT DF_PhongCho_NgayTao DEFAULT GETDATE();
 
 -- 3. Xoá cột tên chủ phòng
 
-ALTER TABLE PHONGCHO DROPCLOUMN TenChuPhong
+ALTER TABLE PHONGCHO DROPColUMN TenChuPhong
 
 --4. Đổi constraint TrangThai
 -- Xóa Constraint cũ (cần chạy nếu Constraint cũ đã tồn tại)
