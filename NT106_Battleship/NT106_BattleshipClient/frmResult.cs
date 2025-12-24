@@ -80,8 +80,7 @@ namespace NT106_BattleshipClient
         }
         private void BtnPlayAgain_Click(object sender, EventArgs e)
         {
-            frmLobby LobbyControl = new frmLobby();
-            LobbyControl.Show();
+            FormManager.frmLobby.Show();
             this.Close(); //Should change to Close after testing
 
 
@@ -89,8 +88,8 @@ namespace NT106_BattleshipClient
 
         private void BtnReturn_Click(object sender, EventArgs e)
         {
-            frmMainMenu MainMenuControl = new frmMainMenu();
-            MainMenuControl.Show();
+            FormManager.frmMainMenu.Show();
+            FormManager.frmLobby.Close();
             this.Close();
         }
 

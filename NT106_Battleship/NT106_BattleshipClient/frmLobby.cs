@@ -24,7 +24,7 @@ namespace NT106_BattleshipClient
 
             _currentUserId = GlobalData.UserId;
             InitializeComponent();
-
+            FormManager.frmLobby = this;
             //// chống nháy form
             //EnableFormDoubleBuffering();
             //SetUseComposited(true);

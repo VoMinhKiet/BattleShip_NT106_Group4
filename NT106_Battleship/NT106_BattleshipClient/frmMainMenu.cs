@@ -13,6 +13,7 @@ namespace NT106_BattleshipClient
             ControlStyles.UserPaint |
             ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
+            FormManager.frmMainMenu = this;
 
             EnableFormDoubleBuffering();//test
 

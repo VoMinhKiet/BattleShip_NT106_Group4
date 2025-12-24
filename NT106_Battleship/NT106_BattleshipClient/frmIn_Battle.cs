@@ -39,8 +39,6 @@ namespace NT106_BattleshipClient
         private HubConnection _hub;
         private HubConnection _rankingHub;
         private bool _battleEnded = false;
-        private frmRoom _frmRoom;
-        private frmShip_Sorting _frmShip_Sorting;
 
 
         private bool _turnPopupOpen = false;
@@ -143,11 +141,6 @@ namespace NT106_BattleshipClient
         }
 
 
-
-        // register other handlers (hits)
-
-
-        // now it's safe for host to decide/start tur
         private void FrmIn_Battle_KeyDown(object sender, KeyEventArgs e)
         {
             // Toggle orientation when user presses 'R' (no UI indicator required)
@@ -156,72 +149,6 @@ namespace NT106_BattleshipClient
                 _ElizabethSwannSkillOrientationRow = !_ElizabethSwannSkillOrientationRow;
             }
         }
-        /*private void ReceiveTurn()
-        {
-            _hub.Remove("Turn");
-
-            _hub.On<bool>("Turn", (isHostTurn) =>
-            {
-                if (this.IsHandleCreated && this.InvokeRequired)
-                    this.BeginInvoke(new Action(() => HandleTurnMessage(isHostTurn)));
-                else
-                    HandleTurnMessage(isHostTurn);
-            });
-        }*/
-
-        /*private void HandleTurnMessage(bool isHostTurn)
-        {
-            // prevent multiple concurrent popups / handle reuse errors
-            if (_turnPopupOpen) return;
-            _turnPopupOpen = true;
-
-            try
-            {
-                bool yourTurn = (_isHost && isHostTurn) || (!_isHost && !isHostTurn);
-                isYourTurn = yourTurn;
-                isLeftTimerRunning = yourTurn;
-                isRightTimerRunning = !yourTurn;
-
-                string message = yourTurn ? "You go First!" : "You go Second!";
-                using (var popup = new frmTurnPopUp(message))
-                {
-                    // ShowDialog must run on UI thread; InvokeRequired checks already done by callers.
-                    popup.ShowDialog(this);
-                }
-            }
-            finally
-            {
-                _turnPopupOpen = false;
-            }
-        }
-        */
-
-        /* private async Task SubscribeAndSyncTurnAsync()
-        {
-            if (_hub == null) return;
-
-            // register handler immediately (so server pushes won't be missed)
-            //ReceiveTurn();
-
-            // query server for the current turn state (server keeps canonical state)
-            try
-            {
-                bool hostTurn = await _hub.InvokeAsync<bool>("GetTurnStatus", _room.Id);
-                // apply current state on UI thread
-                if (this.IsHandleCreated)
-                    this.BeginInvoke(new Action(() => HandleTurnMessage(hostTurn)));
-            }
-            catch
-            {
-                //bat loi exception hoac log lai tuy y 
-            }
-        } */
-
-
-
-
-
-
         public async void DecideTurn()
         {
             if (random == 0 && _isHost)
@@ -426,165 +353,6 @@ namespace NT106_BattleshipClient
                 }
             }
         }
-        /*private async void GridButton_Click(object sender, EventArgs e)
-        {
-            var btn = sender as Button;
-            if (btn == null) return;
-            if (!isYourTurn) return;
-
-            var pos = (Point)btn.Tag;
-            int row = pos.X;
-            int col = pos.Y;
-
-            if (_ElizabethSwannSkillUse)
-            {
-                _ElizabethSwannSkillUse = false;
-
-                ElizabethSwann(row, col);
-                return;
-            }
-            if (_HectorBarbossaSkillUse)
-            {
-                _HectorBarbossaSkillUse = false;
-                HectorBarbossa(row, col);
-                return;
-            }
-
-            await HandleShotAsync(pos.X, pos.Y);
-        }*/
-        /*private async Task HandleShotAsync(int row, int col, bool suppressTurnSwitch = false)
-         {
-             // bounds
-             if (row < 0 || col < 0 || row >= opponentGrid.GetLength(0) || col >= opponentGrid.GetLength(1))
-                 return;
-
-             var btn = opponentGrid[row, col];
-             if (btn == null) return;
-
-             // only act on unrevealed cells
-             if (btn.BackColor != Color.LightBlue) return;
-
-             // disable to prevent double actions
-             btn.Enabled = false;
-
-             bool isHit = OpponentShipPos != null &&
-                          row >= 0 && row < OpponentShipPos.GetLength(0) &&
-                          col >= 0 && col < OpponentShipPos.GetLength(1) &&
-                          OpponentShipPos[row, col] == 1;
-
-             // update UI immediately
-             btn.BackColor = isHit ? Color.Red : Color.Green;
-
-             try
-             {
-                 await _hub.InvokeAsync("Hit", _room.Id, row, col, isHit);
-             }
-             catch (Exception ex)
-             {
-                 // revert UI on failure
-                 btn.Enabled = true;
-                 btn.BackColor = Color.LightBlue;
-                 MessageBox.Show($"Failed to send hit for {row},{col}: {ex.Message}", "SignalR Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                 return;
-             }
-
-             if (isHit)
-             {
-                 yourScore++;
-                 ScoreTracking();
-             }
-             else
-             {
-                 if (!suppressTurnSwitch)
-                 TurnSwitch();
-             }
-         }*/
-        /*public void ElizabethSwann(int row, int col)
-        {
-            // marshal to UI thread and run the async sequence
-            if (this.IsHandleCreated && this.InvokeRequired)
-            {
-                this.BeginInvoke(new Action(() => { _ = ElizabethSwannAsync(row, col); }));
-            }
-            else
-            {
-                _ = ElizabethSwannAsync(row, col);
-            }
-        }*/
-
-        /*private async Task ElizabethSwannAsync(int row, int col)
-        {
-            if (!isYourTurn) return;
-
-            int rows = opponentGrid.GetLength(0);
-            int cols = opponentGrid.GetLength(1);
-
-            if (_ElizabethSwannSkillOrientationRow)
-            {
-                // click entire row from left to right
-                for (int c = 0; c < cols; c++)
-                {
-                    // stop if it's no longer your turn (safety)
-                    if (!isYourTurn) break;
-                    await HandleShotAsync(row, c, suppressTurnSwitch: true);
-                    await Task.Delay(40);
-                }
-            }
-            else
-            {
-                // click entire column from top to bottom
-                for (int r = 0; r < rows; r++)
-                {
-                    if (!isYourTurn) break;
-                    await HandleShotAsync(r, col, suppressTurnSwitch: true);
-                    await Task.Delay(40);
-                }
-            }
-
-            // Always switch turn after using the skill (regardless of hit/miss)
-            TurnSwitch();
-        }*/
-
-        /*public void HectorBarbossa(int row, int col)
-        {
-            if (this.IsHandleCreated && this.InvokeRequired)
-            {
-                this.BeginInvoke(new Action(() => { _ = HectorBarbossaAsync(row, col); }));
-            }
-            else
-            {
-                _ = HectorBarbossaAsync(row, col);
-            }
-        }*/
-        /*private async Task HectorBarbossaAsync(int row, int col)
-        {
-            if (!isYourTurn) return;
-
-            int rows = opponentGrid.GetLength(0);
-            int cols = opponentGrid.GetLength(1);
-
-            // iterate a 3x3 area centered on (row,col)
-            for (int r = row - 1; r <= row + 1; r++)
-            {
-                for (int c = col - 1; c <= col + 1; c++)
-                {
-                    if (r < 0 || c < 0 || r >= rows || c >= cols) continue;
-
-                    // stop early if turn changed (safety)
-                    if (!isYourTurn) break;
-
-                    await HandleShotAsync(r, c, suppressTurnSwitch: true);
-
-                    // small delay to avoid flooding server; adjust if needed
-                    await Task.Delay(40);
-                }
-
-                if (!isYourTurn) break;
-            }
-
-            // Always switch turn after using the skill (regardless of hit/miss)
-            TurnSwitch();
-        }*/
         private async void GridButton_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
@@ -750,45 +518,7 @@ namespace NT106_BattleshipClient
             }
         }
 
-        /*private void ReceiveHit()
-        {
-            _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
-            {
-                if (this.IsHandleCreated)
-                {
-                    this.BeginInvoke(new Action(() =>
-                    {
-                        // update UI quickly, then perform any turn switching without blocking
-                        _ = ProcessReceiveHitAsync(row, col, isHit);
-                    }));
-                }
-                else
-                {
-                    _ = ProcessReceiveHitAsync(row, col, isHit);
-                }
-            });
-        }*/
-        /*private async Task ProcessReceiveHitAsync(int row, int col, bool isHit)
-        {
-            Button btn = playerGrid[row, col];
-            if (btn != null)
-            {
-                btn.Enabled = false;
-                if (isHit)
-                {
-                    btn.BackColor = Color.Red;
-                    opponentScore++;
-                    ScoreTracking();
-                    // do not change turn on hit
-                }
-                else
-                {
-                    btn.BackColor = Color.Green;
-                    // fire-and-forget turn switch (TurnSwitchAsync returns completed task)
-                    TurnSwitch();
-                }
-            }
-        }*/
+      
         private void TurnSwitch()
         {
             // flip local flag
@@ -825,7 +555,7 @@ namespace NT106_BattleshipClient
                 isRightTimerRunning = false;
                 IndexCurrentMatch();
                 await SendBattleResultAsync(false);
-                frmResult frmResult = new frmResult("You LOSE", 1);
+                frmResult frmResult = new frmResult("You LOSE", -1);
                 frmResult.ShowDialog();
                 this.Close();
             }
