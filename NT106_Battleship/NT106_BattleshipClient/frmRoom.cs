@@ -63,6 +63,9 @@ namespace NT106_BattleshipClient
 
         private async void frmRoom_Load(object sender, EventArgs e)
         {
+            ChatSession.Init(_room.Id);
+            await ChatSession.ChatBox.ConnectAsync();
+
             // Đảm bảo handle đã được tạo
             if (!this.IsHandleCreated)
                 this.CreateControl();
@@ -334,17 +337,19 @@ namespace NT106_BattleshipClient
         // Chat + chọn nhân vật
         // ============================
         private ucChatBox _chatBox;
+
         private async void btnTinNhan_Click(object sender, EventArgs e)
         {
-            if (_chatBox == null)
+            var chat = ChatSession.ChatBox;
+
+            if (!this.Controls.Contains(chat))
             {
-                _chatBox = new ucChatBox(_room.Id);
-                this.Controls.Add(_chatBox);
-                await _chatBox.ConnectAsync();
+                this.Controls.Add(chat);
             }
 
-            _chatBox.BringToFront();
-            _chatBox.Visible = !_chatBox.Visible;
+            chat.LoadHistory();
+            chat.Visible = !chat.Visible;
+            chat.BringToFront();
         }
 
         private async void btnNVChuPhong_Click(object sender, EventArgs e)

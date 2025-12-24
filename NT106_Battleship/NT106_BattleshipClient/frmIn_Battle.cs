@@ -10,6 +10,8 @@ namespace NT106_BattleshipClient
 {
     public partial class frmIn_Battle : BaseForm
     {
+        private int _resultSent = 0;
+
         private Timer timer;
         private TimeSpan leftTime;
         private TimeSpan rightTime;
@@ -475,6 +477,9 @@ namespace NT106_BattleshipClient
         }
         private async void Timer_Tick(object sender, EventArgs e)
         {
+            if (this.IsDisposed || !this.IsHandleCreated)
+                return;
+
             if (isLeftTimerRunning)
             {
                 if (leftTime.TotalSeconds <= 0)
@@ -482,23 +487,17 @@ namespace NT106_BattleshipClient
                     lblLeftTimer.Text = "0";
                     isLeftTimerRunning = false;
                     isRightTimerRunning = false;
-                    await Task.Delay(500);
-                    await SendBattleResultAsync(false);
-                    IndexCurrentMatch();
-                    int point = 1;
-                    if (_LeaderBoard.CapSao == 0)
-                    {
-                        point = 0;
-                    }
-                    else point = -1;
 
-                    frmResult frmResult = new frmResult("You LOSE", point);
-                    frmResult.Show();
-                    this.Close();
+                    // ÉP THUA
+                    opponentScore = 14;
+                    ScoreTracking();
+                    return;
                 }
+
                 leftTime = leftTime.Subtract(TimeSpan.FromSeconds(1));
                 lblLeftTimer.Text = leftTime.ToString(@"mm\:ss");
             }
+
             if (isRightTimerRunning)
             {
                 if (rightTime.TotalSeconds <= 0)
@@ -506,13 +505,13 @@ namespace NT106_BattleshipClient
                     lblRightTimer.Text = "0";
                     isRightTimerRunning = false;
                     isLeftTimerRunning = false;
-                    await Task.Delay(500);
-                    await SendBattleResultAsync(true);
-                    IndexCurrentMatch();
-                    frmResult frmResult = new frmResult("You WON!", 1);
-                    frmResult.Show();
-                    this.Close();
+
+                    // ÉP THẮNG
+                    yourScore = 14;
+                    ScoreTracking();
+                    return;
                 }
+
                 rightTime = rightTime.Subtract(TimeSpan.FromSeconds(1));
                 lblRightTimer.Text = rightTime.ToString(@"mm\:ss");
             }
@@ -582,8 +581,15 @@ namespace NT106_BattleshipClient
         {
             // Implement skill logic here
         }
+
+
         private async void frmIn_Battle_Load(object sender, EventArgs e)
         {
+            await ChatSession.ChatBox.SetBattleContextAsync(_idTranDau);
+            ChatSession.ChatBox.LoadHistory();
+
+
+
             this.FormBorderStyle = FormBorderStyle.None; // removes title bar
             this.WindowState = FormWindowState.Maximized; // maximize to full screen
 
@@ -627,28 +633,14 @@ namespace NT106_BattleshipClient
         {
 
 
-            if (_chatBox == null)
-            {
+            var chat = ChatSession.ChatBox;
 
-                _chatBox = new ucChatBox(_idPhongCho, _idTranDau);
+            if (!this.Controls.Contains(chat))
+                this.Controls.Add(chat);
 
-                _chatBox.Dock = DockStyle.None;
-                _chatBox.Anchor = AnchorStyles.None;
-
-                _chatBox.Location = new Point(
-                    (this.ClientSize.Width - _chatBox.Width) / 2,
-                (this.ClientSize.Height - _chatBox.Height) / 2
-                );
-
-                _chatBox.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-                this.Controls.Add(_chatBox);
-
-                await _chatBox.ConnectAsync();
-            }
-
-            _chatBox.Visible = !_chatBox.Visible;
-            _chatBox.BringToFront();
+            chat.LoadHistory();
+            chat.Visible = !chat.Visible;
+            chat.BringToFront();
         }
 
         private void RegisterBattleRankingHandler()
@@ -681,25 +673,23 @@ namespace NT106_BattleshipClient
 
         private async Task SendBattleResultAsync(bool isWin)
         {
-            if (_battleEnded) return;
-            _battleEnded = true;
+            if (System.Threading.Interlocked.CompareExchange(ref _resultSent, 1, 0) != 0)
+                return;
 
-            // gửi cho bản thân
+            if (!_isHost) return;
+
+            int hostId = _room.IDChuPhong;
+            int guestId = _room.IDKhach.GetValueOrDefault();
+
             await _rankingHub.InvokeAsync("FinishBattle", new
             {
-                IdNguoiDung = GlobalData.UserId,
+                IdNguoiDung = hostId,
                 IsWin = isWin
             });
 
-            // gửi cho đối thủ (đảo ngược kết quả)
-            int opponentId = (_currentUserId == _room.IDChuPhong)
-                ? _room.IDKhach.GetValueOrDefault()
-                : _room.IDChuPhong;
-
-
             await _rankingHub.InvokeAsync("FinishBattle", new
             {
-                IdNguoiDung = opponentId,
+                IdNguoiDung = guestId,
                 IsWin = !isWin
             });
         }

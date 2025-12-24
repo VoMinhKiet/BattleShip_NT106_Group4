@@ -36,19 +36,23 @@ namespace NT106_BattleshipClient
         {
             if (_connected) return;
 
+            btnGui.Enabled = false;
+
             _hub = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5074/chatHub")
                 .WithAutomaticReconnect()
                 .Build();
 
-            // Nhận tin nhắn từ server
             _hub.On<TinNhanDto>("NhanTinNhan", tin =>
             {
                 if (IsDisposed) return;
 
                 BeginInvoke(new Action(() =>
                 {
-                    AppendMessage($"[{tin.TenNguoiDung}] : {tin.NoiDung}");
+                    string msg = $"[{tin.TenNguoiDung}] : {tin.NoiDung}";
+                    ChatSession.MessageHistory.Add(msg);
+                    AppendMessage(msg);
+
                 }));
             });
 
@@ -68,6 +72,27 @@ namespace NT106_BattleshipClient
             btnGui.Enabled = true;
         }
 
+        public void LoadHistory()
+        {
+            rtbLichSuTinNhan.Clear();
+
+            foreach (var msg in ChatSession.MessageHistory)
+            {
+                AppendMessage(msg);
+            }
+        }
+
+        public async Task SetBattleContextAsync(int idTranDau)
+        {
+            _idTranDau = idTranDau;
+
+            if (_hub != null && _hub.State == HubConnectionState.Connected)
+            {
+                await _hub.InvokeAsync("JoinTranDau", idTranDau);
+            }
+        }
+
+
         private async void btnGui_Click(object sender, EventArgs e)
         {
             if (!_connected || string.IsNullOrWhiteSpace(txtTinNhan.Text))
@@ -82,7 +107,20 @@ namespace NT106_BattleshipClient
                 NoiDung = txtTinNhan.Text.Trim()
             };
 
-            await _hub.InvokeAsync("GuiTinNhan", dto);
+            try
+            {
+                await _hub.InvokeAsync("GuiTinNhan", dto);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "Không gửi được tin nhắn. Vui lòng thử lại!",
+                    "Chat Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+                return;
+            }
 
             txtTinNhan.Clear();
             txtTinNhan.Focus();
