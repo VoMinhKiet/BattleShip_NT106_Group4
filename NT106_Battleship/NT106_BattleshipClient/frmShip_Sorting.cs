@@ -20,8 +20,8 @@ namespace NT106_BattleshipClient
         private bool isLeftTimerRunning = true;
         private bool isRightTimerRunning = true;
         private Button[,] playerGrid = new Button[10, 10];
-        private int[,] ShipPos = new int[11, 11]; //1 = có tàu ở ô [x, y]
-        private int[,] otherShipPos = new int[11, 11];
+        private int[,] ShipPos = new int[10, 10]; //1 = có tàu ở ô [x, y]
+        private int[,] otherShipPos = new int[10, 10];
         private bool dragging = false;
         private Point dragCursor;
         private Point dragStart;
@@ -39,6 +39,11 @@ namespace NT106_BattleshipClient
         private readonly TranDauDto _currentMatch;
         private readonly RoomDto _room;
         private HubConnection _hub;
+        public Panel Ship5;
+        public Panel Ship4;
+        public Panel Ship3;
+        public Panel Ship2;
+        public bool AutoSorted = false;
         public frmShip_Sorting(RoomDto room, TranDauDto currentMatch, int size, HubConnection hub)
         {
 
@@ -66,10 +71,10 @@ namespace NT106_BattleshipClient
             pnlYourGrid.Top = (this.ClientSize.Height - pnlYourGrid.Bottom / 4);
             CreateTopPanel();
             CreateGrid(pnlYourGrid, playerGrid);
-            Panel Ship5 = CreateShip(1, 5, 0);
-            Panel Ship4 = CreateShip(1, 4, 1);
-            Panel Ship3 = CreateShip(1, 3, 2);
-            Panel Ship2 = CreateShip(1, 2, 3);
+            Ship5 = CreateShip(1, 5, 0);
+            Ship4 = CreateShip(1, 4, 1);
+            Ship3 = CreateShip(1, 3, 2);
+            Ship2 = CreateShip(1, 2, 3);
             this.Load += frmShip_Sorting_Load;
         }
         public void CreateTopPanel()
@@ -282,15 +287,18 @@ namespace NT106_BattleshipClient
             for (int size = 2; size <= 5; size++)
             {
                 if (orientations[size] == 1)
+                   
                 {
-                    for (int i = rowIndices[size]; i <= rowIndices[size] + size - 1; i++)
+                    MessageBox.Show($"Ship size {size} at Row {colIndices[size]} , Col {rowIndices[size]} , Vertical");
+                    for (int i = rowIndices[size]; i < rowIndices[size] + size; i++)
                     {
                         ShipPos[i, colIndices[size]] = 1;
                     }
                 }
                 else
                 {
-                    for (int i = colIndices[size]; i <= colIndices[size] + size - 1; i++)
+                    MessageBox.Show($"Ship size {size} at Row {colIndices[size]} , Col {rowIndices[size]} , Horizontal");
+                    for (int i = colIndices[size]; i < colIndices[size] + size; i++)
                     {
                         ShipPos[rowIndices[size], i] = 1;
                     }
@@ -341,7 +349,207 @@ namespace NT106_BattleshipClient
         }
         private void BtnAutoSort_Click(object sender, EventArgs e)
         {
-            //autosort function here
+            Random _randomPos = new Random();
+            Random _randomOri = new Random();
+            bool ShipCurrentPlaced = false;
+            if (AutoSorted == false)
+            {
+                for (int count = 0; count <= 3; count++)
+                {
+                    ShipCurrentPlaced = false;
+                    for (int Y = 0; Y < mapsize && !ShipCurrentPlaced; Y++)
+                    {
+                        for (int X = 0; X < mapsize; X++)
+                        {
+                            int randomPos = _randomPos.Next(0, 15); //  1 = place
+                            if (randomPos == 1 && playerGrid[Y, X].BackColor == Color.LightBlue)
+                            {
+                                int randomOri = _randomOri.Next(0, 2); // 0 = horizontal 1 = vertical
+                                if (count == 0) //ship 5
+                                {
+                                    if (randomOri == 1) //vertical
+                                    {
+                                        if (Y + 4 < mapsize &&
+                                            playerGrid[Y + 1, X].BackColor == Color.LightBlue &&
+                                            playerGrid[Y + 2, X].BackColor == Color.LightBlue &&
+                                            playerGrid[Y + 3, X].BackColor == Color.LightBlue &&
+                                            playerGrid[Y + 4, X].BackColor == Color.LightBlue)
+                                        {
+                                            rowIndices[5] = Y;
+                                            colIndices[5] = X;
+                                            orientations[5] = 1;
+                                            //MessageBox.Show("Placed ship 5 vertically at " + Y + "," + X);
+                                            for (int i = Y; i <= Y + 4; i++)
+                                            {
+                                                playerGrid[i, X].BackColor = Color.Purple;// them return neu khong no se fill ca grid
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                    else //horizontal
+                                    {
+                                        if (X + 4 < mapsize &&
+                                            playerGrid[Y, X + 1].BackColor == Color.LightBlue &&
+                                            playerGrid[Y, X + 2].BackColor == Color.LightBlue &&
+                                            playerGrid[Y, X + 3].BackColor == Color.LightBlue &&
+                                            playerGrid[Y, X + 4].BackColor == Color.LightBlue)
+                                        {
+                                            rowIndices[5] = Y;
+                                            colIndices[5] = X;
+                                            orientations[5] = 0;
+                                            //MessageBox.Show("Placed ship 5 horizontally at " + Y + "," + X);
+                                            for (int i = X; i <= X + 4; i++)
+                                            {
+                                                playerGrid[Y, i].BackColor = Color.Purple;
+
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (count == 1) //ship 4
+                                {
+                                    if (randomOri == 1) //vertical
+                                    {
+                                        if (Y + 3 < mapsize &&
+                                            playerGrid[Y + 1, X].BackColor == Color.LightBlue &&
+                                            playerGrid[Y + 2, X].BackColor == Color.LightBlue &&
+                                            playerGrid[Y + 3, X].BackColor == Color.LightBlue)
+
+                                        {
+                                            rowIndices[4] = Y;
+                                            colIndices[4] = X;
+                                            orientations[4] = 1;
+                                            for (int i = Y; i
+                                                <= Y + 3; i++)
+                                            {
+                                                playerGrid[i, X].BackColor = Color.Blue;
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                    else //horizontal
+                                    {
+                                        if (X + 3 < mapsize &&
+                                            playerGrid[Y, X + 1].BackColor == Color.LightBlue &&
+                                            playerGrid[Y, X + 2].BackColor == Color.LightBlue &&
+                                            playerGrid[Y, X + 3].BackColor == Color.LightBlue)
+                                        {
+                                            rowIndices[4] = Y;
+                                            colIndices[4] = X;
+                                            orientations[4] = 0;
+                                            for (int i = X; i <= X + 3; i++)
+                                            {
+                                                playerGrid[Y, i].BackColor = Color.Blue;
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (count == 2) //ship 3
+                                {
+                                    if (randomOri == 1) //vertical
+                                    {
+                                        if (Y + 2 < mapsize &&
+                                            playerGrid[Y + 1, X].BackColor == Color.LightBlue &&
+                                            playerGrid[Y + 2, X].BackColor == Color.LightBlue)
+                                        {
+                                            rowIndices[3] = Y;
+                                            colIndices[3] = X;
+                                            orientations[3] = 1;
+                                            for (int i = Y; i <= Y + 2; i++)
+                                            {
+                                                playerGrid[i, X].BackColor = Color.Yellow;
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                    else //horizontal
+                                    {
+                                        if (X + 2 < mapsize &&
+                                            playerGrid[Y, X + 1].BackColor == Color.LightBlue &&
+                                            playerGrid[Y, X + 2].BackColor == Color.LightBlue)
+                                        {
+                                            rowIndices[3] = Y;
+                                            colIndices[3] = X;
+                                            orientations[3] = 0;
+                                            for (int i = X; i <= X + 2; i++)
+                                            {
+                                                playerGrid[Y, i].BackColor = Color.Yellow;
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (count == 3) //ship 2
+                                {
+                                    if (randomOri == 3) //vertical
+                                    {
+                                        if (Y + 1 < mapsize &&
+                                            playerGrid[Y + 1, X].BackColor == Color.LightBlue)
+
+                                        {
+                                            rowIndices[2] = Y;
+                                            colIndices[2] = X;
+                                            orientations[2] = 1;
+                                            for (int i = Y; i <= Y + 1; i++)
+                                            {
+                                                playerGrid[i, X].BackColor = Color.Orange;
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                    else //horizontal
+                                    {
+                                        if (X + 1 < mapsize &&
+                                            playerGrid[Y, X + 1].BackColor == Color.LightBlue)
+                                        {
+                                            rowIndices[2] = Y;
+                                            colIndices[2] = X;
+                                            orientations[2] = 0;
+                                            for (int i = X; i <= X + 1; i++)
+                                            {
+                                                playerGrid[Y, i].BackColor = Color.Orange;
+                                            }
+                                            ShipCurrentPlaced = true;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                    }
+                }
+                this.Controls.Remove(Ship5);
+                Ship5.Dispose();
+                this.Controls.Remove(Ship4);
+                Ship4.Dispose();
+                this.Controls.Remove(Ship3);
+                Ship3.Dispose();
+                this.Controls.Remove(Ship2);
+                Ship2.Dispose();
+            }
+            if (AutoSorted == true)
+            {
+                AutoSorted = false;
+                for (int Y = 0; Y < mapsize; Y++)
+                {
+                    for (int X = 0; X < mapsize; X++)
+                    {
+                        playerGrid[Y, X].BackColor = Color.LightBlue;
+                    }
+                }
+                BtnAutoSort_Click(sender, e);
+            }
+            AutoSorted = true;
         }
 
         private Panel CreateShip(int col, int row, int offset)
