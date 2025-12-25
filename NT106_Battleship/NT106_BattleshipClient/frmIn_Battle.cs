@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using NT106_BattleshipClient.Models;
+using NT106_BattleshipClient.Services;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -46,6 +47,7 @@ namespace NT106_BattleshipClient
         private bool _turnPopupOpen = false;
         int random = new Random().Next(0, 2);
 
+        private readonly TranDauApiService _tranDauApi = new TranDauApiService();
 
         public frmIn_Battle(int[,] ShipPos, int[,] otherShipPos, RoomDto room, TranDauDto currentMatch, int size, HubConnection hub)
         {
@@ -549,10 +551,22 @@ namespace NT106_BattleshipClient
         {
             if (opponentScore == 14)
             {
-
                 isLeftTimerRunning = false;
                 isRightTimerRunning = false;
-                IndexCurrentMatch();
+
+                //IndexCurrentMatch();
+
+                if (_currentMatch.Id > 0) // Chỉ gọi nếu đã có ID hợp lệ
+                {
+                    // Mình thua -> Winner là đối thủ
+                    int winnerId = (_currentUserId == _currentMatch.IdPlayer1)
+                                    ? _currentMatch.IdPlayer2 ?? 0
+                                    : _currentMatch.IdPlayer1;
+
+                    // Gọi API cập nhật Winner
+                    await _tranDauApi.EndMatchAsync(_currentMatch.Id, winnerId);
+                }
+
                 await SendBattleResultAsync(false);
                 frmResult frmResult = new frmResult("You LOSE", -1);
                 frmResult.ShowDialog();
@@ -562,7 +576,15 @@ namespace NT106_BattleshipClient
             {
                 isLeftTimerRunning = false;
                 isRightTimerRunning = false;
-                IndexCurrentMatch();
+
+                //IndexCurrentMatch();
+
+                if (_currentMatch.Id > 0)
+                {
+                    // Mình thắng -> Winner là mình
+                    await _tranDauApi.EndMatchAsync(_currentMatch.Id, _currentUserId);
+                }
+
                 await SendBattleResultAsync(true);
                 frmResult frmResult = new frmResult("You WON!", 1);
                 frmResult.ShowDialog();

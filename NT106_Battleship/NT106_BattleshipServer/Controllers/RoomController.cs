@@ -133,6 +133,7 @@ namespace NT106_BattleshipServer.Controllers
         }
 
         // Người chơi rời phòng
+        // DELETE api/room/leave
         [HttpDelete("leave")]
         public async Task<IActionResult> LeaveRoom(int roomId, int userId)
         {
@@ -140,33 +141,68 @@ namespace NT106_BattleshipServer.Controllers
             if (room == null)
                 return NotFound(new { message = "Phòng không tồn tại" });
 
-            // Nếu host rời → xoá phòng
+            // KHI HOST RỜI
             if (room.IDChuPhong == userId)
             {
-                room.TrangThai = "empty";
-                room.IDKhach = null;
+                // TRƯỜNG HỢP 1: Chưa bắt đầu game (Waiting hoặc Full)
+                // -> Xóa luôn khỏi Database cho sạch
+                if (room.TrangThai == "waiting" || room.TrangThai == "full")
+                {
+                    _context.Rooms.Remove(room);
+                    await _context.SaveChangesAsync();
 
-                await _context.SaveChangesAsync();
+                    await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+                    await _hubContext.Clients.All.SendAsync("RoomDeleted", roomId);
 
-                await _hubContext.Clients.All.SendAsync("RoomListUpdated");
-                await _hubContext.Clients.All.SendAsync("RoomDeleted", roomId);
+                    return Ok(new { message = "Phòng chưa chơi -> Đã xóa vĩnh viễn" });
+                }
 
-                return Ok(new { message = "Chủ phòng rời — phòng đã đóng" });
+                // TRƯỜNG HỢP 2: Đang chơi hoặc Đã chơi xong (Playing)
+                // -> Giữ lại xác phòng, set thành empty
+                else
+                {
+                    room.TrangThai = "empty";
+                    room.IDKhach = null;
+                    await _context.SaveChangesAsync();
+
+                    await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+                    await _hubContext.Clients.All.SendAsync("RoomDeleted", roomId);
+
+                    return Ok(new { message = "Phòng đã chơi -> Set thành empty" });
+                }
             }
 
-            // Nếu guest rời → phòng trở lại waiting
+            // KHI KHÁCH RỜI
             if (room.IDKhach == userId)
             {
-                room.IDKhach = null;
-                room.TrangThai = "waiting";
+                // TRƯỜNG HỢP 1: Chưa chơi (đang chờ start) -> Khách thoát thì trạng thái phong về waiting
+                if (room.TrangThai == "full" || room.TrangThai == "waiting")
+                {
+                    room.IDKhach = null;
+                    room.TrangThai = "waiting";
 
-                await _context.SaveChangesAsync();
-                var dto = await BuildRoomDto(room);
+                    await _context.SaveChangesAsync();
+                    var dto = await BuildRoomDto(room);
 
-                await _hubContext.Clients.All.SendAsync("RoomListUpdated");
-                await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
+                    await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+                    await _hubContext.Clients.All.SendAsync("RoomUpdated", dto);
 
-                return Ok(new { message = "Khách rời phòng", room = dto });
+                    return Ok(new { message = "Khách rời phòng chờ -> Về Waiting", room = dto });
+                }
+
+                // TRƯỜNG HỢP 2: Đang chơi (Playing) -> Khách thoát xem như giải tán (Empty)
+                else
+                {
+                    room.IDKhach = null;
+                    room.TrangThai = "empty";
+
+                    await _context.SaveChangesAsync();
+
+                    await _hubContext.Clients.All.SendAsync("RoomListUpdated");
+                    await _hubContext.Clients.All.SendAsync("RoomDeleted", roomId);
+
+                    return Ok(new { message = "Khách rời khi đang chơi -> Hủy phòng" });
+                }
             }
 
             return BadRequest(new { message = "Người này không nằm trong phòng" });

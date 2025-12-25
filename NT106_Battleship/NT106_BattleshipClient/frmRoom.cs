@@ -34,6 +34,8 @@ namespace NT106_BattleshipClient
         private HubConnection _hub;
         public int mapsize;
         public int roomId;
+
+        private readonly TranDauApiService _tranDauApi = new TranDauApiService();
         public frmRoom(RoomDto room, int userId, string username)
         {
             // Tối ưu vẽ form
@@ -210,8 +212,14 @@ namespace NT106_BattleshipClient
         {
             switch (command)
             {
-                case "SET_HOST_CHAR": lblNhanVatChuPhong.Text = "Nhân vật: " + value; break;
-                case "SET_GUEST_CHAR": lblNhanVatKhach.Text = "Nhân vật: " + value; break;
+                case "SET_HOST_CHAR": 
+                    lblNhanVatChuPhong.Text = "Nhân vật: " + value;
+                    _currentMatch.TenNV1 = value;
+                    break;
+                case "SET_GUEST_CHAR": 
+                    lblNhanVatKhach.Text = "Nhân vật: " + value;
+                    _currentMatch.TenNV2 = value;
+                    break;
                 case "SET_SIZE":
                     _isUpdatingUI = true;
                     if (cbKichThuoc.Items.Contains(value))
@@ -223,6 +231,13 @@ namespace NT106_BattleshipClient
                         else if (value == "8x8") mapsize = 8;
                     }
                     _isUpdatingUI = false;
+                    break;
+                case "SET_MATCH_ID":
+                    if (int.TryParse(value, out int matchId))
+                    {
+                        _currentMatch.Id = matchId;
+                        // Guest đã nhận được ID trận đấu từ Host!
+                    }
                     break;
                 case "REQUEST_INFO":
                     // Chỉ có Host mới cần trả lời câu hỏi này
@@ -467,6 +482,39 @@ namespace NT106_BattleshipClient
                 return;
             }
 
+            try
+            {
+                var req = new CreateTranDauRequest
+                {
+                    IdPlayer1 = _room.IDChuPhong,
+                    IdPlayer2 = _room.IDKhach ?? 0,
+                    TenNV1 = _currentMatch.TenNV1,
+                    TenNV2 = _currentMatch.TenNV2,
+                    KichThuoc = mapsize,
+                    IdPhongCho = _room.Id
+                };
+
+                // Gọi Server tạo trận
+                var tranDauMoi = await _tranDauApi.CreateMatchAsync(req);
+
+                if (tranDauMoi != null)
+                {
+                    // 1. Host tự lưu ID trận đấu
+                    _currentMatch.Id = tranDauMoi.Id;
+
+                    // 2. Gửi ID trận đấu cho Guest biết
+                    await SendUISyncCommand("SET_MATCH_ID", tranDauMoi.Id.ToString());
+                }
+
+                // Thay đôỉ trạng thái phòng khi bắt đầu trận đấu
+                await _roomApi.StartGameAsync(_room.Id);
+            }
+            catch (Exception ex)
+            {
+                // Lỗi lưu lịch sử không ảnh hưởng game, chỉ hiện thông báo hoặc bỏ qua
+                MessageBox.Show("Lỗi tạo lịch sử: " + ex.Message);
+            }
+
             await _hub.InvokeAsync("StartGame", _room.Id);
         }
         private async Task XepTauConnector()
@@ -502,6 +550,7 @@ namespace NT106_BattleshipClient
                     frmShip_Sorting frmShip_Sorting = new frmShip_Sorting(_room, _currentMatch, mapsize, _hub);
                     frmShip_Sorting.FormClosed += (s, args) =>
                     {
+                        _isGoingToGame = false;
                         this.Close();
                     };
                     frmShip_Sorting.Show();

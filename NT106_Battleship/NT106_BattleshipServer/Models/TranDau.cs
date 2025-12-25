@@ -14,10 +14,10 @@ public class TranDau
     public int IdPlayer2 { get; set; }
 
     [Required]
-    public int IdNhanVat1 { get; set; }
+    public string TenNV1 { get; set; }
 
     [Required]
-    public int IdNhanVat2 { get; set; }
+    public string TenNV2 { get; set; }
 
     [Required]
     [Range(8, 10)]
