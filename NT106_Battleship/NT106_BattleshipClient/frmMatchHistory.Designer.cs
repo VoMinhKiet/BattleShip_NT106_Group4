@@ -86,7 +86,6 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82.85714F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(1880, 1040);
             this.tableLayoutPanel1.TabIndex = 0;
-            this.tableLayoutPanel1.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
             // 
             // pnlDong
             // 
@@ -311,7 +310,6 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "LỊCH SỬ ĐẤU";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // frmMatchHistory
             // 

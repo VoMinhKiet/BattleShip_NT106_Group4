@@ -8,6 +8,8 @@ namespace NT106_BattleshipClient
 {
     public partial class frmMatchHistory : BaseForm
     {
+        private TranDauApiService _tranDauService = new TranDauApiService();
+
         public frmMatchHistory()
         {
             InitializeComponent();
@@ -19,43 +21,38 @@ namespace NT106_BattleshipClient
 
         }
 
-        private TranDauApiService _tranDauService = new TranDauApiService();
-
-
         private async void frmMatchHistory_Load(object sender, EventArgs e)
         {
 
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
-            this.ControlBox = true;
-            this.MinimizeBox = true;
-            this.MaximizeBox = true;
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
 
-            this.WindowState = FormWindowState.Normal;
-
-            // Lấy kích thước màn hình chính
-            Rectangle screen = Screen.PrimaryScreen.WorkingArea;
-
-            // Áp dụng kích thước đó cho Form
-            this.Size = screen.Size;
-            this.Location = new Point(0, 0);
-
+            // Tắt thanh cuộn mặc định của DataGridView để dùng Guna Scrollbar
+            dgvLichSuDau.ScrollBars = ScrollBars.None;
 
             // Đồng bộ scrollbar
             guna2VScrollBar1.Scroll += (s, E) =>
             {
-                int maxIndex = dgvLichSuDau.RowCount - 1;
-                int scrollValue = Math.Min(guna2VScrollBar1.Value, maxIndex);
-                dgvLichSuDau.FirstDisplayedScrollingRowIndex = scrollValue;
+                if (dgvLichSuDau.RowCount > 0)
+                {
+                    int maxIndex = dgvLichSuDau.RowCount - 1;
+                    int scrollValue = Math.Min(guna2VScrollBar1.Value, maxIndex);
+                    // Kiểm tra an toàn để tránh crash
+                    if (scrollValue >= 0 && scrollValue < dgvLichSuDau.RowCount)
+                        dgvLichSuDau.FirstDisplayedScrollingRowIndex = scrollValue;
+                }
             };
 
-            // Tính số dòng hiển thị
-            int visibleRows = dgvLichSuDau.DisplayedRowCount(true);
-            int totalRows = dgvLichSuDau.RowCount;
+            //// Tính số dòng hiển thị
+            //int visibleRows = dgvLichSuDau.DisplayedRowCount(true);
+            //int totalRows = dgvLichSuDau.RowCount;
 
-            // Chỉ hiện scrollbar nếu cần
-            guna2VScrollBar1.Visible = totalRows >= visibleRows;
-            guna2VScrollBar1.Maximum = totalRows;
+            //// Chỉ hiện scrollbar nếu cần
+            //guna2VScrollBar1.Visible = totalRows >= visibleRows;
+            //guna2VScrollBar1.Maximum = totalRows;
 
+            // Tạm thời ẩn scrollbar lúc mới vào
+            guna2VScrollBar1.Visible = false;
 
             await LoadMatchHistoryAsync();
         }
@@ -63,7 +60,6 @@ namespace NT106_BattleshipClient
         private async Task LoadMatchHistoryAsync()
         {
             int userId = GlobalData.UserId;
-
             var list = await _tranDauService.GetHistoryAsync(userId);
 
             dgvLichSuDau.Rows.Clear();
@@ -71,21 +67,44 @@ namespace NT106_BattleshipClient
             foreach (var m in list)
             {
                 dgvLichSuDau.Rows.Add(
-                    m.Id1,
-                    m.NguoiChoi1,
-                    m.NhanVat1,
-
-                    m.Id2,
-                    m.NguoiChoi2,
-                    m.NhanVat2,
-
+                    m.Id1, m.NguoiChoi1, m.NhanVat1,
+                    m.Id2, m.NguoiChoi2, m.NhanVat2,
                     m.KetQua,
                     m.TimeStart.ToString("dd/MM/yyyy HH:mm"),
                     m.TimeEnd?.ToString("dd/MM/yyyy HH:mm") ?? ""
                 );
             }
+
+            // Cập nhật scrollbar sau khi đã có dữ liệu
+            UpdateScrollbarState();
         }
 
+        // Hàm xử lý logic ẩn hiện thanh cuộn
+        private void UpdateScrollbarState()
+        {
+            // 1. Tính tổng chiều cao thực tế của nội dung (Header + Tất cả các dòng)
+            int totalContentHeight = dgvLichSuDau.ColumnHeadersHeight +
+                                     dgvLichSuDau.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
+
+            // 2. Lấy chiều cao vùng hiển thị của bảng
+            int visibleHeight = dgvLichSuDau.ClientSize.Height;
+
+            // 3. So sánh: Nếu nội dung dài hơn vùng hiển thị -> Hiện Scrollbar
+            if (totalContentHeight > visibleHeight)
+            {
+                guna2VScrollBar1.Visible = true;
+
+                // Cập nhật lại Maximum cho Guna Scrollbar khớp với số dòng
+                guna2VScrollBar1.Maximum = dgvLichSuDau.RowCount;
+
+                // (Tùy chọn) Tính toán ThumbSize để thanh cuộn nhìn chuẩn hơn
+                // guna2VScrollBar1.ThumbSize = ... 
+            }
+            else
+            {
+                guna2VScrollBar1.Visible = false;
+            }
+        }
 
         private void dgvLichSuDau_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
@@ -142,22 +161,10 @@ namespace NT106_BattleshipClient
             this.Close();
         }
 
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
         //test chống nháy
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
-
 
             SetControlDoubleBuffered(panel1);
             SetControlDoubleBuffered(tableLayoutPanel1);
@@ -166,8 +173,6 @@ namespace NT106_BattleshipClient
             SetControlDoubleBuffered(panel3);
 
             SetControlDoubleBuffered(dgvLichSuDau);
-
-
         }
 
     }
