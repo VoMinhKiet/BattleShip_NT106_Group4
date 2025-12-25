@@ -505,6 +505,9 @@ namespace NT106_BattleshipClient
                     // 2. Gửi ID trận đấu cho Guest biết
                     await SendUISyncCommand("SET_MATCH_ID", tranDauMoi.Id.ToString());
                 }
+
+                // Thay đôỉ trạng thái phòng khi bắt đầu trận đấu
+                await _roomApi.StartGameAsync(_room.Id);
             }
             catch (Exception ex)
             {
@@ -547,6 +550,7 @@ namespace NT106_BattleshipClient
                     frmShip_Sorting frmShip_Sorting = new frmShip_Sorting(_room, _currentMatch, mapsize, _hub);
                     frmShip_Sorting.FormClosed += (s, args) =>
                     {
+                        _isGoingToGame = false;
                         this.Close();
                     };
                     frmShip_Sorting.Show();

@@ -21,10 +21,8 @@ namespace NT106_BattleshipClient.Services
             _http.BaseAddress = new Uri("http://localhost:5074/");
         }
 
-        // ================================
         // LẤY DANH SÁCH PHÒNG
         // GET api/room/list
-        // ================================
         public async Task<RoomDto[]> GetRoomsAsync()
         {
             var resp = await _http.GetAsync("api/room/list");
@@ -38,10 +36,8 @@ namespace NT106_BattleshipClient.Services
             return JsonConvert.DeserializeObject<RoomDto[]>(json);
         }
 
-        // ================================
         // TẠO PHÒNG
         // POST api/room/create?userId={userId}
-        // ================================
         public async Task<RoomDto> CreateRoomAsync(int userId)
         {
             var resp = await _http.PostAsync($"api/room/create?userId={userId}", null);
@@ -56,10 +52,8 @@ namespace NT106_BattleshipClient.Services
             return obj.room; // Trả về object RoomDto
         }
 
-        // ================================
         // THAM GIA PHÒNG
         // POST api/room/join?roomId={roomId}&userId={userId}
-        // ================================
         public async Task<RoomDto> JoinRoomAsync(int roomId, int userId)
         {
             var resp = await _http.PostAsync($"api/room/join?roomId={roomId}&userId={userId}", null);
@@ -73,10 +67,8 @@ namespace NT106_BattleshipClient.Services
             return obj.room;
         }
 
-        // ================================
         // RỜI PHÒNG
         // DELETE api/room/leave?roomId={roomId}&userId={userId}
-        // ================================
         public async Task<bool> LeaveRoomAsync(int roomId, int userId)
         {
             var resp = await _http.DeleteAsync($"api/room/leave?roomId={roomId}&userId={userId}");
@@ -85,10 +77,8 @@ namespace NT106_BattleshipClient.Services
             return resp.IsSuccessStatusCode;
         }
 
-        // ================================
         // LẤY THÔNG TIN PHÒNG THEO ID
         // GET api/room/get?roomId={roomId}
-        // ================================
         public async Task<RoomDto> GetRoomByIdAsync(int roomId)
         {
             var resp = await _http.GetAsync($"api/room/get?roomId={roomId}");
@@ -100,10 +90,8 @@ namespace NT106_BattleshipClient.Services
             return JsonConvert.DeserializeObject<RoomDto>(json);
         }
 
-        // ================================
         // LẤY USER THEO ID
-        // Server route đúng: GET /api/User/{id}
-        // ================================
+        // GET /api/User/{id}
         public async Task<UserDto> GetUserByIdAsync(int userId)
         {
             var resp = await _http.GetAsync($"api/User/{userId}");
@@ -113,6 +101,14 @@ namespace NT106_BattleshipClient.Services
             string json = await resp.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<UserDto>(json);
+        }
+
+        // BẮT ĐẦU TRẬN ĐẤU TỪ PHÒNG
+        // POST api/room/start?roomId={roomId}
+        public async Task<bool> StartGameAsync(int roomId)
+        {
+            var response = await _http.PostAsync($"api/room/start?roomId={roomId}", null);
+            return response.IsSuccessStatusCode;
         }
     }
 

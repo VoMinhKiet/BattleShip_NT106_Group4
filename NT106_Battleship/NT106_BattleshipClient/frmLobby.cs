@@ -15,6 +15,7 @@ namespace NT106_BattleshipClient
         private int _currentUserId;
         private bool _signalRInitialized = false;
 
+        private bool _isLoadingRoom = false;
 
         public frmLobby()
         {
@@ -135,8 +136,11 @@ namespace NT106_BattleshipClient
 
         private async Task LoadRoomsFromServer()
         {
-            dgvDanhSachPhong.SuspendLayout();
+            if (_isLoadingRoom) return;
+            _isLoadingRoom = true;
 
+            try { 
+            dgvDanhSachPhong.SuspendLayout();
             dgvDanhSachPhong.Rows.Clear();
 
             var rooms = await _roomApi.GetRoomsAsync();
@@ -168,8 +172,17 @@ namespace NT106_BattleshipClient
             }
 
             UpdateScrollBar();
-
             dgvDanhSachPhong.ResumeLayout();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tải danh sách phòng: " + ex.Message);
+            }
+            finally
+            {
+                _isLoadingRoom = false;
+            }
         }
 
         private async void dgvDanhSachPhong_CellClick(object sender, DataGridViewCellEventArgs e)
