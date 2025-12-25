@@ -352,6 +352,7 @@ namespace NT106_BattleshipClient
             Random _randomPos = new Random();
             Random _randomOri = new Random();
             bool ShipCurrentPlaced = false;
+            int placedShips = 0;
             if (AutoSorted == false)
             {
                 for (int count = 0; count <= 3; count++)
@@ -361,7 +362,7 @@ namespace NT106_BattleshipClient
                     {
                         for (int X = 0; X < mapsize; X++)
                         {
-                            int randomPos = _randomPos.Next(0, 15); //  1 = place
+                            int randomPos = _randomPos.Next(0, 20); //  1 = place
                             if (randomPos == 1 && playerGrid[Y, X].BackColor == Color.LightBlue)
                             {
                                 int randomOri = _randomOri.Next(0, 2); // 0 = horizontal 1 = vertical
@@ -383,6 +384,7 @@ namespace NT106_BattleshipClient
                                             {
                                                 playerGrid[i, X].BackColor = Color.Purple;// them return neu khong no se fill ca grid
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -404,6 +406,7 @@ namespace NT106_BattleshipClient
                                                 playerGrid[Y, i].BackColor = Color.Purple;
 
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -427,6 +430,7 @@ namespace NT106_BattleshipClient
                                             {
                                                 playerGrid[i, X].BackColor = Color.Blue;
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -445,6 +449,7 @@ namespace NT106_BattleshipClient
                                             {
                                                 playerGrid[Y, i].BackColor = Color.Blue;
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -465,6 +470,7 @@ namespace NT106_BattleshipClient
                                             {
                                                 playerGrid[i, X].BackColor = Color.Yellow;
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -482,6 +488,7 @@ namespace NT106_BattleshipClient
                                             {
                                                 playerGrid[Y, i].BackColor = Color.Yellow;
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -502,6 +509,7 @@ namespace NT106_BattleshipClient
                                             {
                                                 playerGrid[i, X].BackColor = Color.Orange;
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -518,6 +526,7 @@ namespace NT106_BattleshipClient
                                             {
                                                 playerGrid[Y, i].BackColor = Color.Orange;
                                             }
+                                            placedShips++;
                                             ShipCurrentPlaced = true;
                                             break;
                                         }
@@ -537,8 +546,23 @@ namespace NT106_BattleshipClient
                 this.Controls.Remove(Ship2);
                 Ship2.Dispose();
             }
+            if (placedShips < 4)
+            {
+                
+                //placedShips = 0;
+                AutoSorted = false;
+                for (int Y = 0; Y < mapsize; Y++)
+                {
+                    for (int X = 0; X < mapsize; X++)
+                    {
+                        playerGrid[Y, X].BackColor = Color.LightBlue;
+                    }
+                }
+                BtnAutoSort_Click(sender, e);
+            }
             if (AutoSorted == true)
             {
+                //placedShips = 0;
                 AutoSorted = false;
                 for (int Y = 0; Y < mapsize; Y++)
                 {
