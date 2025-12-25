@@ -34,6 +34,12 @@ namespace NT106_BattleshipServer.Hubs
             await Clients.Group(roomId.ToString())
                          .SendAsync("GuestReadyStateChanged", state);
         }
+        public async Task HectorSkill(int roomId, object shots)
+        {
+            await Clients.Group(roomId.ToString())
+                .SendAsync("ReceiveHectorSkill", shots);
+        }
+        
 
     }
 }

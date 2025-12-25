@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using static NT106_BattleshipClient.GlobalData;
 
 namespace NT106_BattleshipClient
 {
@@ -100,7 +101,7 @@ namespace NT106_BattleshipClient
         {
             // 1. Gán tên nhân vật
             this.TenNhanVatDaChon = "Elizabeth Swann";
-
+            GlobalData.SelectedCharacter = CharacterType.ElizabethSwann;
             // 2. Thiết lập kết quả và đóng Form
             this.DialogResult = DialogResult.OK;
             this.Close();
@@ -110,6 +111,7 @@ namespace NT106_BattleshipClient
         {
             // 1. Gán tên nhân vật
             this.TenNhanVatDaChon = "Hector Barbossa";
+            GlobalData.SelectedCharacter = CharacterType.HectorBarbossa;
 
             // 2. Thiết lập kết quả và đóng Form
             this.DialogResult = DialogResult.OK;
@@ -120,6 +122,7 @@ namespace NT106_BattleshipClient
         {
             // 1. Gán tên nhân vật
             this.TenNhanVatDaChon = "Will Turner";
+            GlobalData.SelectedCharacter = CharacterType.WillTurner;
 
             // 2. Thiết lập kết quả và đóng Form
             this.DialogResult = DialogResult.OK;
@@ -130,6 +133,7 @@ namespace NT106_BattleshipClient
         {
             // 1. Gán tên nhân vật
             this.TenNhanVatDaChon = "Jack Sparrow";
+            GlobalData.SelectedCharacter = CharacterType.JackSparrow;
 
             // 2. Thiết lập kết quả và đóng Form
             this.DialogResult = DialogResult.OK;

@@ -23,5 +23,17 @@ namespace NT106_BattleshipClient
         {
             UserInfoUpdated?.Invoke();
         }
+        public enum CharacterType
+        {
+            None,
+            ElizabethSwann,
+            HectorBarbossa,
+            WillTurner,
+            JackSparrow
+        }
+        public static CharacterType SelectedCharacter { get; set; } = CharacterType.None;
+        public static bool IsSkillUsed { get; set; } = false;
+        public static int SkillRemainingShots { get; set; } = 0;
+
     }
 }

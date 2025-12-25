@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using NT106_BattleshipClient.Models;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 //using System.Web.UI.WebControls;
 using System.Windows.Forms;
+using static NT106_BattleshipClient.GlobalData;
 
 namespace NT106_BattleshipClient
 {
@@ -30,9 +32,15 @@ namespace NT106_BattleshipClient
         public int yourScore = 0;
         public int opponentScore = 0;
         private bool _ElizabethSwannSkillOrientationRow = true;
-        private bool _ElizabethSwannSkillUse = false;
-        private bool _HectorBarbossaSkillUse = false;
-        public int skillUsage = 3;
+        private bool _isUsingSkill = false;
+        private List<Point> _previewCells = new List<Point>();
+        private Button btnSkill;
+        private bool _elizabethIsRow = true;
+        private bool _suppressTurnSwitch = false;
+
+
+
+
         public bool first = true;
         private bool _turnHandlerRegistered = false;
         private readonly TranDauDto _currentMatch;
@@ -60,6 +68,9 @@ namespace NT106_BattleshipClient
               ControlStyles.AllPaintingInWmPaint, true);
             this.UpdateStyles();
             InitializeComponent();
+            this.KeyPreview = true;
+            this.KeyDown += FrmInBattle_KeyDown;
+
 
             this.KeyPreview = true;
             this.KeyDown += FrmIn_Battle_KeyDown;
@@ -128,7 +139,7 @@ namespace NT106_BattleshipClient
             lblOpponentShip.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             this.Controls.Add(lblOpponentShip);
 
-            Button btnSkill = new Button();
+             btnSkill = new Button();
             btnSkill.Text = "Skill Ready!";
             btnSkill.Font = new Font("Arial", 18, FontStyle.Bold);
             btnSkill.Width = 255;
@@ -347,7 +358,10 @@ namespace NT106_BattleshipClient
                     }
                     if (!Yours)
                     {
-                        btn.Click += GridButton_Click; // only opponent's grid is clickable
+                        btn.Click += GridButton_Click;// only opponent's grid is clickable
+                        btn.MouseMove += GridSkillPreview_MouseMove;
+                        btn.MouseLeave += ClearPreview;
+
                         btn.Cursor = Cursors.Hand;
                     }
                     container.Controls.Add(btn);
@@ -358,66 +372,157 @@ namespace NT106_BattleshipClient
         private async void GridButton_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
-            if (btn == null) return;
-            if (!isYourTurn)
-            {
-                //MessageBox.Show("It's already hit!");
-                return;
-            }
             Point pos = (Point)btn.Tag;
-
             int row = pos.X;
             int col = pos.Y;
 
-            // Prevent repeated clicks
-            //btn.Enabled = isYourTurn;
-            bool isHit = false;
-            btn.Enabled = true;
-
-            if (OpponentShipPos[row, col] == 1 && btn.BackColor == Color.LightBlue)
+            if (!isYourTurn && !_isUsingSkill)
             {
-                isHit = true;
-            }
-            else if (OpponentShipPos[row, col] == 0 && btn.BackColor == Color.LightBlue)
-            {
-                isHit = false;
-
-            }
-            else if (btn.BackColor == Color.Red)
-            {
-                MessageBox.Show("You already hit this spot and it's a HIT!");
                 return;
             }
 
-            try
+            // ===== SKILL: Elizabeth / Will =====
+            if (_isUsingSkill &&
+               (GlobalData.SelectedCharacter == CharacterType.ElizabethSwann ||
+                GlobalData.SelectedCharacter == CharacterType.WillTurner))
             {
-                if (isHit)
-                {
-                    btn.BackColor = Color.Red; // hit
-                    await _hub.InvokeAsync("Hit", _room.Id, row, col, true);
-                    yourScore++;
-                    ScoreTracking();
-                    isHit = false;
-                    //return;
-                    //TurnSwitch();
+                if (_previewCells.Count == 0)
+                    return;
 
-                }
-                else if (!isHit)
+                foreach (var p in _previewCells)
                 {
-                    btn.BackColor = Color.Green; // miss
-                    await _hub.InvokeAsync("Hit", _room.Id, row, col, false);
-                    TurnSwitch();
-
+                    FireCell(p.X, p.Y);
                 }
 
+                ClearPreview(null, null);
+                EndSkill();
+                return;
             }
-            catch (Exception ex)
+
+
+            // ===== SKILL: Jack =====
+            if (_isUsingSkill && GlobalData.SelectedCharacter == CharacterType.JackSparrow)
             {
-                // re-enable button on failure and show error for debugging
-                btn.Enabled = true;
-                MessageBox.Show($"Failed to send hit: {ex.Message}", "SignalR Invoke Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                FireCell(row, col);
+                GlobalData.SkillRemainingShots--;
+                btnSkill.Text = $"Đạn: {GlobalData.SkillRemainingShots}";
+
+                if (GlobalData.SkillRemainingShots == 0)
+                    EndSkill();
+
+                return;
+            }
+
+            // ===== BẮN THƯỜNG =====
+            bool isHit = OpponentShipPos[row, col] == 1;
+            FireCell(row, col);
+
+            if (!isHit)
+                TurnSwitch();
+        }
+
+        private void GridSkillPreview_MouseMove(object sender, MouseEventArgs e)
+        {
+            
+            if (!_isUsingSkill) return;
+            _previewCells.Clear();
+
+            Button btn = sender as Button;
+            Point pos = (Point)btn.Tag;
+
+            ClearPreview(null, null);
+
+            if (_isUsingSkill && GlobalData.SelectedCharacter == CharacterType.ElizabethSwann)
+            {
+
+
+
+                ClearPreview(null, null);
+                _previewCells.Clear();
+
+                if (_elizabethIsRow)
+                {
+                    for (int c = 0; c < mapsize; c++)
+                    {
+                        opponentGrid[pos.X, c].BackColor = Color.FromArgb(120, Color.Red);
+                        _previewCells.Add(new Point(pos.X, c));
+                    }
+                }
+                else
+                {
+                    for (int r = 0; r < mapsize; r++)
+                    {
+                        opponentGrid[r, pos.Y].BackColor = Color.FromArgb(120, Color.Red);
+                        _previewCells.Add(new Point(r, pos.Y));
+                    }
+                }
+
+                return;
+            }
+
+            else if (GlobalData.SelectedCharacter == CharacterType.WillTurner)
+            {
+                ClearPreview(null, null);
+                _previewCells.Clear();
+
+                for (int r = pos.X - 1; r <= pos.X + 1; r++)
+                {
+                    for (int c = pos.Y - 1; c <= pos.Y + 1; c++)
+                    {
+                        if (r >= 0 && r < mapsize && c >= 0 && c < mapsize)
+                        {
+                            opponentGrid[r, c].BackColor = Color.FromArgb(120, Color.Red);
+                            _previewCells.Add(new Point(r, c));
+                        }
+                    }
+                }
+
+                return;
             }
         }
+
+        private async void FireCell(int row, int col)
+        {
+
+            Color c = opponentGrid[row, col].BackColor;
+
+            // chỉ chặn khi ô đã bắn thật
+            if (c == Color.Red || c == Color.Green)
+                return;
+
+            bool isHit = OpponentShipPos[row, col] == 1;
+
+
+            opponentGrid[row, col].BackColor = isHit ? Color.Red : Color.Green;
+
+            if (isHit)
+            {
+                yourScore++;
+                ScoreTracking();
+            }
+
+
+            await _hub.InvokeAsync("Hit", _room.Id, row, col, isHit);
+        }
+
+        private void EndSkill()
+        {
+            GlobalData.IsSkillUsed = true;
+            _isUsingSkill = false;
+            btnSkill.Text = "Hết Skill";
+            btnSkill.Enabled = false;
+            _suppressTurnSwitch = false;
+        }
+
+
+        private void ClearPreview(object sender, EventArgs e)
+        {
+            foreach (var p in _previewCells)
+                opponentGrid[p.X, p.Y].BackColor = Color.LightBlue;
+
+            _previewCells.Clear();
+        }
+
         private void ReceiveHit()
         {
             _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
@@ -431,49 +536,58 @@ namespace NT106_BattleshipClient
             else
             {
                 playerGrid[row, col].BackColor = Color.Green;
-                TurnSwitch();
+
+                if (!_suppressTurnSwitch)
+                {
+                    TurnSwitch();
+                }
             }
         });
+            _hub.On<List<dynamic>>("ReceiveHectorSkill", shots =>
+            {
+                foreach (var s in shots)
+                {
+                    int r = (int)s.r;
+                    int c = (int)s.c;
+                    bool isHit = (bool)s.hit;
+
+                    playerGrid[r, c].BackColor = isHit ? Color.Red : Color.Green;
+
+                    if (isHit)
+                    {
+                        opponentScore++;
+                        ScoreTracking();
+                    }
+                }
+            });
         }
         public void BtnSkill_Click(object sender, EventArgs e)
         {
-            if (!isYourTurn)
-            {
-                MessageBox.Show("It's not your turn!");
-                return;
-            }
-            else
-            {
-                if (_isHost && skillUsage >= 1)
-                {
-                    if (_currentMatch.TenNV1 == "Elizabeth Swann")
-                    {
-                        _ElizabethSwannSkillUse = true;
-                    }
-                }
-                if (!_isHost && skillUsage >= 1)
-                {
-                    if (_currentMatch.TenNV2 == "Elizabeth Swann")
-                    {
-                        _ElizabethSwannSkillUse = true;
-                    }
-                }
-                if (_isHost && skillUsage >= 1)
-                {
-                    if (_currentMatch.TenNV1 == "Hector Barbossa")
-                    {
-                        _HectorBarbossaSkillUse = true;
-                    }
-                }
-                if (!_isHost && skillUsage >= 1)
-                {
-                    if (_currentMatch.TenNV2 == "Hector Barbossa")
-                    {
-                        _HectorBarbossaSkillUse = true;
-                    }
-                }
+            if (!isYourTurn) return;
+            if (GlobalData.IsSkillUsed) return;
 
+            _isUsingSkill = true;
+
+            switch (GlobalData.SelectedCharacter)
+            {
+                case CharacterType.ElizabethSwann:
+                case CharacterType.WillTurner:
+
+                    break;
+
+                case CharacterType.HectorBarbossa:
+                    SkillHectorBarbossa();
+                    EndSkill();
+                    break;
+
+                case CharacterType.JackSparrow:
+                    GlobalData.SkillRemainingShots = 5;
+                    btnSkill.Text = "Đạn: 5";
+                    _suppressTurnSwitch = true;
+                    break;
             }
+
+
         }
         private async void Timer_Tick(object sender, EventArgs e)
         {
@@ -517,7 +631,18 @@ namespace NT106_BattleshipClient
             }
         }
 
-      
+        private void FrmInBattle_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!_isUsingSkill) return;
+            if (GlobalData.SelectedCharacter != CharacterType.ElizabethSwann) return;
+
+            if (e.KeyCode == Keys.R)
+            {
+                _elizabethIsRow = !_elizabethIsRow;
+                ClearPreview(null, null); // vẽ lại preview khi đổi hướng
+            }
+        }
+
         private void TurnSwitch()
         {
             // flip local flag
@@ -569,19 +694,37 @@ namespace NT106_BattleshipClient
                 this.Close();
             }
         }
-        private void SkillJackSparrow()
+        private async void SkillHectorBarbossa()
         {
-            // Implement skill logic here
-        }
-        private void SkillHectorBarbossa()
-        {
-            // Implement skill logic here
-        }
-        private void SkillDavyJones()
-        {
-            // Implement skill logic here
-        }
+            Random rnd = new Random();
+            List<(int r, int c, bool hit)> shots = new List<(int, int, bool)>();
+            HashSet<Point> used = new HashSet<Point>();
 
+            while (shots.Count < 6)
+            {
+                int r = rnd.Next(0, mapsize);
+                int c = rnd.Next(0, mapsize);
+
+                if (used.Contains(new Point(r, c))) continue;
+                if (opponentGrid[r, c].BackColor != Color.LightBlue) continue;
+
+                bool isHit = OpponentShipPos[r, c] == 1;
+                used.Add(new Point(r, c));
+                shots.Add((r, c, isHit));
+            }
+
+            foreach (var s in shots)
+            {
+                opponentGrid[s.r, s.c].BackColor = s.hit ? Color.Red : Color.Green;
+                if (s.hit)
+                {
+                    yourScore++;
+                    ScoreTracking();
+                }
+            }
+
+            await _hub.InvokeAsync("HectorSkill", _room.Id, shots);
+        }
 
         private async void frmIn_Battle_Load(object sender, EventArgs e)
         {
@@ -642,6 +785,7 @@ namespace NT106_BattleshipClient
             chat.Visible = !chat.Visible;
             chat.BringToFront();
         }
+
 
         private void RegisterBattleRankingHandler()
         {
