@@ -110,6 +110,27 @@ namespace NT106_BattleshipClient.Services
             var response = await _http.PostAsync($"api/room/start?roomId={roomId}", null);
             return response.IsSuccessStatusCode;
         }
+
+        // Hàm tìm ID user dựa trên tên đăng nhập (Dùng để tìm Bot)
+        public async Task<int?> GetUserIdByUsernameAsync(string username)
+        {
+            try
+            {
+                var resp = await _http.GetAsync($"api/User/find/{username}");
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    string json = await resp.Content.ReadAsStringAsync();
+                    var user = JsonConvert.DeserializeObject<UserDto>(json);
+                    return user?.Id;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 
     // Class model nhận JSON trả về khi Create / Join room

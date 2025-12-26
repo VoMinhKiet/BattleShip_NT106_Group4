@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using NT106_BattleshipClient.Services;
 
 namespace NT106_BattleshipClient
 {
     public partial class frmMainMenu : BaseForm
     {
+        private readonly RoomApiService _roomApi = new RoomApiService();
 
         public frmMainMenu()
         {
@@ -95,17 +97,46 @@ namespace NT106_BattleshipClient
             MoForm.ShowDialog();
         }
 
-        private void btnChoiVoiMay_Click(object sender, EventArgs e)
+        private async void btnChoiVoiMay_Click(object sender, EventArgs e)
         {
-            OpenLobby();
+            try
+            {
+                // 1. Tìm ID của Bot nếu chưa có
+                if (GlobalData.BotId == null)
+                {
+                    var botId = await _roomApi.GetUserIdByUsernameAsync(GlobalData.BOT_NAME);
+                    if (botId == null)
+                    {
+                        MessageBox.Show($"Không tìm thấy tài khoản của máy ({GlobalData.BOT_NAME}) trong server");
+                        return;
+                    }
+                    GlobalData.BotId = botId;
+                }
+
+                // 2. Tạo phòng
+                var room = await _roomApi.CreateRoomAsync(GlobalData.UserId);
+
+                if (room != null)
+                {
+                    // 3. Add Bot vào phòng
+                    // IDKhach = BotId, TrangThai = Full
+                    var roomWithBot = await _roomApi.JoinRoomAsync(room.Id, GlobalData.BotId.Value);
+
+                    // 4. Mở form Room
+                    frmRoom roomForm = new frmRoom(roomWithBot, GlobalData.UserId, GlobalData.Username);
+
+                    roomForm.RoomReadyToShow += () => this.Hide();
+                    roomForm.FormClosed += (s, args) => this.Show();
+                    roomForm.Show();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi tạo phòng chơi với máy: " + ex.Message);
+            }
         }
 
         private void btnChoiVoiNguoi_Click(object sender, EventArgs e)
-        {
-            OpenLobby();
-        }
-
-        private void OpenLobby()
         {
             frmLobby lobby = new frmLobby();
 
@@ -114,7 +145,7 @@ namespace NT106_BattleshipClient
                 this.Hide();
             };
 
-            lobby.FormClosed += (s, e) =>
+            lobby.FormClosed += (s, e1) =>
             {
                 this.Show();
             };

@@ -252,8 +252,11 @@ namespace NT106_BattleshipClient
             timer.Interval = 1000; // every second
             timer.Tick += Timer_Tick;
             timer.Start(); // start automatically
-            ReceivedShipPositions();
-            ReadyUpFlag();
+            if (_hub != null)
+            {
+                ReceivedShipPositions();
+                ReadyUpFlag();
+            }
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -306,6 +309,21 @@ namespace NT106_BattleshipClient
             }
             //MessageBox.Show($"Character {_currentMatch.TenNV1} , {_currentMatch.TenNV2}" );
             lblLeftTimer.Text = "Ready!";
+
+            // LOGIC MỚI CHO PVE
+            if (_hub == null) // Chơi với máy
+            {
+                // Tự động tạo tàu cho Bot
+                GenerateBotShips();
+
+                frmIn_Battle frmBattle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, null);
+                frmBattle.Show();
+                this.Hide();
+
+                frmBattle.FormClosed += (s, args) => this.Close();
+                return;
+            }
+
             await _hub.SendAsync("SendShipPos", _room.Id, rowIndices, colIndices, orientations);
             await _hub.InvokeAsync("UpdateReadyFlag", _room.Id, true);
             if (isRightTimerRunning == false)
@@ -472,6 +490,47 @@ namespace NT106_BattleshipClient
                 for (int i = 0; i < size; i++)
                     playerGrid[row, col + i].BackColor = shipColor;
             }
+        }
+
+        // HÀM TẠO TÀU BOT
+        private void GenerateBotShips()
+        {
+            Array.Clear(otherShipPos, 0, otherShipPos.Length);
+            Random rand = new Random();
+            int[] shipSizes = { 5, 4, 3, 2 };
+
+            foreach (int size in shipSizes)
+            {
+                bool placed = false;
+                while (!placed)
+                {
+                    int r = rand.Next(0, mapsize);
+                    int c = rand.Next(0, mapsize);
+                    int ori = rand.Next(0, 2);
+
+                    if (CanPlaceBotShip(r, c, size, ori))
+                    {
+                        if (ori == 1) for (int i = 0; i < size; i++) otherShipPos[r + i, c] = 1;
+                        else for (int i = 0; i < size; i++) otherShipPos[r, c + i] = 1;
+                        placed = true;
+                    }
+                }
+            }
+        }
+
+        private bool CanPlaceBotShip(int r, int c, int size, int ori)
+        {
+            if (ori == 1)
+            {
+                if (r + size > mapsize) return false;
+                for (int i = 0; i < size; i++) if (otherShipPos[r + i, c] == 1) return false;
+            }
+            else
+            {
+                if (c + size > mapsize) return false;
+                for (int i = 0; i < size; i++) if (otherShipPos[r, c + i] == 1) return false;
+            }
+            return true;
         }
 
         private Panel CreateShip(int col, int row, int offset)

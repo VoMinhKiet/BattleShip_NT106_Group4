@@ -28,7 +28,6 @@ namespace NT106_BattleshipClient
 
         // Biến này để đánh dấu khi nào Code đang tự cập nhật UI
         private bool _isUpdatingUI = false;
-
         private bool _isGoingToGame = false; // Cờ đánh dấu đang vào game
 
         private HubConnection _hub;
@@ -36,6 +35,7 @@ namespace NT106_BattleshipClient
         public int roomId;
 
         private readonly TranDauApiService _tranDauApi = new TranDauApiService();
+
         public frmRoom(RoomDto room, int userId, string username)
         {
             // Tối ưu vẽ form
@@ -102,6 +102,9 @@ namespace NT106_BattleshipClient
             catch { }
             await XepTauConnector();
             GameStartedHandler();
+
+            // KIỂM TRA BOT
+            CheckIfBotIsHere();
         }
 
         private void frmRoom_Shown(object sender, EventArgs e)
@@ -112,6 +115,23 @@ namespace NT106_BattleshipClient
                 RoomReadyToShow?.Invoke(); // Báo hiệu cho bên gọi biết là Room đã sẵn sàng hiển thị
                 this.Opacity = 1; //HIỆN FORM
             }));
+        }
+
+        private void CheckIfBotIsHere()
+        {
+            // Nếu ID Khách trùng với ID Bot (hoặc chưa có ID Bot nhưng tên là Bot)
+            if (_room.IDKhach == GlobalData.BotId || _room.TenKhach == GlobalData.BOT_NAME)
+            {
+                _isGuestReady = true;
+                pnlTieuDeKhach.Text = "KHÁCH đã sẵn sàng!";
+
+                // Nếu chưa có tên hiển thị, gán mặc định
+                if (lblTenKhach.Text.Contains("Chưa có khách"))
+                {
+                    lblTenKhach.Text = $"Tên: {GlobalData.BOT_NAME}";
+                    lblIDKhach.Text = $"ID: {GlobalData.BotId}";
+                }
+            }
         }
 
         private void SetupSignalREvents()
@@ -388,7 +408,10 @@ namespace NT106_BattleshipClient
 
         private async void btnNVKhach_Click(object sender, EventArgs e)
         {
-            if (_isHost)
+            // Nếu là Host nhưng Khách là Bot -> Được phép chọn
+            bool isBot = (_room.IDKhach == GlobalData.BotId);
+
+            if (_isHost && !isBot)
             {
                 MessageBox.Show("Chỉ khách được chọn nhân vật.");
                 return;
@@ -400,7 +423,9 @@ namespace NT106_BattleshipClient
                 string ten = f.TenNhanVatDaChon;
                 _currentMatch.TenNV2 = ten;
                 lblNhanVatKhach.Text = "Nhân vật: " + ten;
-                await SendUISyncCommand("SET_GUEST_CHAR", ten);
+
+                // Chỉ gửi Sync nếu là người thật
+                if (!isBot) await SendUISyncCommand("SET_GUEST_CHAR", ten);
             }
         }
 
@@ -508,14 +533,32 @@ namespace NT106_BattleshipClient
 
                 // Thay đôỉ trạng thái phòng khi bắt đầu trận đấu
                 await _roomApi.StartGameAsync(_room.Id);
+
+                // QUYẾT ĐỊNH CHẾ ĐỘ CHƠI
+                // Nếu khách là Bot -> Chế độ Offline
+                if (_room.IDKhach == GlobalData.BotId)
+                {
+                    _isGoingToGame = true;
+                    this.Hide();
+
+                    // Truyền Hub = null để báo hiệu chế độ Offline/Bot
+                    frmShip_Sorting frmSort = new frmShip_Sorting(_room, _currentMatch, mapsize, null);
+
+                    frmSort.FormClosed += (s, args) => {
+                        _isGoingToGame = false;
+                        this.Close();
+                    };
+                    frmSort.Show();
+                }
+                else // Nếu khách là người -> Chế độ Online (SignalR)
+                {
+                    await _hub.InvokeAsync("StartGame", _room.Id);
+                }
             }
             catch (Exception ex)
             {
-                // Lỗi lưu lịch sử không ảnh hưởng game, chỉ hiện thông báo hoặc bỏ qua
-                MessageBox.Show("Lỗi tạo lịch sử: " + ex.Message);
+                MessageBox.Show("Lỗi bắt đầu: " + ex.Message);
             }
-
-            await _hub.InvokeAsync("StartGame", _room.Id);
         }
         private async Task XepTauConnector()
         {
