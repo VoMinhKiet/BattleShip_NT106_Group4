@@ -2,6 +2,7 @@
 using NT106_BattleshipClient.Models;
 using NT106_BattleshipClient.Services;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 //using System.Web.UI.WebControls;
@@ -43,6 +44,8 @@ namespace NT106_BattleshipClient
         private HubConnection _rankingHub;
         private bool _battleEnded = false;
 
+        private bool _isPvE = false; // Cờ nhận biết chơi với máy
+        private List<Point> _botTargets = new List<Point>(); // Danh sách các ô Bot dự định bắn tiếp theo (Khi trúng tàu)
 
         private bool _turnPopupOpen = false;
         int random = new Random().Next(0, 2);
@@ -62,6 +65,10 @@ namespace NT106_BattleshipClient
               ControlStyles.AllPaintingInWmPaint, true);
             this.UpdateStyles();
             InitializeComponent();
+
+            // Nhận biết chế độ PvE
+            _hub = hub;
+            if (_hub == null) _isPvE = true;
 
             this.KeyPreview = true;
             this.KeyDown += FrmIn_Battle_KeyDown;
@@ -139,9 +146,23 @@ namespace NT106_BattleshipClient
             btnSkill.Top = pnlOpponentGrid.Bottom; // below your grid panel
             btnSkill.Click += BtnSkill_Click;
             this.Controls.Add(btnSkill);
-            DecideTurn();
+
+            // Logic Turn cho PvE
+            if (_isPvE)
+            {
+                // Mặc định người chơi đi trước (hoặc random tùy ý)
+                isYourTurn = true;
+                isLeftTimerRunning = true;
+                isRightTimerRunning = false;
+                // Không gọi DecideTurn() của SignalR
+            }
+            else
+            {
+                DecideTurn();
+            }
+
             //ReceiveTurn();
-            ReceiveHit();
+            if (!_isPvE) ReceiveHit();
         }
 
 
@@ -371,9 +392,32 @@ namespace NT106_BattleshipClient
             int row = pos.X;
             int col = pos.Y;
 
+            if (btn.BackColor == Color.Red || btn.BackColor == Color.Green) return;
+
+            bool isHit;
+            // === LOGIC PVE (OFFLINE) ===
+            if (_isPvE)
+            {
+                isHit = (OpponentShipPos[row, col] == 1);
+                if (isHit)
+                {
+                    btn.BackColor = Color.Red;
+                    yourScore++;
+                    ScoreTracking();
+                }
+                else
+                {
+                    btn.BackColor = Color.Green;
+                    TurnSwitch(); // Đổi lượt cho Bot
+                    // Bot bắn sau 1 giây
+                    Task.Delay(1000).ContinueWith(_ => BotShootTurn());
+                }
+                return; // DỪNG, KHÔNG GỌI SIGNALR
+            }
+
             // Prevent repeated clicks
             //btn.Enabled = isYourTurn;
-            bool isHit = false;
+            isHit = false;
             btn.Enabled = true;
 
             if (OpponentShipPos[row, col] == 1 && btn.BackColor == Color.LightBlue)
@@ -420,6 +464,7 @@ namespace NT106_BattleshipClient
                 MessageBox.Show($"Failed to send hit: {ex.Message}", "SignalR Invoke Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void ReceiveHit()
         {
             _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
@@ -437,6 +482,107 @@ namespace NT106_BattleshipClient
             }
         });
         }
+
+        private void BotShootTurn()
+        {
+            if (this.IsDisposed || yourScore == 14 || opponentScore == 14) return;
+
+            this.BeginInvoke(new Action(() =>
+            {
+                Point target = new Point(-1, -1);
+                Random rand = new Random();
+
+                // BƯỚC 1: CHỌN MỤC TIÊU
+
+                // Nếu hàng chờ có mục tiêu (do lần trước bắn trúng) -> Lấy ra bắn
+                while (_botTargets.Count > 0)
+                {
+                    // Lấy điểm cuối cùng trong danh sách (cơ chế Stack giúp bot bắn dọc theo thân tàu tốt hơn)
+                    int lastIndex = _botTargets.Count - 1;
+                    Point p = _botTargets[lastIndex];
+                    _botTargets.RemoveAt(lastIndex);
+
+                    // Kiểm tra nếu ô này chưa bắn thì bắn
+                    if (IsValidShot(p.X, p.Y))
+                    {
+                        target = p;
+                        break;
+                    }
+                }
+
+                // Nếu hàng chờ rỗng (hoặc các ô trong hàng chờ đã bị bắn hết) -> Bắn Random
+                if (target.X == -1)
+                {
+                    int attempts = 0;
+                    do
+                    {
+                        target = new Point(rand.Next(0, mapsize), rand.Next(0, mapsize));
+                        attempts++;
+                    } while ((playerGrid[target.X, target.Y].BackColor == Color.Red ||
+                            playerGrid[target.X, target.Y].BackColor == Color.Green)
+                            && attempts < 200);
+                }
+
+                int r = target.X;
+                int c = target.Y;
+
+                // BƯỚC 2: XỬ LÝ BẮN
+
+                // Kiểm tra trúng/trượt
+                bool botHit = (YourShipPos[r, c] == 1);
+
+                if (botHit)
+                {
+                    playerGrid[r, c].BackColor = Color.Red;
+                    opponentScore++;
+                    ScoreTracking();
+
+                    // THÊM 4 Ô XUNG QUANH VÀO HÀNG CHỜ=
+                    AddTargetToBot(r - 1, c); // Trên
+                    AddTargetToBot(r + 1, c); // Dưới
+                    AddTargetToBot(r, c - 1); // Trái
+                    AddTargetToBot(r, c + 1); // Phải
+
+                    // Bot bắn trúng thì được bắn tiếp
+                    if (opponentScore < 14)
+                    {
+                        Task.Delay(800).ContinueWith(_ => BotShootTurn());
+                    }
+                }
+                else
+                {
+                    playerGrid[r, c].BackColor = Color.Green;
+                    TurnSwitch(); // Trượt -> Trả lượt cho người
+                }
+            }));
+        }
+
+        // Kiểm tra xem ô (r, c) có hợp lệ để bắn không
+        private bool IsValidShot(int r, int c)
+        {
+            // 1. Phải nằm trong bản đồ
+            if (r < 0 || r >= mapsize || c < 0 || c >= mapsize) return false;
+
+            // 2.Ô hợp lệ là ô chưa bị bắn (Màu hiện tại KHÔNG PHẢI Đỏ và KHÔNG PHẢI Xanh Lá)
+            Color cColor = playerGrid[r, c].BackColor;
+            if (cColor == Color.Red || cColor == Color.Green) return false;
+
+            return true;
+        }
+
+        // Thêm mục tiêu vào danh sách
+        private void AddTargetToBot(int r, int c)
+        {
+            if (IsValidShot(r, c))
+            {
+                // Tránh thêm trùng lặp
+                if (!_botTargets.Contains(new Point(r, c)))
+                {
+                    _botTargets.Add(new Point(r, c));
+                }
+            }
+        }
+
         public void BtnSkill_Click(object sender, EventArgs e)
         {
             if (!isYourTurn)
@@ -549,45 +695,67 @@ namespace NT106_BattleshipClient
 
         private async void ScoreTracking()
         {
-            if (opponentScore == 14)
+            //if (opponentScore == 14)
+            //{
+            //    isLeftTimerRunning = false;
+            //    isRightTimerRunning = false;
+
+            //    //IndexCurrentMatch();
+
+            //    if (_currentMatch.Id > 0) // Chỉ gọi nếu đã có ID hợp lệ
+            //    {
+            //        // Mình thua -> Winner là đối thủ
+            //        int winnerId = (_currentUserId == _currentMatch.IdPlayer1)
+            //                        ? _currentMatch.IdPlayer2 ?? 0
+            //                        : _currentMatch.IdPlayer1;
+
+            //        // Gọi API cập nhật Winner
+            //        await _tranDauApi.EndMatchAsync(_currentMatch.Id, winnerId);
+            //    }
+
+            //    await SendBattleResultAsync(false);
+            //    frmResult frmResult = new frmResult("You LOSE", -1);
+            //    frmResult.ShowDialog();
+            //    this.Close();
+            //}
+            //if (yourScore == 14)
+            //{
+            //    isLeftTimerRunning = false;
+            //    isRightTimerRunning = false;
+
+            //    //IndexCurrentMatch();
+
+            //    if (_currentMatch.Id > 0)
+            //    {
+            //        // Mình thắng -> Winner là mình
+            //        await _tranDauApi.EndMatchAsync(_currentMatch.Id, _currentUserId);
+            //    }
+
+            //    await SendBattleResultAsync(true);
+            //    frmResult frmResult = new frmResult("You WON!", 1);
+            //    frmResult.ShowDialog();
+            //    this.Close();
+            //}
+
+            if (opponentScore == 14 || yourScore == 14)
             {
-                isLeftTimerRunning = false;
-                isRightTimerRunning = false;
+                isLeftTimerRunning = false; isRightTimerRunning = false;
 
-                //IndexCurrentMatch();
-
-                if (_currentMatch.Id > 0) // Chỉ gọi nếu đã có ID hợp lệ
+                // Lưu kết quả DB
+                if (_currentMatch.Id > 0)
                 {
-                    // Mình thua -> Winner là đối thủ
-                    int winnerId = (_currentUserId == _currentMatch.IdPlayer1)
-                                    ? _currentMatch.IdPlayer2 ?? 0
-                                    : _currentMatch.IdPlayer1;
+                    int winnerId;
+                    if (yourScore == 14) winnerId = _currentUserId;
+                    else winnerId = _isPvE ? GlobalData.BotId.Value : (_currentMatch.IdPlayer2 ?? 0);
 
-                    // Gọi API cập nhật Winner
                     await _tranDauApi.EndMatchAsync(_currentMatch.Id, winnerId);
                 }
 
-                await SendBattleResultAsync(false);
-                frmResult frmResult = new frmResult("You LOSE", -1);
-                frmResult.ShowDialog();
-                this.Close();
-            }
-            if (yourScore == 14)
-            {
-                isLeftTimerRunning = false;
-                isRightTimerRunning = false;
+                // Chỉ gửi SignalR nếu Online
+                if (!_isPvE) await SendBattleResultAsync(yourScore == 14);
 
-                //IndexCurrentMatch();
-
-                if (_currentMatch.Id > 0)
-                {
-                    // Mình thắng -> Winner là mình
-                    await _tranDauApi.EndMatchAsync(_currentMatch.Id, _currentUserId);
-                }
-
-                await SendBattleResultAsync(true);
-                frmResult frmResult = new frmResult("You WON!", 1);
-                frmResult.ShowDialog();
+                frmResult frm = new frmResult(yourScore == 14 ? "You WON!" : "You LOSE", yourScore == 14 ? 1 : -1);
+                frm.ShowDialog();
                 this.Close();
             }
         }
