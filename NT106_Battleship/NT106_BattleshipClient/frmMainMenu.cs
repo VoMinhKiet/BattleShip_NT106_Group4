@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.SignalR.Client;
+using NT106_BattleshipClient.Services;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -20,7 +22,7 @@ namespace NT106_BattleshipClient
             SetUseComposited(true);
         }
 
-        private void frmMainMenu_Load(object sender, EventArgs e)
+        private async void frmMainMenu_Load(object sender, EventArgs e)
         {
             lblXinChao.Text = $"Xin chào {GlobalData.Username}";
 
@@ -36,6 +38,46 @@ namespace NT106_BattleshipClient
             this.FormBorderStyle = FormBorderStyle.None;
 
             //MusicManager.PlayMenuMusic();
+
+            InviteSignalRClient.Init("http://localhost:5074/", GlobalData.UserId);
+            await InviteSignalRClient.StartAsync();
+            InviteSignalRClient.Connection.On<NT106_BattleshipClient.Models.InvitePayload>(
+    "ReceiveRoomInvite",
+    (data) =>
+    {
+        this.BeginInvoke(new Action(async () =>
+        {
+            int roomId = data.roomId;
+            int fromUserId = data.fromUserId;
+            string fromUsername = data.fromUsername ?? "";
+
+            var choice = MessageBox.Show(
+                $"{fromUsername} (ID {fromUserId}) mời bạn vào phòng #{roomId}\nBạn có đồng ý không?",
+                "Invite vào phòng",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question
+            );
+
+            if (choice == DialogResult.Yes)
+            {
+                try
+                {
+                    var roomApi = new NT106_BattleshipClient.Services.RoomApiService();
+                    var room = await roomApi.JoinRoomAndGetRoomAsync(roomId, GlobalData.UserId);
+
+                    var f = new frmRoom(room, GlobalData.UserId, GlobalData.Username);
+                    f.FormClosed += (s, args) => this.Show();
+                    this.Hide();
+                    f.Show();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Join room failed: " + ex.Message);
+                }
+            }
+        }));
+    }
+);
         }
 
         private void btnHoSo_Click(object sender, EventArgs e)

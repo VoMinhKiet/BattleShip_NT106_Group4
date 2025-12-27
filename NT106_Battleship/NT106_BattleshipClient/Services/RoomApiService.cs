@@ -110,6 +110,31 @@ namespace NT106_BattleshipClient.Services
             var response = await _http.PostAsync($"api/room/start?roomId={roomId}", null);
             return response.IsSuccessStatusCode;
         }
+
+        private readonly string _baseUrl = "http://localhost:5074/";
+        public async Task<RoomDto> JoinRoomAndGetRoomAsync(int roomId, int userId)
+        {
+            using (var http = new HttpClient { BaseAddress = new Uri(_baseUrl) })
+            {
+                var res = await http.PostAsync($"api/Room/join?roomId={roomId}&userId={userId}", null);
+                var json = await res.Content.ReadAsStringAsync();
+
+                if (!res.IsSuccessStatusCode)
+                    throw new Exception(json);
+
+                // response dạng: { message: "...", room: { ... } }
+                var wrapper = JsonConvert.DeserializeObject<JoinRoomResponse>(json);
+                if (wrapper?.room == null) throw new Exception("JoinRoomResponse.room is null");
+
+                return wrapper.room;
+            }
+        }
+
+        private class JoinRoomResponse
+        {
+            public string message { get; set; }
+            public RoomDto room { get; set; }
+        }
     }
 
     // Class model nhận JSON trả về khi Create / Join room

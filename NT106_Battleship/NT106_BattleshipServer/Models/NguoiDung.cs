@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NT106_BattleshipServer.Models
@@ -23,12 +24,14 @@ namespace NT106_BattleshipServer.Models
         [Column("NgayTao")]
         public DateTime NgayTao { get; set; }
 
-        // Mã OTP reset mật khẩu
+        // OTP reset password
         [Column("ResetCode")]
         public string? ResetCode { get; set; }
 
-        // Thời điểm hết hạn OTP
         [Column("ResetCodeExpire")]
         public DateTime? ResetCodeExpire { get; set; }
+
+        [Column("LastOnline")]
+        public DateTime? LastOnline { get; set; }
     }
 }

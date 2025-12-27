@@ -46,7 +46,10 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pnlFriendlist = new System.Windows.Forms.Panel();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.pnlFriendlist.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -90,6 +93,7 @@
             this.btnAddfriend.TabIndex = 30;
             this.btnAddfriend.Text = "Add friend";
             this.btnAddfriend.UseVisualStyleBackColor = true;
+            this.btnAddfriend.Click += new System.EventHandler(this.btnAddfriend_Click);
             // 
             // lblFriendlist
             // 
@@ -109,7 +113,6 @@
             this.cbStatus.Size = new System.Drawing.Size(121, 28);
             this.cbStatus.TabIndex = 31;
             this.cbStatus.Text = "All";
-            this.cbStatus.SelectedIndexChanged += new System.EventHandler(this.cbStatus_SelectedIndexChanged);
             // 
             // btnFind
             // 
@@ -129,6 +132,7 @@
             this.btnDeletefriend.TabIndex = 33;
             this.btnDeletefriend.Text = "Delete friend";
             this.btnDeletefriend.UseVisualStyleBackColor = true;
+            this.btnDeletefriend.Click += new System.EventHandler(this.btnDeletefriend_Click);
             // 
             // btnExit
             // 
@@ -149,6 +153,7 @@
             this.btnInvite.TabIndex = 35;
             this.btnInvite.Text = "Invite ";
             this.btnInvite.UseVisualStyleBackColor = true;
+            this.btnInvite.Click += new System.EventHandler(this.btnInvite_Click);
             // 
             // btnView
             // 
@@ -170,7 +175,9 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
-            this.columnHeader4});
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader6});
             this.lvFriendlist.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lvFriendlist.FullRowSelect = true;
             this.lvFriendlist.HideSelection = false;
@@ -180,30 +187,41 @@
             this.lvFriendlist.TabIndex = 37;
             this.lvFriendlist.UseCompatibleStateImageBehavior = false;
             this.lvFriendlist.View = System.Windows.Forms.View.Details;
+            this.lvFriendlist.Click += new System.EventHandler(this.btnFind_Click);
             // 
             // columnHeader1
             // 
             this.columnHeader1.Text = "ID";
-            this.columnHeader1.Width = 120;
+            this.columnHeader1.Width = 50;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Username";
-            this.columnHeader2.Width = 220;
+            this.columnHeader2.Width = 170;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Rank";
+            this.columnHeader3.Text = "Stars";
             this.columnHeader3.Width = 137;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Status";
-            this.columnHeader4.Width = 135;
+            this.columnHeader4.Width = 110;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Online";
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "LastOnline";
+            this.columnHeader6.Width = 100;
             // 
             // pnlFriendlist
             // 
             this.pnlFriendlist.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.pnlFriendlist.Controls.Add(this.btnRefresh);
             this.pnlFriendlist.Controls.Add(this.lvFriendlist);
             this.pnlFriendlist.Controls.Add(this.btnView);
             this.pnlFriendlist.Controls.Add(this.btnInvite);
@@ -221,7 +239,16 @@
             this.pnlFriendlist.Name = "pnlFriendlist";
             this.pnlFriendlist.Size = new System.Drawing.Size(1010, 517);
             this.pnlFriendlist.TabIndex = 0;
-            this.pnlFriendlist.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlFriendlist_Paint);
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(478, 133);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(108, 26);
+            this.btnRefresh.TabIndex = 38;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // frmFriendlist
             // 
@@ -262,5 +289,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Panel pnlFriendlist;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }

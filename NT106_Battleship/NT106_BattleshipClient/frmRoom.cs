@@ -576,6 +576,19 @@ namespace NT106_BattleshipClient
             SetControlDoubleBuffered(pnlTieuDeKhach);
 
         }
+
+        private void btnInvite_Click(object sender, EventArgs e)
+        {
+            if (!_isHost)
+            {
+                MessageBox.Show("Chỉ chủ phòng mới được mời.");
+                return;
+            }
+
+            var f = new frmFriendlist(inviteRoomId: _room.Id);
+            f.ShowDialog();
+        }
+
     }
 
 }
