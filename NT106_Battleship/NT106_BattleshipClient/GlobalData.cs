@@ -13,6 +13,9 @@ namespace NT106_BattleshipClient
         // Lưu email người dùng
         public static string Email { get; set; }
 
+        public static int? BotId { get; set; } = null; // Biến lưu ID của Bot sau khi tìm thấy
+        public const string BOT_NAME = "Bot"; // Tên đăng nhập của máy trong DB
+
         public static int SoSao { get; set; }
         public static int TongSoTran { get; set; }
         public static double TiLeThang { get; set; }

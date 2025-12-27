@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using NT106_BattleshipClient.Models;
 
 using System;
@@ -110,7 +110,6 @@ namespace NT106_BattleshipClient.Services
             var response = await _http.PostAsync($"api/room/start?roomId={roomId}", null);
             return response.IsSuccessStatusCode;
         }
-
         private readonly string _baseUrl = "http://localhost:5074/";
         public async Task<RoomDto> JoinRoomAndGetRoomAsync(int roomId, int userId)
         {
@@ -134,6 +133,27 @@ namespace NT106_BattleshipClient.Services
         {
             public string message { get; set; }
             public RoomDto room { get; set; }
+        }
+          
+        // Hàm tìm ID user dựa trên tên đăng nhập (Dùng để tìm Bot)
+        public async Task<int?> GetUserIdByUsernameAsync(string username)
+        {
+            try
+            {
+                var resp = await _http.GetAsync($"api/User/find/{username}");
+
+                if (resp.IsSuccessStatusCode)
+                {
+                    string json = await resp.Content.ReadAsStringAsync();
+                    var user = JsonConvert.DeserializeObject<UserDto>(json);
+                    return user?.Id;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 
