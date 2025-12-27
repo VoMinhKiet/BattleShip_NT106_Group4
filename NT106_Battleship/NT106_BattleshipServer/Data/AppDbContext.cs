@@ -20,10 +20,30 @@ namespace NT106_BattleshipServer.Data
 
         public DbSet<BangXepHang> BangXepHang { get; set; }
 
-
+        public DbSet<BanBe> BanBes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<BanBe>()
+                .HasKey(x => new { x.IdNguoi1, x.IdNguoi2 });
+            modelBuilder.Entity<BanBe>()
+                .HasOne(x => x.Nguoi1)
+                .WithMany()
+                .HasForeignKey(x => x.IdNguoi1)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BanBe>()
+                .HasOne(x => x.Nguoi2)
+                .WithMany()
+                .HasForeignKey(x => x.IdNguoi2)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BanBe>()
+                .HasOne(x => x.NguoiThucHien)
+                .WithMany()
+                .HasForeignKey(x => x.IdNguoiThucHien)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

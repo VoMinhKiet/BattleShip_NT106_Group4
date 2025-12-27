@@ -1,28 +1,61 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using Newtonsoft.Json;
+using System;
 using System.Net.Http;
-using Newtonsoft.Json;
+using System.Security.Policy;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
 {
     public partial class frmUserInfo : BaseForm
     {
-        public frmUserInfo()
+
+        private readonly int _viewUserId;
+
+        public frmUserInfo() : this(GlobalData.UserId) { }  
+
+        public frmUserInfo(int userId)
         {
+            MessageBox.Show("View userId = " + userId);
+
+
             InitializeComponent();
-
-            // chống nháy form
             EnableFormDoubleBuffering();
+            _viewUserId = userId;
+        }
+
+        private async Task LoadUserInfoByIdAsync()
+        {
+            try
+            {
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"http://localhost:5074/api/User/get/{_viewUserId}";
+                    var res = await client.GetAsync(url);
+                    var json = await res.Content.ReadAsStringAsync();
 
 
+                    if (!res.IsSuccessStatusCode) return;
+
+                    dynamic u = JsonConvert.DeserializeObject(json);
+
+                    lblID.Text = $"ID : {u.id}";
+                    lblTen.Text = $"Tên : {u.tenDangNhap}";
+                    lblEmail.Text = $"Email : {u.email}";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("LoadUserInfoByIdAsync error: " + ex.Message);
+            }
         }
 
         private async Task LoadUserRankingAsync()
         {
             using (HttpClient client = new HttpClient())
             {
-                string url = $"http://localhost:5074/api/battle-ranking/user/{GlobalData.UserId}";
+                string url = $"http://localhost:5074/api/battle-ranking/user/{_viewUserId}";
+
                 var response = await client.GetAsync(url);
                 var json = await response.Content.ReadAsStringAsync();
 
@@ -40,9 +73,6 @@ namespace NT106_BattleshipClient
             lblID.Text = $"ID : {GlobalData.UserId}";
             lblTen.Text = $"Tên : {GlobalData.Username}";
             lblEmail.Text = $"Email : {GlobalData.Email}";
-
-
-
         }
 
         private void btnThoat_Click(object sender, EventArgs e)
@@ -53,14 +83,7 @@ namespace NT106_BattleshipClient
         private async void frmUserInfo_Load(object sender, EventArgs e)
         {
 
-
-            //Ẩn thanh tiêu đề nếu cần
-            //    this.FormBorderStyle = FormBorderStyle.None;
-
-            lblID.Text = $"ID : {GlobalData.UserId}";
-            lblTen.Text = $"Tên : {GlobalData.Username}";
-            lblEmail.Text = $"Email : {GlobalData.Email}";
-
+            await LoadUserInfoByIdAsync();
             await LoadUserRankingAsync();
         }
 
@@ -72,15 +95,6 @@ namespace NT106_BattleshipClient
             frmMatchHistory matchHistoryForm = new frmMatchHistory();
             matchHistoryForm.ShowDialog();
             this.Show();
-        }
-
-        private void frmUserInfo_FormClosed(object sender, FormClosedEventArgs e)
-        {
-        }
-
-        private void panelUserInfo_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
-        {
-
         }
     }
 }

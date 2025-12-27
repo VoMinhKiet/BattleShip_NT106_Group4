@@ -158,7 +158,6 @@
             this.panelUserInfo.Name = "panelUserInfo";
             this.panelUserInfo.Size = new System.Drawing.Size(449, 343);
             this.panelUserInfo.TabIndex = 10;
-            this.panelUserInfo.Paint += new System.Windows.Forms.PaintEventHandler(this.panelUserInfo_Paint);
             // 
             // frmUserInfo
             // 
@@ -173,7 +172,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmUserInfo";
             this.Text = "frmUserInfo";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frmUserInfo_FormClosed);
             this.Load += new System.EventHandler(this.frmUserInfo_Load);
             this.panelUserInfo.ResumeLayout(false);
             this.panelUserInfo.PerformLayout();
