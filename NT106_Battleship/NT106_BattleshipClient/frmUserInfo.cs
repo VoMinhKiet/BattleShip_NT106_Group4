@@ -82,8 +82,6 @@ namespace NT106_BattleshipClient
             }
         }
 
-
-
         private void LoadUserInfo()
         {
             lblID.Text = $"ID : {GlobalData.UserId}";
@@ -103,13 +101,13 @@ namespace NT106_BattleshipClient
             await LoadUserRankingAsync();
         }
 
-
-
         private void btnLichSuDau_Click(object sender, EventArgs e)
         {
             this.Hide();
-            frmMatchHistory matchHistoryForm = new frmMatchHistory();
+
+            frmMatchHistory matchHistoryForm = new frmMatchHistory(_viewUserId);
             matchHistoryForm.ShowDialog();
+
             this.Show();
         }
     }

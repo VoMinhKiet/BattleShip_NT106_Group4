@@ -135,21 +135,5 @@ namespace NT106_BattleshipClient
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-
-        private void pnlCharacter_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void frmSelectcharacter_Load(object sender, EventArgs e)
-        {
-            //Ẩn thanh tiêu đề nếu cần
-            //  this.FormBorderStyle = FormBorderStyle.None;
-        }
-
-        private void picJS_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }
