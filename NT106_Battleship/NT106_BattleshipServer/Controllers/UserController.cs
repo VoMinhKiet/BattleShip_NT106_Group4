@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NT106_BattleshipServer.Data;
 using NT106_BattleshipServer.Models;
@@ -40,7 +40,6 @@ namespace NT106_BattleshipServer.Controllers
 
             return Ok(user); // trả về thông tin user
         }
-
         // ===========================================
         // GET api/User/search?userId=1&id=2&username=abc
         // → Tìm user toàn hệ thống (ưu tiên id nếu có)
@@ -116,6 +115,27 @@ namespace NT106_BattleshipServer.Controllers
 
             return Ok(result);
         }
+        // =============================
+        // GET api/User/find/{username}
+        // → Tìm user theo Tên đăng nhập (String)
+        // =============================
+        [HttpGet("find/{username}")]
+        public async Task<IActionResult> GetUserByUsername(string username)
+        {
+            var user = await _context.NguoiDungs
+                .Where(u => u.TenDangNhap == username) // So sánh tên
+                .Select(u => new
+                {
+                    Id = u.Id,
+                    TenDangNhap = u.TenDangNhap,
+                    Email = u.Email
+                })
+                .FirstOrDefaultAsync();
 
+            if (user == null)
+                return NotFound(new { message = "Không tìm thấy user có tên này" });
+
+            return Ok(user);
+        }
     }
 }
