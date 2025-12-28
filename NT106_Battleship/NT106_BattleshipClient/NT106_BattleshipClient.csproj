@@ -338,6 +338,7 @@
     <Compile Include="Models\TinNhanDto.cs" />
     <Compile Include="Models\TranDauDto.cs" />
     <Compile Include="Models\UserDto.cs" />
+    <Compile Include="Models\UserRankingDto.cs" />
     <Compile Include="ModernTrackBar.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NT106_BattleshipClient.Models;
 
 namespace NT106_BattleshipClient
 {
@@ -16,9 +17,6 @@ namespace NT106_BattleshipClient
 
         public frmUserInfo(int userId)
         {
-            MessageBox.Show("View userId = " + userId);
-
-
             InitializeComponent();
             EnableFormDoubleBuffering();
             _viewUserId = userId;
@@ -52,21 +50,39 @@ namespace NT106_BattleshipClient
 
         private async Task LoadUserRankingAsync()
         {
-            using (HttpClient client = new HttpClient())
+            try
             {
-                string url = $"http://localhost:5074/api/battle-ranking/user/{_viewUserId}";
+                using (HttpClient client = new HttpClient())
+                {
+                    string url = $"http://localhost:5074/api/battle-ranking/user/{_viewUserId}";
+                    var res = await client.GetAsync(url);
+                    var json = await res.Content.ReadAsStringAsync();
 
-                var response = await client.GetAsync(url);
-                var json = await response.Content.ReadAsStringAsync();
+                    if (!res.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show($"Ranking API failed: {(int)res.StatusCode}\n{json}");
+                        return;
+                    }
 
-                dynamic data = JsonConvert.DeserializeObject(json);
+                    var data = JsonConvert.DeserializeObject<UserRankingDto>(json);
+                    if (data == null)
+                    {
+                        MessageBox.Show("Ranking parse failed: data=null");
+                        return;
+                    }
 
-                lblSao.Text = $"Số Sao : {data.CapSao}";
-                lblTongSoTran.Text = $"Tổng số trận : {data.TongSoTran}";
-                lblTiLeThang.Text = $"Tỉ lệ thắng : {data.TiLeThang}%";
+                    lblSao.Text = $"Số Sao : {data.capSao}";
+                    lblTongSoTran.Text = $"Tổng số trận : {data.tongSoTran}";
+                    lblTiLeThang.Text = $"Tỉ lệ thắng : {data.tiLeThang}%";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("LoadUserRankingAsync error: " + ex.Message);
             }
         }
-    
+
+
 
         private void LoadUserInfo()
         {

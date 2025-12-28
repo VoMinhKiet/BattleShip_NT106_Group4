@@ -33,7 +33,7 @@ namespace NT106_BattleshipServer.Controllers
 
             return Ok(data);
         }
-        [HttpGet("user/{userId}")]
+        [HttpGet("user/{userId:int}")]
         public async Task<IActionResult> GetUserRanking(int userId)
         {
             var bxh = await _context.BangXepHang
