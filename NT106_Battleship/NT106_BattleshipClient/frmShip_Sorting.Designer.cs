@@ -38,7 +38,6 @@
             this.pnlYourGrid.Name = "pnlYourGrid";
             this.pnlYourGrid.Size = new System.Drawing.Size(667, 615);
             this.pnlYourGrid.TabIndex = 0;
-            this.pnlYourGrid.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlYourGrid_Paint);
             // 
             // frmShip_Sorting
             // 
@@ -49,7 +48,6 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmShip_Sorting";
             this.Text = "frmShip_Sorting";
-            this.Load += new System.EventHandler(this.frmShip_Sorting_Load_1);
             this.ResumeLayout(false);
 
         }

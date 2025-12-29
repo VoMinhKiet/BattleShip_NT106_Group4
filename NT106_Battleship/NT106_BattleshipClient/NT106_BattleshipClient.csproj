@@ -366,6 +366,7 @@
     <EmbeddedResource Include="frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </EmbeddedResource>
+    <Compile Include="Services\BattleHubService.cs" />
     <Compile Include="Services\FriendApiService.cs" />
     <Compile Include="Services\FriendSignalRClient.cs" />
     <Compile Include="Services\InviteSignalRClient.cs" />

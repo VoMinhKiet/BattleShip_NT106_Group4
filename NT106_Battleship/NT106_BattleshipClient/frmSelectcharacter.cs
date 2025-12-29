@@ -21,11 +21,6 @@ namespace NT106_BattleshipClient
             this.Close();
         }
 
-        private void btnExit_Click_1(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-
         private void btnExitdescribe_Click(object sender, EventArgs e)
         {
             pnlDescribe.Visible = false;
@@ -55,7 +50,7 @@ namespace NT106_BattleshipClient
                 "Một chiến binh nhanh nhẹn và táo bạo.\n" +
                 "Có khả năng né tránh cao và dùng song kiếm cực kỳ thành thạo để phản công.",
                 "Không kích (Airstrike)",
-                "Tấn công toàn bộ các ô trong **một hàng hoặc một cột** bạn chọn.\n" +
+                "Tấn công toàn bộ **các ô trong một hàng** bạn chọn.\n" +
                 "Rất hiệu quả khi đối thủ tập trung tàu theo hướng thẳng hàng."
             );
         }
@@ -67,7 +62,7 @@ namespace NT106_BattleshipClient
                 "Một thuyền trưởng lão luyện, có khả năng ra đòn chí mạng.\n" +
                 "Sức mạnh vật lý cao, nhưng tốc độ di chuyển hơi chậm.",
                 "Phi tiễn (Projectiles)",
-                "Bắn ra **6 đạn pháo ngẫu nhiên** trên bản đồ.\n" +
+                "Bắn ra **5 đạn pháo ngẫu nhiên** trên bản đồ.\n" +
                 "Thích hợp khi muốn dò vị trí tàu địch ở giai đoạn đầu trận."
             );
         }

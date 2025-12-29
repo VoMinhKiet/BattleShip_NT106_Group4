@@ -178,7 +178,6 @@
             this.btnExit.Size = new System.Drawing.Size(39, 41);
             this.btnExit.TabIndex = 4;
             this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click_1);
             // 
             // picJS
             // 
