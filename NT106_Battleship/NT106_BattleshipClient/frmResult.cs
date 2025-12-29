@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace NT106_BattleshipClient
@@ -80,16 +81,21 @@ namespace NT106_BattleshipClient
         }
         private void BtnPlayAgain_Click(object sender, EventArgs e)
         {
+            if (FormManager.frmLobby == null || FormManager.frmLobby.IsDisposed)
+                FormManager.frmLobby = new frmLobby();
+
             FormManager.frmLobby.Show();
-            this.Close(); //Should change to Close after testing
-
-
+            FormManager.frmLobby.BringToFront();
+            this.Close();
         }
 
         private void BtnReturn_Click(object sender, EventArgs e)
         {
+            if (FormManager.frmMainMenu == null || FormManager.frmMainMenu.IsDisposed)
+                FormManager.frmMainMenu = new frmMainMenu();
+
             FormManager.frmMainMenu.Show();
-            FormManager.frmLobby.Close();
+            FormManager.frmMainMenu.BringToFront();
             this.Close();
         }
 

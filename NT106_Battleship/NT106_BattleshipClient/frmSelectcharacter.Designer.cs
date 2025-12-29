@@ -89,7 +89,6 @@
             this.pnlCharacter.Name = "pnlCharacter";
             this.pnlCharacter.Size = new System.Drawing.Size(841, 498);
             this.pnlCharacter.TabIndex = 12;
-            this.pnlCharacter.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlCharacter_Paint);
             // 
             // pnlDescribe
             // 
@@ -179,7 +178,6 @@
             this.btnExit.Size = new System.Drawing.Size(39, 41);
             this.btnExit.TabIndex = 4;
             this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click_1);
             // 
             // picJS
             // 
@@ -190,7 +188,6 @@
             this.picJS.Size = new System.Drawing.Size(188, 302);
             this.picJS.TabIndex = 20;
             this.picJS.TabStop = false;
-            this.picJS.Click += new System.EventHandler(this.picJS_Click);
             // 
             // picWT
             // 
@@ -380,7 +377,6 @@
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.Name = "frmSelectcharacter";
             this.Text = "frmSelectcharacter";
-            this.Load += new System.EventHandler(this.frmSelectcharacter_Load);
             this.pnlCharacter.ResumeLayout(false);
             this.pnlCharacter.PerformLayout();
             this.pnlDescribe.ResumeLayout(false);

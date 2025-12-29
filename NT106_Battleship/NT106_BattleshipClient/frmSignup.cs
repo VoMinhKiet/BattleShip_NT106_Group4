@@ -82,7 +82,7 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            if (username.Length < 4)
+            if (username.Length < 3)
             {
                 MessageBox.Show("Tên đăng nhập phải ít nhất 4 ký tự!");
                 return;

@@ -316,7 +316,7 @@ namespace NT106_BattleshipClient
                 // Tự động tạo tàu cho Bot
                 GenerateBotShips();
 
-                frmIn_Battle frmBattle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, null);
+                frmIn_Battle frmBattle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize);
                 frmBattle.Show();
                 this.Hide();
 
@@ -328,7 +328,8 @@ namespace NT106_BattleshipClient
             await _hub.InvokeAsync("UpdateReadyFlag", _room.Id, true);
             if (isRightTimerRunning == false)
             {
-                frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, _hub);
+                frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize);
+
                 frmIn_Battle.Show();
                 this.Hide();
             }
@@ -778,7 +779,8 @@ namespace NT106_BattleshipClient
                     if (isLeftTimerRunning == false)
                     {
 
-                        frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize, _hub);
+                        frmIn_Battle frmIn_Battle = new frmIn_Battle(ShipPos, otherShipPos, _room, _currentMatch, mapsize);
+
 
                         frmIn_Battle.FormClosed += (s, args) =>
                         {
@@ -790,17 +792,6 @@ namespace NT106_BattleshipClient
                     }
                 }));
             });
-        }
-
-
-        private void frmShip_Sorting_Load_1(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlYourGrid_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

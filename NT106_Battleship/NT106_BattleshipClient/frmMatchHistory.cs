@@ -8,17 +8,18 @@ namespace NT106_BattleshipClient
 {
     public partial class frmMatchHistory : BaseForm
     {
-        private TranDauApiService _tranDauService = new TranDauApiService();
+        private readonly TranDauApiService _tranDauService = new TranDauApiService();
+        private readonly int _viewUserId;
 
-        public frmMatchHistory()
+        public frmMatchHistory() : this(GlobalData.UserId) { }   // vẫn dùng được cho “xem của mình”
+
+        public frmMatchHistory(int userId)
         {
             InitializeComponent();
-
-            //test chống nháy
             EnableFormDoubleBuffering();
-            //test chống nháy cực mạnh
             SetUseComposited(true);
 
+            _viewUserId = userId;
         }
 
         private async void frmMatchHistory_Load(object sender, EventArgs e)
@@ -59,8 +60,7 @@ namespace NT106_BattleshipClient
 
         private async Task LoadMatchHistoryAsync()
         {
-            int userId = GlobalData.UserId;
-            var list = await _tranDauService.GetHistoryAsync(userId);
+            var list = await _tranDauService.GetHistoryAsync(_viewUserId);
 
             dgvLichSuDau.Rows.Clear();
 

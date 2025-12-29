@@ -12,6 +12,127 @@ namespace NT106_BattleshipClient
 {
     public partial class frmIn_Battle : BaseForm
     {
+        private bool _iAmBatchShooter = false;
+
+        private bool _WillTurnerSkillUse = false;
+        private bool _isSkillBatchActive = false;
+        private bool _batchHadMiss = false;
+        private bool _jackMode = false;
+        private int _jackShotsLeft = 0;
+        private void ReceiveSkillBatch()
+        {
+            _battleHub.On<bool>("SkillBatch", started =>
+            {
+                _isSkillBatchActive = started;
+            });
+        }
+
+
+        private List<Point> GetHectorRandom5Shots()
+        {
+            var shots = new List<Point>();
+            var rand = new Random();
+            int tries = 0;
+
+            while (shots.Count < 5 && tries < 2000)
+            {
+                tries++;
+                int r = rand.Next(0, mapsize);
+                int c = rand.Next(0, mapsize);
+
+                var b = opponentGrid[r, c];
+                if (b.BackColor == Color.Red || b.BackColor == Color.Green) continue;
+
+                var p = new Point(r, c);
+                if (!shots.Contains(p)) shots.Add(p);
+            }
+
+            return shots;
+        }
+        private async Task FireMultiShotAsync(List<Point> shots)
+        {
+            if (shots == null || shots.Count == 0) return;
+
+            // ===== PvE =====
+            if (_isPvE)
+            {
+                bool anyMiss = false;
+
+                foreach (var p in shots)
+                {
+                    var btn2 = opponentGrid[p.X, p.Y];
+                    if (btn2.BackColor == Color.Red || btn2.BackColor == Color.Green) continue;
+
+                    bool hit = (OpponentShipPos[p.X, p.Y] == 1);
+                    btn2.BackColor = hit ? Color.Red : Color.Green;
+
+                    if (hit) { yourScore++; ScoreTracking(); }
+                    else anyMiss = true;
+                }
+
+                if (anyMiss)
+                {
+                    TurnSwitch();
+                    Task.Delay(800).ContinueWith(_ => BotShootTurn());
+                }
+                return;
+            }
+
+            // ===== Online =====
+            _iAmBatchShooter = true;
+            _batchHadMiss = false;
+
+            await _battleHub.InvokeAsync("SkillBatch", _room.Id, true);
+
+            foreach (var p in shots)
+            {
+                var btn2 = opponentGrid[p.X, p.Y];
+                if (btn2.BackColor == Color.Red || btn2.BackColor == Color.Green) continue;
+
+                bool hit = (OpponentShipPos[p.X, p.Y] == 1);
+                btn2.BackColor = hit ? Color.Red : Color.Green;
+
+                await _battleHub.InvokeAsync("Hit", _room.Id, p.X, p.Y, hit);
+
+                if (hit) { yourScore++; ScoreTracking(); }
+                else _batchHadMiss = true;
+            }
+
+            await _battleHub.InvokeAsync("SkillBatch", _room.Id, false);
+
+            // Batch xong: nếu có miss -> đổi lượt bằng Hub
+            if (_batchHadMiss)
+                await EndTurnOnlineAsync();
+
+            _batchHadMiss = false;
+            _iAmBatchShooter = false;
+        }
+
+
+
+
+        private List<Point> GetWill3x3Shots(int baseRow, int baseCol)
+        {
+            var shots = new List<Point>();
+            for (int dr = -1; dr <= 1; dr++)
+                for (int dc = -1; dc <= 1; dc++)
+                {
+                    int r = baseRow + dr;
+                    int c = baseCol + dc;
+                    if (r >= 0 && r < mapsize && c >= 0 && c < mapsize)
+                        shots.Add(new Point(r, c));
+                }
+            return shots;
+        }
+
+        private List<Point> GetElizaRowShots(int row)
+        {
+            var shots = new List<Point>();
+            for (int c = 0; c < mapsize; c++)
+                shots.Add(new Point(row, c));
+            return shots;
+        }
+
         private int _resultSent = 0;
 
         private Timer timer;
@@ -21,10 +142,10 @@ namespace NT106_BattleshipClient
         private Label lblRightTimer;
         private bool isLeftTimerRunning = false;
         private bool isRightTimerRunning = false;
-        private Button[,] playerGrid = new Button[10, 10];
-        private Button[,] opponentGrid = new Button[10, 10];
-        public int[,] YourShipPos = new int[11, 11];
-        public int[,] OpponentShipPos = new int[11, 11];
+        private Button[,] playerGrid;
+        private Button[,] opponentGrid;
+        public int[,] YourShipPos;
+        public int[,] OpponentShipPos;
         public int mapsize;
         public bool isYourTurn = false;
         private int _currentUserId;
@@ -40,7 +161,7 @@ namespace NT106_BattleshipClient
         private readonly TranDauDto _currentMatch;
         private readonly RoomDto _room;
         private readonly LeaderBoardDto _LeaderBoard;
-        private HubConnection _hub;
+        private HubConnection _battleHub;
         private HubConnection _rankingHub;
         private bool _battleEnded = false;
 
@@ -52,7 +173,7 @@ namespace NT106_BattleshipClient
 
         private readonly TranDauApiService _tranDauApi = new TranDauApiService();
 
-        public frmIn_Battle(int[,] ShipPos, int[,] otherShipPos, RoomDto room, TranDauDto currentMatch, int size, HubConnection hub)
+        public frmIn_Battle(int[,] ShipPos, int[,] otherShipPos, RoomDto room, TranDauDto currentMatch, int size)
         {
             this.FormBorderStyle = FormBorderStyle.None; // removes title bar
             this.WindowState = FormWindowState.Maximized; // maximize to full screen
@@ -66,19 +187,20 @@ namespace NT106_BattleshipClient
             this.UpdateStyles();
             InitializeComponent();
 
-            // Nhận biết chế độ PvE
-            _hub = hub;
-            if (_hub == null) _isPvE = true;
-
             this.KeyPreview = true;
             this.KeyDown += FrmIn_Battle_KeyDown;
 
             mapsize = size;
+            playerGrid = new Button[mapsize, mapsize];
+            opponentGrid = new Button[mapsize, mapsize];
+
             _currentMatch = currentMatch;
             _room = room;
+
+            _isPvE = (_room.IDKhach == null) || (_room.IDKhach == GlobalData.BotId);
+
             _idPhongCho = room.Id;
             _idTranDau = currentMatch.Id;
-            _hub = hub;
 
             _rankingHub = new HubConnectionBuilder()
               .WithUrl("http://localhost:5074/battleRankingHub")
@@ -147,22 +269,13 @@ namespace NT106_BattleshipClient
             btnSkill.Click += BtnSkill_Click;
             this.Controls.Add(btnSkill);
 
-            // Logic Turn cho PvE
+            //ReceiveTurn();
             if (_isPvE)
             {
-                // Mặc định người chơi đi trước (hoặc random tùy ý)
                 isYourTurn = true;
                 isLeftTimerRunning = true;
                 isRightTimerRunning = false;
-                // Không gọi DecideTurn() của SignalR
             }
-            else
-            {
-                DecideTurn();
-            }
-
-            //ReceiveTurn();
-            if (!_isPvE) ReceiveHit();
         }
 
 
@@ -174,40 +287,38 @@ namespace NT106_BattleshipClient
                 _ElizabethSwannSkillOrientationRow = !_ElizabethSwannSkillOrientationRow;
             }
         }
+
+        private void RegisterTurnHandler()
+        {
+            if (_turnHandlerRegistered) return;
+            _turnHandlerRegistered = true;
+
+            _battleHub.On<bool>("Turn", isHostTurn =>
+            {
+                isYourTurn = (_isHost && isHostTurn) || (!_isHost && !isHostTurn);
+
+                if (isYourTurn)
+                {
+                    isRightTimerRunning = false;
+                    isLeftTimerRunning = true;
+                    using (var p = new frmTurnPopUp("Your Turn!")) p.ShowDialog(this);
+                }
+                else
+                {
+                    isLeftTimerRunning = false;
+                    isRightTimerRunning = true;
+                    using (var p = new frmTurnPopUp("Opponent Turn!")) p.ShowDialog(this);
+                }
+            });
+        }
+
         public async void DecideTurn()
         {
-            if (random == 0 && _isHost)
-            {
-                isYourTurn = true;
-                await _hub.InvokeAsync("Turn", _room.Id, true);
-                using (var p = new frmTurnPopUp("Your turn!")) p.ShowDialog(this);
-                isLeftTimerRunning = true;
-            }
-            else if (random == 1 && _isHost)
-            {
-                isYourTurn = false;
-                await _hub.InvokeAsync("Turn", _room.Id, false);
-                using (var p = new frmTurnPopUp("Opponent Turn!")) p.ShowDialog(this);
-                isRightTimerRunning = true;
-            }
-            if (!_isHost)
-            {
-                _hub.On<bool>("Turn", (isHostTurn) =>
-                {
-                    isYourTurn = !isHostTurn;
-                    if (isYourTurn == true)
-                    {
-                        isRightTimerRunning = false;
-                        isLeftTimerRunning = true;
-                    }
-                    if (isYourTurn == false)
-                    {
-                        isLeftTimerRunning = false;
-                        isRightTimerRunning = true;
-                    }
-                });
-            }
+            if (!_isHost) return;
+            bool hostStarts = (random == 0);
+            await _battleHub.InvokeAsync("Turn", _room.Id, hostStarts);
         }
+
 
 
         public void CreateTopPanel()
@@ -350,9 +461,9 @@ namespace NT106_BattleshipClient
             int size = 500 / mapsize; // button size
             container.Controls.Clear();
 
-            for (int row = 0; row < 10; row++)
+            for (int row = 0; row < mapsize; row++)
             {
-                for (int col = 0; col < 10; col++)
+                for (int col = 0; col < mapsize; col++)
                 {
                     Button btn = new Button();
                     btn.Width = size;
@@ -382,106 +493,130 @@ namespace NT106_BattleshipClient
         {
             Button btn = sender as Button;
             if (btn == null) return;
-            if (!isYourTurn)
-            {
-                //MessageBox.Show("It's already hit!");
-                return;
-            }
-            Point pos = (Point)btn.Tag;
+            if (!isYourTurn) return;
 
+            Point pos = (Point)btn.Tag;
             int row = pos.X;
             int col = pos.Y;
 
             if (btn.BackColor == Color.Red || btn.BackColor == Color.Green) return;
 
-            bool isHit;
-            // === LOGIC PVE (OFFLINE) ===
-            if (_isPvE)
+            // ===== JACK MODE =====
+            if (_jackMode)
             {
-                isHit = (OpponentShipPos[row, col] == 1);
-                if (isHit)
+                bool hit = (OpponentShipPos[row, col] == 1);
+                btn.BackColor = hit ? Color.Red : Color.Green;
+
+                if (!_isPvE)
+                    await _battleHub.InvokeAsync("Hit", _room.Id, row, col, hit);
+
+                if (hit) { yourScore++; ScoreTracking(); }
+                else _batchHadMiss = true;
+
+                _jackShotsLeft--;
+
+                if (_jackShotsLeft <= 0)
                 {
-                    btn.BackColor = Color.Red;
-                    yourScore++;
-                    ScoreTracking();
+                    _jackMode = false;
+
+                    if (_isPvE)
+                    {
+                        if (_batchHadMiss)
+                        {
+                            _batchHadMiss = false;
+                            TurnSwitch();
+                            Task.Delay(800).ContinueWith(_ => BotShootTurn());
+                        }
+                        else _batchHadMiss = false;
+                    }
+                    else
+                    {
+                        // kết thúc batch
+                        await _battleHub.InvokeAsync("SkillBatch", _room.Id, false);
+
+                        // nếu có miss -> đổi lượt bằng Hub
+                        if (_batchHadMiss)
+                            await EndTurnOnlineAsync();
+
+                        _batchHadMiss = false;
+                        _iAmBatchShooter = false;
+                    }
+
+                    MessageBox.Show("Jack skill finished!");
                 }
-                else
-                {
-                    btn.BackColor = Color.Green;
-                    TurnSwitch(); // Đổi lượt cho Bot
-                    // Bot bắn sau 1 giây
-                    Task.Delay(1000).ContinueWith(_ => BotShootTurn());
-                }
-                return; // DỪNG, KHÔNG GỌI SIGNALR
-            }
 
-            // Prevent repeated clicks
-            //btn.Enabled = isYourTurn;
-            isHit = false;
-            btn.Enabled = true;
-
-            if (OpponentShipPos[row, col] == 1 && btn.BackColor == Color.LightBlue)
-            {
-                isHit = true;
-            }
-            else if (OpponentShipPos[row, col] == 0 && btn.BackColor == Color.LightBlue)
-            {
-                isHit = false;
-
-            }
-            else if (btn.BackColor == Color.Red)
-            {
-                MessageBox.Show("You already hit this spot and it's a HIT!");
                 return;
             }
 
-            try
+            // ===== ELIZA =====
+            if (_ElizabethSwannSkillUse)
             {
-                if (isHit)
-                {
-                    btn.BackColor = Color.Red; // hit
-                    await _hub.InvokeAsync("Hit", _room.Id, row, col, true);
-                    yourScore++;
-                    ScoreTracking();
-                    isHit = false;
-                    //return;
-                    //TurnSwitch();
-
-                }
-                else if (!isHit)
-                {
-                    btn.BackColor = Color.Green; // miss
-                    await _hub.InvokeAsync("Hit", _room.Id, row, col, false);
-                    TurnSwitch();
-
-                }
-
+                _ElizabethSwannSkillUse = false;
+                await FireMultiShotAsync(GetElizaRowShots(row));
+                return;
             }
-            catch (Exception ex)
-            {
-                // re-enable button on failure and show error for debugging
-                btn.Enabled = true;
-                MessageBox.Show($"Failed to send hit: {ex.Message}", "SignalR Invoke Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
 
-        private void ReceiveHit()
-        {
-            _hub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
-        {
-            if (YourShipPos[row, col] == 1 && isHit)
+            // ===== WILL =====
+            if (_WillTurnerSkillUse)
             {
-                playerGrid[row, col].BackColor = Color.Red;
-                opponentScore++;
+                _WillTurnerSkillUse = false;
+                await FireMultiShotAsync(GetWill3x3Shots(row, col));
+                return;
+            }
+
+            // ===== NORMAL SHOOT =====
+            if (_isPvE)
+            {
+                bool hitPvE = (OpponentShipPos[row, col] == 1);
+                btn.BackColor = hitPvE ? Color.Red : Color.Green;
+
+                if (hitPvE) { yourScore++; ScoreTracking(); }
+                else { TurnSwitch(); Task.Delay(1000).ContinueWith(_ => BotShootTurn()); }
+
+                return;
+            }
+
+            // Online normal
+            bool hitOnline = (OpponentShipPos[row, col] == 1);
+            btn.BackColor = hitOnline ? Color.Red : Color.Green;
+
+            await _battleHub.InvokeAsync("Hit", _room.Id, row, col, hitOnline);
+
+            if (hitOnline)
+            {
+                yourScore++;
                 ScoreTracking();
             }
             else
             {
-                playerGrid[row, col].BackColor = Color.Green;
-                TurnSwitch();
+                await EndTurnOnlineAsync();
             }
-        });
         }
+
+
+        private async Task EndTurnOnlineAsync()
+        {
+            bool isHostTurnNext = !_isHost;
+            await _battleHub.InvokeAsync("Turn", _room.Id, isHostTurnNext);
+        }
+        private void ReceiveHit()
+        {
+            _battleHub.On<int, int, bool>("ReceiveHit", (row, col, isHit) =>
+            {
+                if (YourShipPos[row, col] == 1 && isHit)
+                {
+                    playerGrid[row, col].BackColor = Color.Red;
+                    opponentScore++;
+                    ScoreTracking();
+                }
+                else
+                {
+                    playerGrid[row, col].BackColor = Color.Green;
+                }
+            });
+        }
+
+
 
         private void BotShootTurn()
         {
@@ -583,46 +718,87 @@ namespace NT106_BattleshipClient
             }
         }
 
-        public void BtnSkill_Click(object sender, EventArgs e)
+        public async void BtnSkill_Click(object sender, EventArgs e)
         {
             if (!isYourTurn)
             {
                 MessageBox.Show("It's not your turn!");
                 return;
             }
-            else
+
+            if (skillUsage <= 0)
             {
-                if (_isHost && skillUsage >= 1)
+                MessageBox.Show("No skill usage left!");
+                return;
+            }
+
+            string myChar = _isHost ? _currentMatch.TenNV1 : _currentMatch.TenNV2;
+
+            // ===== Hector: bấm nút là bắn ngay 5 ô random =====
+            if (myChar == "Hector Barbossa")
+            {
+                skillUsage--;
+                var shots = GetHectorRandom5Shots();
+                await FireMultiShotAsync(shots);
+                return;
+            }
+
+            // ===== Jack: bật chế độ chọn 5 phát =====
+            if (myChar == "Jack Sparrow")
+            {
+                if (_jackMode)
                 {
-                    if (_currentMatch.TenNV1 == "Elizabeth Swann")
-                    {
-                        _ElizabethSwannSkillUse = true;
-                    }
-                }
-                if (!_isHost && skillUsage >= 1)
-                {
-                    if (_currentMatch.TenNV2 == "Elizabeth Swann")
-                    {
-                        _ElizabethSwannSkillUse = true;
-                    }
-                }
-                if (_isHost && skillUsage >= 1)
-                {
-                    if (_currentMatch.TenNV1 == "Hector Barbossa")
-                    {
-                        _HectorBarbossaSkillUse = true;
-                    }
-                }
-                if (!_isHost && skillUsage >= 1)
-                {
-                    if (_currentMatch.TenNV2 == "Hector Barbossa")
-                    {
-                        _HectorBarbossaSkillUse = true;
-                    }
+                    MessageBox.Show("Jack skill is active. Pick your remaining shots.");
+                    return;
                 }
 
+                skillUsage--;
+                _jackMode = true;
+                _jackShotsLeft = 5;
+
+                if (!_isPvE)
+                {
+                    _iAmBatchShooter = true;
+                    _batchHadMiss = false;
+                    await _battleHub.InvokeAsync("SkillBatch", _room.Id, true);
+                }
+
+                MessageBox.Show("Jack: pick 5 cells to shoot. Turn won't switch until finished.");
+                return;
             }
+
+            // ===== Eliza: click 1 ô để bắn cả hàng =====
+            if (myChar == "Elizabeth Swann")
+            {
+                if (_ElizabethSwannSkillUse)
+                {
+                    MessageBox.Show("Eliza skill is already active. Click a cell to use it.");
+                    return;
+                }
+
+                skillUsage--;
+                _ElizabethSwannSkillUse = true;
+                MessageBox.Show("Eliza: click a cell to shoot the whole row.");
+                return;
+            }
+
+            if (myChar == "Will Turner")
+            {
+                if (_WillTurnerSkillUse)
+                {
+                    MessageBox.Show("Will skill is already active. Click a cell to use it.");
+                    return;
+                }
+
+                skillUsage--;
+                _WillTurnerSkillUse = true;
+                MessageBox.Show("Will: click a cell to shoot 3x3 around it.");
+                return;
+            }
+
+            MessageBox.Show("Skill for this character is not implemented.");
         }
+
         private async void Timer_Tick(object sender, EventArgs e)
         {
             if (this.IsDisposed || !this.IsHandleCreated)
@@ -778,10 +954,8 @@ namespace NT106_BattleshipClient
             await ChatSession.ChatBox.SetBattleContextAsync(_idTranDau);
             ChatSession.ChatBox.LoadHistory();
 
-
-
-            this.FormBorderStyle = FormBorderStyle.None; // removes title bar
-            this.WindowState = FormWindowState.Maximized; // maximize to full screen
+            this.FormBorderStyle = FormBorderStyle.None;
+            this.WindowState = FormWindowState.Maximized;
 
             leftTime = TimeSpan.FromSeconds(180);
             rightTime = TimeSpan.FromSeconds(180);
@@ -790,17 +964,45 @@ namespace NT106_BattleshipClient
             lblRightTimer.Text = rightTime.ToString(@"mm\:ss");
 
             timer = new Timer();
-            timer.Interval = 1000; // every second
+            timer.Interval = 1000;
             timer.Tick += Timer_Tick;
-            timer.Start(); // start automatically
+            timer.Start();
 
+            // ====== ONLINE BATTLE HUB ======
+            if (!_isPvE)
+            {
+                _battleHub = new HubConnectionBuilder()
+                    .WithUrl("http://localhost:5074/tranDauHub")
+                    .WithAutomaticReconnect()
+                    .Build();
 
+                // register handlers TRƯỚC StartAsync
+                RegisterTurnHandler();
+                ReceiveSkillBatch();
+                ReceiveHit();
+
+                await _battleHub.StartAsync();
+                await _battleHub.InvokeAsync("JoinBattle", _room.Id);
+
+                // Host phát lượt đầu (1 lần)
+                if (_isHost)
+                    DecideTurn();
+            }
+            else
+            {
+                // PvE: local turn
+                isYourTurn = true;
+                isLeftTimerRunning = true;
+                isRightTimerRunning = false;
+            }
+
+            // ====== RANKING HUB ======
             if (_rankingHub.State == HubConnectionState.Disconnected)
             {
                 await _rankingHub.StartAsync();
             }
-
         }
+
         private void IndexCurrentMatch()
         {
             _currentMatch.Id = _room.Id;
@@ -859,8 +1061,6 @@ namespace NT106_BattleshipClient
             });
         }
 
-
-
         private async Task SendBattleResultAsync(bool isWin)
         {
             if (System.Threading.Interlocked.CompareExchange(ref _resultSent, 1, 0) != 0)
@@ -884,6 +1084,21 @@ namespace NT106_BattleshipClient
             });
         }
 
+        protected override async void OnFormClosing(FormClosingEventArgs e)
+        {
+            base.OnFormClosing(e);
+
+            if (_battleHub != null)
+            {
+                try
+                {
+                    await _battleHub.InvokeAsync("LeaveBattle", _room.Id);
+                    await _battleHub.StopAsync();
+                    await _battleHub.DisposeAsync();
+                }
+                catch { }
+            }
+        }
 
     }
 }
