@@ -19,6 +19,10 @@ namespace NT106_BattleshipClient
         private bool _batchHadMiss = false;
         private bool _jackMode = false;
         private int _jackShotsLeft = 0;
+
+        private int _botSkillUsage = 3; // Bot có 3 lần dùng skill
+        private Random _rand = new Random();
+
         private void ReceiveSkillBatch()
         {
             _battleHub.On<bool>("SkillBatch", started =>
@@ -275,6 +279,7 @@ namespace NT106_BattleshipClient
                 isYourTurn = true;
                 isLeftTimerRunning = true;
                 isRightTimerRunning = false;
+                ParsePlayerShips();
             }
         }
 
@@ -616,6 +621,64 @@ namespace NT106_BattleshipClient
             });
         }
 
+        // Danh sách độ dài các tàu còn sống của người chơi
+        private List<int> _aliveShipLengths = new List<int> { 5, 4, 3, 2 };
+        // Mỗi phần tử trong List là một danh sách các điểm (Point) của 1 con tàu
+        private List<List<Point>> _playerShipObjects = new List<List<Point>>();
+
+        // Hàm này chạy 1 lần lúc đầu game để nhận diện các con tàu
+        private void ParsePlayerShips()
+        {
+            _playerShipObjects.Clear();
+            bool[,] visited = new bool[mapsize, mapsize];
+
+            // Duyệt toàn bộ bàn cờ để tìm các cụm tàu
+            for (int r = 0; r < mapsize; r++)
+            {
+                for (int c = 0; c < mapsize; c++)
+                {
+                    if (YourShipPos[r, c] == 1 && !visited[r, c])
+                    {
+                        // Tìm thấy 1 điểm tàu chưa duyệt -> Loang (BFS/DFS) để lấy cả con tàu
+                        List<Point> newShip = GetConnectedShip(r, c, visited);
+                        _playerShipObjects.Add(newShip);
+                    }
+                }
+            }
+        }
+
+        // Hàm phụ: Thuật toán loang để lấy trọn vẹn 1 con tàu
+        private List<Point> GetConnectedShip(int startR, int startC, bool[,] visited)
+        {
+            List<Point> ship = new List<Point>();
+            Queue<Point> q = new Queue<Point>();
+            q.Enqueue(new Point(startR, startC));
+            visited[startR, startC] = true;
+
+            int[] dR = { -1, 1, 0, 0 };
+            int[] dC = { 0, 0, -1, 1 };
+
+            while (q.Count > 0)
+            {
+                Point p = q.Dequeue();
+                ship.Add(p);
+
+                for (int i = 0; i < 4; i++)
+                {
+                    int nr = p.X + dR[i];
+                    int nc = p.Y + dC[i];
+
+                    // Nếu ô kề bên nằm trong map, là tàu (1) và chưa duyệt
+                    if (nr >= 0 && nr < mapsize && nc >= 0 && nc < mapsize &&
+                        YourShipPos[nr, nc] == 1 && !visited[nr, nc])
+                    {
+                        visited[nr, nc] = true;
+                        q.Enqueue(new Point(nr, nc));
+                    }
+                }
+            }
+            return ship;
+        }
 
 
         private void BotShootTurn()
@@ -624,20 +687,47 @@ namespace NT106_BattleshipClient
 
             this.BeginInvoke(new Action(() =>
             {
+                // 1.Bot quyết định dùng skill hay bắn thường
+                // Lấy tên nhân vật của Bot
+                string botChar = _isHost ? _currentMatch.TenNV2 : _currentMatch.TenNV1;
+
+                if (_botSkillUsage > 0)
+                {
+                    // A. NHÓM (Jack/Hector):
+                    // Chỉ dùng khi không có mục tiêu để bắn (đang đi mò tàu) -> Xả skill để tìm
+                    if ((botChar == "Jack Sparrow" || botChar == "Hector Barbossa") && _botTargets.Count == 0)
+                    {
+                        if (_rand.Next(0, 100) < 80)
+                        {
+                            BotUseSkillRandom5(); // Bắn 5 phát ngẫu nhiên
+                            return;
+                        }
+                    }
+
+                    // B. Nhóm (Will/Elizabeth):
+                    // Chỉ dùng khi đang có mục tiêu trong danh sách (đã tìm thấy tàu) -> Dùng skill dứt điểm
+                    else if ((botChar == "Will Turner" || botChar == "Elizabeth Swann") && _botTargets.Count > 0)
+                    {
+                        // Tỷ lệ dùng cao (80%)
+                        if (_rand.Next(0, 100) < 80)
+                        {
+                            if (botChar == "Will Turner") BotUseSkillWill(_botTargets[0]);
+                            else BotUseSkillEliza(_botTargets[0]);
+                            return;
+                        }
+                    }
+                }
+
+                // 2. Bắn thường (Khi không dùng skill hoặc hết skill)
                 Point target = new Point(-1, -1);
-                Random rand = new Random();
 
-                // BƯỚC 1: CHỌN MỤC TIÊU
-
-                // Nếu hàng chờ có mục tiêu (do lần trước bắn trúng) -> Lấy ra bắn
+                // A. Chế độ Săn mồi (Hunt Mode)
                 while (_botTargets.Count > 0)
                 {
-                    // Lấy điểm cuối cùng trong danh sách (cơ chế Stack giúp bot bắn dọc theo thân tàu tốt hơn)
-                    int lastIndex = _botTargets.Count - 1;
-                    Point p = _botTargets[lastIndex];
-                    _botTargets.RemoveAt(lastIndex);
+                    int lastIdx = _botTargets.Count - 1;
+                    Point p = _botTargets[lastIdx];
+                    _botTargets.RemoveAt(lastIdx);
 
-                    // Kiểm tra nếu ô này chưa bắn thì bắn
                     if (IsValidShot(p.X, p.Y))
                     {
                         target = p;
@@ -645,64 +735,178 @@ namespace NT106_BattleshipClient
                     }
                 }
 
-                // Nếu hàng chờ rỗng (hoặc các ô trong hàng chờ đã bị bắn hết) -> Bắn Random
+                // B. Chế độ Tìm kiếm (Search Mode - Bàn cờ vua)
                 if (target.X == -1)
                 {
                     int attempts = 0;
                     do
                     {
-                        target = new Point(rand.Next(0, mapsize), rand.Next(0, mapsize));
+                        int r = _rand.Next(0, mapsize);
+                        int c = _rand.Next(0, mapsize);
+
+                        // Ưu tiên ô chẵn lẻ xen kẽ
+                        if ((r + c) % 2 == 0 && IsValidShot(r, c)) target = new Point(r, c);
+                        else if (attempts > 100 && IsValidShot(r, c)) target = new Point(r, c);
+
                         attempts++;
-                    } while ((playerGrid[target.X, target.Y].BackColor == Color.Red ||
-                            playerGrid[target.X, target.Y].BackColor == Color.Green)
-                            && attempts < 200);
+                    } while (target.X == -1 && attempts < 500);
                 }
 
-                int r = target.X;
-                int c = target.Y;
+                // 3. Thực hiện bắn
+                if (target.X != -1) ProcessBotHit(target.X, target.Y);
+                else TurnSwitch();
+            }));
+        }
 
-                // BƯỚC 2: XỬ LÝ BẮN
+        // Xử lý khi Bot bắn 1 phát cụ thể
+        private void ProcessBotHit(int r, int c)
+        {
+            bool hit = (YourShipPos[r, c] == 1);
+            playerGrid[r, c].BackColor = hit ? Color.Red : Color.Green;
 
-                // Kiểm tra trúng/trượt
-                bool botHit = (YourShipPos[r, c] == 1);
+            if (hit)
+            {
+                opponentScore++;
+                ScoreTracking();
 
-                if (botHit)
+                CheckAndRemoveSunkShips();
+
+                // Thêm 4 ô xung quanh vào danh sách săn
+                AddTargetToBot(r - 1, c);
+                AddTargetToBot(r + 1, c);
+                AddTargetToBot(r, c - 1);
+                AddTargetToBot(r, c + 1);
+
+                // Luật: Bắn trúng được bắn tiếp
+                if (opponentScore < 14) Task.Delay(800).ContinueWith(_ => BotShootTurn());
+            }
+            else
+            {
+                TurnSwitch(); // Trượt -> Đổi lượt
+            }
+        }
+
+        // Skill: Bắn 5 phát ngẫu nhiên (Dùng cho cả Jack và Hector)
+        private void BotUseSkillRandom5()
+        {
+            _botSkillUsage--;
+            List<Point> shots = new List<Point>();
+            int attempts = 0;
+            while (shots.Count < 5 && attempts < 200)
+            {
+                attempts++;
+                int r = _rand.Next(0, mapsize);
+                int c = _rand.Next(0, mapsize);
+                if (IsValidShot(r, c) && !shots.Contains(new Point(r, c)))
+                    shots.Add(new Point(r, c));
+            }
+            FireBotSkillShots(shots);
+        }
+
+        // Skill: Will Turner (3x3)
+        private void BotUseSkillWill(Point center)
+        {
+            _botSkillUsage--;
+            List<Point> shots = new List<Point>();
+            for (int dr = -1; dr <= 1; dr++)
+            {
+                for (int dc = -1; dc <= 1; dc++)
                 {
-                    playerGrid[r, c].BackColor = Color.Red;
+                    int r = center.X + dr;
+                    int c = center.Y + dc;
+                    if (IsValidShot(r, c)) shots.Add(new Point(r, c));
+                }
+            }
+            FireBotSkillShots(shots);
+        }
+
+        // Skill: Elizabeth Swann (Hàng ngang)
+        private void BotUseSkillEliza(Point center)
+        {
+            _botSkillUsage--;
+            List<Point> shots = new List<Point>();
+            int r = center.X; // Lấy hàng của mục tiêu đang nhắm
+            for (int c = 0; c < mapsize; c++)
+            {
+                if (IsValidShot(r, c)) shots.Add(new Point(r, c));
+            }
+            FireBotSkillShots(shots);
+        }
+
+        // Hàm xử lý bắn một danh sách các ô (Dùng chung cho Bot)
+        private void FireBotSkillShots(List<Point> shots)
+        {
+            bool anyMiss = false;
+            foreach (var p in shots)
+            {
+                bool hit = (YourShipPos[p.X, p.Y] == 1);
+                playerGrid[p.X, p.Y].BackColor = hit ? Color.Red : Color.Green;
+
+                if (hit)
+                {
                     opponentScore++;
                     ScoreTracking();
-
-                    // THÊM 4 Ô XUNG QUANH VÀO HÀNG CHỜ=
-                    AddTargetToBot(r - 1, c); // Trên
-                    AddTargetToBot(r + 1, c); // Dưới
-                    AddTargetToBot(r, c - 1); // Trái
-                    AddTargetToBot(r, c + 1); // Phải
-
-                    // Bot bắn trúng thì được bắn tiếp
-                    if (opponentScore < 14)
-                    {
-                        Task.Delay(800).ContinueWith(_ => BotShootTurn());
-                    }
+                    // Nếu trúng, thêm 4 ô xung quanh vào list săn mồi để lượt sau bắn tiếp
+                    AddTargetToBot(p.X - 1, p.Y);
+                    AddTargetToBot(p.X + 1, p.Y);
+                    AddTargetToBot(p.X, p.Y - 1);
+                    AddTargetToBot(p.X, p.Y + 1);
                 }
-                else
-                {
-                    playerGrid[r, c].BackColor = Color.Green;
-                    TurnSwitch(); // Trượt -> Trả lượt cho người
-                }
-            }));
+                else anyMiss = true;
+            }
+
+            if (anyMiss) TurnSwitch(); // Có viên trượt -> Mất lượt
+            else Task.Delay(800).ContinueWith(_ => BotShootTurn()); // Trúng tất cả -> Bắn tiếp
         }
 
         // Kiểm tra xem ô (r, c) có hợp lệ để bắn không
         private bool IsValidShot(int r, int c)
         {
-            // 1. Phải nằm trong bản đồ
+            // 1. Kiểm tra cơ bản (Trong map, chưa bắn)
             if (r < 0 || r >= mapsize || c < 0 || c >= mapsize) return false;
+            Color color = playerGrid[r, c].BackColor;
+            if (color == Color.Red || color == Color.Green) return false;
 
-            // 2.Ô hợp lệ là ô chưa bị bắn (Màu hiện tại KHÔNG PHẢI Đỏ và KHÔNG PHẢI Xanh Lá)
-            Color cColor = playerGrid[r, c].BackColor;
-            if (cColor == Color.Red || cColor == Color.Green) return false;
+            // 2. Kiểm tra độ dài quá khổ
+            if (_aliveShipLengths.Count == 0) return true; // Hết tàu (thắng rồi) thì sao cũng được
+
+            int maxLenAlive = 0;
+            foreach (int l in _aliveShipLengths) if (l > maxLenAlive) maxLenAlive = l;
+
+            // Tính độ dài chuỗi liên tiếp nếu bắn vào ô (r,c)
+            // Hàng Ngang
+            int horizontalLen = 1 + CountRedConsecutive(r, c, 0, -1) + CountRedConsecutive(r, c, 0, 1);
+            // Hàng Dọc
+            int verticalLen = 1 + CountRedConsecutive(r, c, -1, 0) + CountRedConsecutive(r, c, 1, 0);
+
+            // Nếu bắn vào đây tạo thành dây dài hơn tàu to nhất còn sống -> VÔ LÝ -> KHÔNG BẮN
+            if (horizontalLen > maxLenAlive) return false;
+            if (verticalLen > maxLenAlive) return false;
 
             return true;
+        }
+
+        // Hàm đếm số ô đỏ liên tiếp từ (r,c) theo hướng (dr, dc)
+        private int CountRedConsecutive(int r, int c, int dr, int dc)
+        {
+            int count = 0;
+            int currR = r + dr;
+            int currC = c + dc;
+
+            while (currR >= 0 && currR < mapsize && currC >= 0 && currC < mapsize)
+            {
+                if (playerGrid[currR, currC].BackColor == Color.Red)
+                {
+                    count++;
+                    currR += dr;
+                    currC += dc;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return count;
         }
 
         // Thêm mục tiêu vào danh sách
@@ -714,6 +918,39 @@ namespace NT106_BattleshipClient
                 if (!_botTargets.Contains(new Point(r, c)))
                 {
                     _botTargets.Add(new Point(r, c));
+                }
+            }
+        }
+
+        private void CheckAndRemoveSunkShips()
+        {
+            // Duyệt ngược để xóa an toàn
+            for (int i = _playerShipObjects.Count - 1; i >= 0; i--)
+            {
+                var ship = _playerShipObjects[i];
+                bool isSunk = true;
+
+                // Kiểm tra tất cả các ô của tàu này đã bị bắn đỏ chưa
+                foreach (var p in ship)
+                {
+                    if (playerGrid[p.X, p.Y].BackColor != Color.Red)
+                    {
+                        isSunk = false;
+                        break;
+                    }
+                }
+
+                if (isSunk)
+                {
+                    // Tàu đã chìm
+                    int len = ship.Count;
+
+                    // Xóa độ dài này khỏi danh sách
+                    // Dùng Remove để xóa 1 phần tử đầu tiên gặp, phòng hờ có 2 tàu cùng size
+                    _aliveShipLengths.Remove(len);
+
+                    // Xóa tàu khỏi danh sách quản lý để ko check lại
+                    _playerShipObjects.RemoveAt(i);
                 }
             }
         }
