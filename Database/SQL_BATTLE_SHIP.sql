@@ -7,7 +7,7 @@ GO
 -- 1. Bảng Người Dùng
 CREATE TABLE NguoiDung
 (
-	Id INT IDENTITY(1,1) NOT NULL,
+	Id INT IDENTITY(0,1) NOT NULL,
 	TenDangNhap VARCHAR(100) NOT NULL,
 	MatKhau VARCHAR(100) NOT NULL,
 	Email VARCHAR(100) NULL,	
@@ -139,3 +139,7 @@ CREATE TABLE BanBe
 		(IdNguoi1 < IdNguoi2)
 );
 GO
+
+-- Thêm Bot
+INSERT INTO NguoiDung (TenDangNhap, MatKhau, Email)
+VALUES ('Bot', 'BotPassword', 'bot@system');
