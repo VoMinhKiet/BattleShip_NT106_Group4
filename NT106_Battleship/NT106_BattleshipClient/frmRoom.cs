@@ -139,9 +139,6 @@ namespace NT106_BattleshipClient
 
         private void SetupSignalREvents()
         {
-            // ================================
-            // FIX 2: Mẫu an toàn cho mọi BeginInvoke
-            // ================================
             void SafeInvoke(Action act)
             {
                 if (!this.IsHandleCreated) return;
@@ -172,16 +169,35 @@ namespace NT106_BattleshipClient
             // ROOM DELETED
             SignalRClient.Connection.On<int>("RoomDeleted", (deletedRoomId) =>
             {
+                //if (deletedRoomId != _room.Id) return;
+
+                //SafeInvoke(() =>
+                //{
+                //    MessageBox.Show("Chủ phòng đã rời, phòng đã đóng!");
+
+                //    // Đặt cờ này để không gọi API LeaveRoom
+                //    _isLeaving = true;
+
+                //    this.Close();
+                //});
+
                 if (deletedRoomId != _room.Id) return;
 
                 SafeInvoke(() =>
                 {
-                    MessageBox.Show("Chủ phòng đã rời, phòng đã đóng!");
-
-                    // Đặt cờ này để không gọi API LeaveRoom
                     _isLeaving = true;
 
-                    this.Close();
+                if (!_isGoingToGame)
+                {
+                    MessageBox.Show(
+                        "Chủ phòng đã rời, phòng đã đóng!",
+                        "Thông báo",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+                }
+
+                this.Close();
                 });
             });
 
@@ -548,7 +564,6 @@ namespace NT106_BattleshipClient
                     frmShip_Sorting frmSort = new frmShip_Sorting(_room, _currentMatch, mapsize, null);
 
                     frmSort.FormClosed += (s, args) => {
-                        _isGoingToGame = false;
                         this.Close();
                     };
                     frmSort.Show();
