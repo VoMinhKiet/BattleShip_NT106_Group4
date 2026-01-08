@@ -28,7 +28,7 @@ public class TranDauController : ControllerBase
             TenNV2 = req.TenNV2,
             KichThuoc = req.KichThuoc,
             IdPhongCho = req.IdPhongCho,
-            TimeStart = DateTime.UtcNow,
+            TimeStart = DateTime.Now,
             Winner = null
         };
 
@@ -59,7 +59,7 @@ public class TranDauController : ControllerBase
         if (entity == null) return NotFound();
 
         entity.Winner = req.WinnerId;
-        entity.TimeEnd = req.TimeEnd ?? DateTime.UtcNow;
+        entity.TimeEnd = req.TimeEnd ?? DateTime.Now;
 
         await _db.SaveChangesAsync();
         return Ok();
