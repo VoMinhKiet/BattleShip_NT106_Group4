@@ -1,47 +1,49 @@
-﻿CREATE DATABASE BATTLE_SHIP
+CREATE DATABASE BATTLE_SHIP
 GO
 
 USE BATTLE_SHIP;
 GO
 
+-- 1. Bảng Người Dùng
 CREATE TABLE NguoiDung
 (
-	Id INT IDENTITY(1,1) NOT NULL,
+	Id INT IDENTITY(0,1) NOT NULL,
 	TenDangNhap VARCHAR(100) NOT NULL,
 	MatKhau VARCHAR(100) NOT NULL,
 	Email VARCHAR(100) NULL,	
 	NgayTao DATETIME NOT NULL
 		CONSTRAINT DF_NguoiDung_NgayTao DEFAULT CURRENT_TIMESTAMP,
+	ResetCode VARCHAR(10) NULL,
+	ResetCodeExpire DATETIME NULL,
+	LastOnline DATETIME NULL,
 
 	CONSTRAINT PK_Nguoidung PRIMARY KEY (Id),
 	CONSTRAINT UQ_Nguoidung_TenDangNhap UNIQUE (TenDangNhap)
 );
+GO
 
+-- 2. Bảng Phòng Chờ
 CREATE TABLE PhongCho
 (
 	Id INT IDENTITY(1,1) NOT NULL,
-	TenChuPhong VARCHAR(100) NOT NULL,
 	IdChuPhong INT NOT NULL,
-	TrangThai NVARCHAR(20) NOT NULL
-		CONSTRAINT DF_PhongCho_TrangThai DEFAULT N'ĐANG CHỜ'
+	IDKhach INT NULL,
+	TrangThai VARCHAR(20) NOT NULL
+		CONSTRAINT DF_PhongCho_TrangThai DEFAULT 'waiting'
 		CONSTRAINT CK_PhongCho_TrangThai CHECK
-			(TrangThai IN (N'ĐANG CHỜ', N'ĐANG CHƠI', N'KHÔNG TỒN TẠI')),
+			(TrangThai IN ('waiting', 'full', 'playing', 'empty')),
+	NgayTao DATETIME NOT NULL
+		CONSTRAINT DF_PhongCho_NgayTao DEFAULT GETDATE(),
 
 	CONSTRAINT PK_PhongCho PRIMARY KEY (Id),
 	CONSTRAINT FK_PhongCho_NguoiDung_IdChuPhong
-		FOREIGN KEY (IdChuPhong) REFERENCES NguoiDung(Id)
+		FOREIGN KEY (IdChuPhong) REFERENCES NguoiDung(Id),
+	CONSTRAINT FK_PhongCho_NguoiDung_IDKhach
+		FOREIGN KEY (IDKhach) REFERENCES NguoiDung(Id)
 );
+GO
 
-CREATE TABLE NhanVat
-(
-	Id INT IDENTITY (1,1) NOT NULL,
-	TenNhanVat NVARCHAR(50) NOT NULL,
-	SkillNhanVat NVARCHAR(255) NOT NULL,
-
-	CONSTRAINT PK_NhanVat PRIMARY KEY (Id),
-	CONSTRAINT UQ_NhanVat_TenNhanVat UNIQUE (TenNhanVat)
-);
-
+-- 3. Bảng Trận Đấu
 CREATE TABLE TranDau
 (
 	Id INT IDENTITY(1,1) NOT NULL,
@@ -68,59 +70,9 @@ CREATE TABLE TranDau
 	CONSTRAINT FK_TranDau_PhongCho_IdPhongCho
 		FOREIGN KEY (IdPhongCho) REFERENCES PhongCho(Id)
 );
+GO
 
-CREATE TABLE Tau 
-(
-	Id INT IDENTITY(1,1) NOT NULL,
-	IdTranDau INT NOT NULL,
-	IdNguoiChoi INT NOT NULL,
-	LoaiTau VARCHAR(5) NOT NULL
-		CONSTRAINT CK_Tau_LoaiTau CHECK
-			(LoaiTau IN ('2', '3.1', '3.2', '4', '5', '6')),
-	ToaDoBatDauX INT NOT NULL
-		CONSTRAINT CK_Tau_ToaDoBatDauX CHECK
-			(ToaDoBatDauX > 0 AND ToaDoBatDauX < 11),
-	ToaDoBatDauY INT NOT NULL
-		CONSTRAINT CK_Tau_ToaDoBatDauY CHECK
-			(ToaDoBatDauY > 0 AND ToaDoBatDauY < 11),
-	ToaDoKetThucX INT NOT NULL
-		CONSTRAINT CK_Tau_ToaDoKetThucX CHECK
-			(ToaDoKetThucX > 0 AND ToaDoKetThucX < 11),
-	ToaDoKetThucY INT NOT NULL
-		CONSTRAINT CK_Tau_ToaDoKetThucY CHECK
-			(ToaDoKetThucY > 0 AND ToaDoKetThucY < 11),
-
-	CONSTRAINT PK_Tau PRIMARY KEY (Id),
-	CONSTRAINT FK_Tau_TranDau_IdTranDau
-		FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id),
-	CONSTRAINT FK_Tau_NguoiDung_IdNguoiChoi
-		FOREIGN KEY (IdNguoiChoi) REFERENCES NguoiDung(Id)
-);
-
-CREATE TABLE NuocDi
-(
-	Id INT IDENTITY(1,1) NOT NULL,
-	IdTranDau INT NOT NULL,
-	IdNguoiDung INT NOT NULL,
-	ToaDoX INT NOT NULL
-		CONSTRAINT CK_NuocDi_ToaDoX CHECK
-			(ToaDoX > 0 AND ToaDoX < 11),
-	ToaDoY INT NOT NULL
-		CONSTRAINT CK_NuocDi_ToaDoY CHECK
-			(ToaDoY > 0 AND ToaDoY < 11),
-	KetQua NVARCHAR(10) NOT NULL
-		CONSTRAINT CK_NuocDi_KetQua CHECK
-			(KetQua IN (N'TRÚNG', N'TRƯỢT', N'CHÌM')),
-	ThoiGian DATETIME NOT NULL
-		CONSTRAINT DF_NuocDi_ThoiGian DEFAULT CURRENT_TIMESTAMP,
-
-	CONSTRAINT PK_NuocDi PRIMARY KEY (Id),
-	CONSTRAINT FK_NuocDi_TranDau_IdTranDau
-		FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id),
-	CONSTRAINT FK_NuocDi_NguoiDung_IdNguoiDung 
-		FOREIGN KEY (IdNguoiDung) REFERENCES NguoiDung(Id)
-);
-
+-- 4. Bảng Tin Nhắn
 CREATE TABLE TinNhan
 (
 	Id INT IDENTITY(1,1) NOT NULL,
@@ -141,7 +93,9 @@ CREATE TABLE TinNhan
 	CONSTRAINT FK_TinNhan_NguoiDung_IdNguoiDung
 		FOREIGN KEY (IdNguoiDung) REFERENCES NguoiDung(Id)
 );
+GO
 
+-- 5. Bảng Bảng Xếp Hạng
 CREATE TABLE BangXepHang
 (
 	Id INT IDENTITY(1,1) NOT NULL,
@@ -152,10 +106,6 @@ CREATE TABLE BangXepHang
 	SoTranThua INT NOT NULL
 		CONSTRAINT DF_BangXepHang_SoTranThua DEFAULT 0
 		CONSTRAINT CK_BangXepHang_SoTranThua CHECK (SoTranThua >= 0),
-	BacRank NVARCHAR(20) NOT NULL
-		CONSTRAINT DF_BangXepHang_BacRank DEFAULT N'ĐỒNG'
-		CONSTRAINT CK_BangXepHang_BacRank CHECK
-			(BacRank IN (N'ĐỒNG', N'BẠC', N'VÀNG', N'BẠCH KIM', N'KIM CƯƠNG')),
 	CapSao INT NOT NULL
 		CONSTRAINT DF_BangXepHang_CapSao DEFAULT 0
 		CONSTRAINT CK_BangXepHang_CapSao CHECK (CapSao >= 0),
@@ -165,8 +115,10 @@ CREATE TABLE BangXepHang
 		FOREIGN KEY (IdNguoiDung) REFERENCES NguoiDung(Id),
 	CONSTRAINT UQ_BangXepHang_IdNguoiDung UNIQUE (IdNguoiDung)
 );
+GO
 
-CREATE TABLE BanBe 
+-- 6. Bảng Bạn Bè
+CREATE TABLE BanBe
 (
 	IdNguoi1 INT NOT NULL,
 	IdNguoi2 INT NOT NULL,
@@ -186,95 +138,8 @@ CREATE TABLE BanBe
 	CONSTRAINT CK_BanBe_IdNguoi1_IdNguoi2 CHECK
 		(IdNguoi1 < IdNguoi2)
 );
+GO
 
-
-ALTER TABLE NguoiDung
-ADD ResetCode VARCHAR(10) NULL,
-    ResetCodeExpire DATETIME NULL;
-
--- 1. Thêm cột IDKhach
-
-ALTER TABLE PhongCho
-ADD IDKhach INT NULL;
-
--- 2. Thêm cột NgayTao với giá trị mặc định
-
-ALTER TABLE PhongCho
-ADD NgayTao DATETIME NOT NULL
-CONSTRAINT DF_PhongCho_NgayTao DEFAULT GETDATE();
-
--- 3. Xoá cột tên chủ phòng
-
-ALTER TABLE PHONGCHO DROPColUMN TenChuPhong
-
---4. Đổi constraint TrangThai
--- Xóa Constraint cũ (cần chạy nếu Constraint cũ đã tồn tại)
-
-ALTER TABLE PhongCho
-DROP CONSTRAINT CK_PhongCho_TrangThai; 
-
--- Thêm Constraint mới
-
-ALTER TABLE PhongCho
-ADD CONSTRAINT CK_PhongCho_TrangThai CHECK (TrangThai IN ('waiting', 'full', 'playing', 'empty'));
-
-SELECT * FROM TinNhan
-
--- Xóa constraint của TranDau và các bảng liên quan
-ALTER TABLE TranDau
-DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat1;
-
-ALTER TABLE TranDau
-DROP CONSTRAINT FK_TranDau_NhanVat_NhanVat2;
-
-ALTER TABLE TranDau
-DROP CONSTRAINT CK_TranDau_KichThuoc;
-
-ALTER TABLE TranDau
-DROP CONSTRAINT DF_TranDau_TimeStart;
-
-ALTER TABLE Tau
-DROP CONSTRAINT FK_Tau_TranDau_IdTranDau;
-
-ALTER TABLE NuocDi
-DROP CONSTRAINT FK_NuocDi_TranDau_IdTranDau;
-
-ALTER TABLE TinNhan
-DROP CONSTRAINT FK_TinNhan_TranDau_IdTranDau;
-
--- Xóa bảng NhanVat
-DROP TABLE NhanVat;
-
--- Xóa bảng TranDau
-DROP TABLE TranDau;
-
-SELECT * FROM TinNhan
-
-ALTER TABLE BangXepHang
-DROP CONSTRAINT DF_BangXepHang_BacRank;
-
-ALTER TABLE BangXepHang
-DROP CONSTRAINT CK_BangXepHang_BacRank;
-ALTER TABLE BangXepHang
-DROP COLUMN BacRank;
-
-
--- Sau đó chịu khó tạo bảng trận đấu mới dựa vào query khởi tạo của trận đấu ở phía trên nhé
--- Khôi phục các constraint từ bảng con của TranDau
-ALTER TABLE Tau
-ADD CONSTRAINT FK_Tau_TranDau_IdTranDau
-FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
-
-ALTER TABLE NuocDi
-ADD CONSTRAINT FK_NuocDi_TranDau_IdTranDau
-FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
-
-ALTER TABLE TinNhan
-ADD CONSTRAINT FK_TinNhan_TranDau_IdTranDau
-FOREIGN KEY (IdTranDau) REFERENCES TranDau(Id);
-
-ALTER TABLE NguoiDung
-ADD LastOnline DATETIME NULL;
-UPDATE NguoiDung
-SET LastOnline = CURRENT_TIMESTAMP
-WHERE LastOnline IS NULL;
+-- Thêm Bot
+INSERT INTO NguoiDung (TenDangNhap, MatKhau, Email)
+VALUES ('Bot', 'BotPassword', 'bot@system');
