@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NT106_BattleshipClient.Models;
 using NT106_BattleshipClient.Services;
+using NT106_BattleshipClient;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -80,7 +81,7 @@ namespace NT106_BattleshipClient
 
             try
             {
-                SignalRClient.Init("http://localhost:5074/roomHub");
+                SignalRClient.Init("roomHub");
                 await SignalRClient.StartAsync();
 
                 SetupSignalREvents();
@@ -584,7 +585,7 @@ namespace NT106_BattleshipClient
                 return;
 
             _hub = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5074/xepTauHub")
+                .WithUrl(ConfigHelper.GetServerUrl() + "/xepTauHub")
                 .WithAutomaticReconnect()
                 .ConfigureLogging(logging =>
                 {

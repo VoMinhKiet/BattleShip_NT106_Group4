@@ -38,8 +38,11 @@ namespace NT106_BattleshipClient
 
             btnGui.Enabled = false;
 
+            string baseUrl = ConfigHelper.GetServerUrl();
+            if (!baseUrl.EndsWith("/")) baseUrl += "/";
+
             _hub = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5074/chatHub")
+                .WithUrl(baseUrl + "chatHub") // Tự động lấy IP
                 .WithAutomaticReconnect()
                 .Build();
 

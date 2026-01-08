@@ -45,7 +45,7 @@ namespace NT106_BattleshipClient
             {
                 try
                 {
-                    SignalRClient.Init("http://localhost:5074/roomHub");
+                    SignalRClient.Init("roomHub");
                     await SignalRClient.StartAsync();
 
                     RegisterLobbySignalREvents();

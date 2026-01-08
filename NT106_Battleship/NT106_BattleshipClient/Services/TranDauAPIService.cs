@@ -1,4 +1,5 @@
 ﻿using NT106_BattleshipClient.Models;
+using NT106_BattleshipClient;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -26,7 +27,16 @@ namespace NT106_BattleshipClient.Services
         public TranDauApiService()
         {
             _http = new HttpClient();
-            _http.BaseAddress = new Uri("http://localhost:5074/"); // Kiểm tra lại port nếu cần
+
+            // 1. Lấy URL động từ ConfigHelper
+            string url = ConfigHelper.GetServerUrl();
+
+            // 2. Đảm bảo có dấu / ở cuối
+            if (!url.EndsWith("/")) url += "/";
+
+            // 3. Gán vào BaseAddress
+            _http.BaseAddress = new Uri(url);
+
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
         }
 
@@ -40,14 +50,12 @@ namespace NT106_BattleshipClient.Services
 
                 var resp = await _http.PostAsync("api/trandau/create", content);
 
-                // --- SỬA ĐOẠN NÀY ĐỂ BẮT LỖI TỪ SERVER ---
                 if (!resp.IsSuccessStatusCode)
                 {
                     string errorContent = await resp.Content.ReadAsStringAsync();
                     // Ném lỗi ra để frmRoom bắt được
                     throw new Exception($"Server Error {resp.StatusCode}: {errorContent}");
                 }
-                // -----------------------------------------
 
                 string respJson = await resp.Content.ReadAsStringAsync();
                 return JsonSerializer.Deserialize<TranDauDto>(respJson, _options);
@@ -77,7 +85,7 @@ namespace NT106_BattleshipClient.Services
             }
         }
 
-        // 3. LẤY LỊCH SỬ (Giữ nguyên hoặc dùng nếu cần hiển thị)
+        // 3. LẤY LỊCH SỬ
         public async Task<List<MatchHistoryDto>> GetHistoryAsync(int userId)
         {
             var resp = await _http.GetAsync($"api/trandau/history/{userId}");

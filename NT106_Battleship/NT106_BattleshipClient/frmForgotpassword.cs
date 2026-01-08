@@ -3,6 +3,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Windows.Forms;
+using NT106_BattleshipClient;
 
 namespace NT106_BattleshipClient
 {
@@ -60,7 +61,13 @@ namespace NT106_BattleshipClient
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    client.BaseAddress = new Uri("http://localhost:5074/"); // PORT API của bạn
+                    // 1. Lấy URL động từ ConfigHelper
+                    string url = ConfigHelper.GetServerUrl();
+
+                    // 2. Đảm bảo có dấu / ở cuối để BaseAddress hoạt động đúng
+                    if (!url.EndsWith("/")) url += "/";
+
+                    client.BaseAddress = new Uri(url);
 
                     var requestData = new
                     {

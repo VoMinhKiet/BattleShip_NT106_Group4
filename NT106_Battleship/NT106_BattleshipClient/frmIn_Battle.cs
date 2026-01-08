@@ -206,10 +206,14 @@ namespace NT106_BattleshipClient
             _idPhongCho = room.Id;
             _idTranDau = currentMatch.Id;
 
+            // Lấy IP từ ConfigHelper
+            string rankingUrl = ConfigHelper.GetServerUrl();
+            if (!rankingUrl.EndsWith("/")) rankingUrl += "/";
+
             _rankingHub = new HubConnectionBuilder()
-              .WithUrl("http://localhost:5074/battleRankingHub")
-              .WithAutomaticReconnect()
-              .Build();
+                .WithUrl(rankingUrl + "battleRankingHub")
+                .WithAutomaticReconnect()
+                .Build();
 
             RegisterBattleRankingHandler();
 
@@ -1226,8 +1230,12 @@ namespace NT106_BattleshipClient
             // ====== ONLINE BATTLE HUB ======
             if (!_isPvE)
             {
+                // Lấy IP từ ConfigHelper
+                string battleUrl = ConfigHelper.GetServerUrl();
+                if (!battleUrl.EndsWith("/")) battleUrl += "/";
+
                 _battleHub = new HubConnectionBuilder()
-                    .WithUrl("http://localhost:5074/tranDauHub")
+                    .WithUrl(battleUrl + "tranDauHub")
                     .WithAutomaticReconnect()
                     .Build();
 

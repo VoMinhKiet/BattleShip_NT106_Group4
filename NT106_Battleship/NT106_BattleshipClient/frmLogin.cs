@@ -14,7 +14,13 @@ namespace NT106_BattleshipClient
         {
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://localhost:5074/");  // Port server của bạn
+                // 1. Lấy URL động từ ConfigHelper
+                string url = ConfigHelper.GetServerUrl();
+
+                // 2. Đảm bảo có dấu / ở cuối để BaseAddress hoạt động đúng với api/Auth/login
+                if (!url.EndsWith("/")) url += "/";
+
+                client.BaseAddress = new Uri(url);
 
                 var body = new
                 {

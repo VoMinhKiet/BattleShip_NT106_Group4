@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatSession.cs" />
+    <Compile Include="ConfigHelper.cs" />
     <Compile Include="FormManager.cs" />
     <Compile Include="frmConnectionLost.cs">
       <SubType>Form</SubType>
