@@ -37,5 +37,10 @@ namespace NT106_BattleshipServer.Hubs
             await Clients.Group(roomId.ToString())
                          .SendAsync("SkillBatch", started);
         }
+
+        public async Task Surrender(int roomId)
+        {
+            await Clients.OthersInGroup(roomId.ToString()).SendAsync("OpponentSurrender");
+        }
     }
 }

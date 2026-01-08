@@ -460,6 +460,24 @@ namespace NT106_BattleshipClient
             else txtRightName.Text = _room.TenKhach;
             txtRightName.ReadOnly = true; // fix later jesus
             topPanel.Controls.Add(txtRightName);
+
+            // --- THÊM NÚT ĐẦU HÀNG ---
+            Button btnSurrender = new Button();
+            btnSurrender.Text = "Đầu hàng";
+            btnSurrender.Font = new Font("Arial", 12, FontStyle.Bold);
+            btnSurrender.BackColor = Color.OrangeRed;
+            btnSurrender.ForeColor = Color.White;
+            btnSurrender.Width = 100;
+            btnSurrender.Height = 40;
+
+            // Canh vị trí (Góc trái trên cùng)
+            btnSurrender.Left = 10;
+            btnSurrender.Top = (topPanel.Height - btnSurrender.Height) / 2;
+
+            // Gắn sự kiện Click
+            btnSurrender.Click += BtnSurrender_Click;
+
+            topPanel.Controls.Add(btnSurrender);
         }
         public void CreateGrid(Panel container, Button[,] grid, int[,] ShipPos, bool Yours)
         {
@@ -1217,6 +1235,7 @@ namespace NT106_BattleshipClient
                 RegisterTurnHandler();
                 ReceiveSkillBatch();
                 ReceiveHit();
+                ReceiveSurrender();
 
                 await _battleHub.StartAsync();
                 await _battleHub.InvokeAsync("JoinBattle", _room.Id);
@@ -1336,6 +1355,63 @@ namespace NT106_BattleshipClient
                 catch { }
             }
         }
+
+        private async void BtnSurrender_Click(object sender, EventArgs e)
+        {
+            frmSurrender frm = new frmSurrender();
+
+            if (frm.ShowDialog() == DialogResult.OK)
+            {
+                if (_isPvE)
+                {
+                    // PVE, ép điểm đối thủ lên 14 (thua ngay lập tức)
+                    opponentScore = 14;
+                    ScoreTracking();
+                }
+                else
+                {
+                    // PVP
+                    try
+                    {
+                        // Gửi tín hiệu đầu hàng lên server
+                        if (_battleHub != null && _battleHub.State == HubConnectionState.Connected)
+                        {
+                            await _battleHub.InvokeAsync("Surrender", _room.Id);
+                        }
+
+                        // Tự xử thua ở máy mình
+                        opponentScore = 14;
+                        ScoreTracking();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Lỗi gửi tín hiệu đầu hàng: " + ex.Message);
+                    }
+                }
+            }
+            // Nếu chọn Cancel thì không làm gì cả
+        }
+
+        // Hàm này để lắng nghe khi đối thủ đầu hàng
+        private void ReceiveSurrender()
+        {
+            // Lắng nghe sự kiện tên là "OpponentSurrender" từ Server
+            _battleHub.On("OpponentSurrender", () =>
+            {
+                // Dùng BeginInvoke để thao tác với giao diện từ luồng khác
+                this.BeginInvoke(new Action(() =>
+                {
+                    MessageBox.Show("Đối thủ đã đầu hàng! Bạn giành chiến thắng!", "Victory");
+
+                    // Ép điểm mình lên 14 (Thắng tuyệt đối)
+                    yourScore = 14;
+
+                    // Gọi hàm tính điểm để kết thúc game
+                    ScoreTracking();
+                }));
+            });
+        }
+
 
     }
 }

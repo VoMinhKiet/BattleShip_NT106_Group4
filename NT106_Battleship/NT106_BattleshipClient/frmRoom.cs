@@ -119,14 +119,17 @@ namespace NT106_BattleshipClient
 
         private void CheckIfBotIsHere()
         {
-            // Nếu ID Khách trùng với ID Bot (hoặc chưa có ID Bot nhưng tên là Bot)
-            if (_room.IDKhach == GlobalData.BotId || _room.TenKhach == GlobalData.BOT_NAME)
+            bool isBotById = (GlobalData.BotId != null && _room.IDKhach == GlobalData.BotId);
+            bool isBotByName = (_room.TenKhach == GlobalData.BOT_NAME);
+
+            // Chỉ khi nào đúng là Bot thật thì mới hiện
+            if (isBotById || isBotByName)
             {
                 _isGuestReady = true;
                 pnlTieuDeKhach.Text = "KHÁCH đã sẵn sàng!";
 
-                // Nếu chưa có tên hiển thị, gán mặc định
-                if (lblTenKhach.Text.Contains("Chưa có khách"))
+                // Nếu label đang trống thì điền tên Bot vào
+                if (lblTenKhach.Text.Contains("Chưa có khách") || lblTenKhach.Text.Contains("Tên:"))
                 {
                     lblTenKhach.Text = $"Tên: {GlobalData.BOT_NAME}";
                     lblIDKhach.Text = $"ID: {GlobalData.BotId}";
