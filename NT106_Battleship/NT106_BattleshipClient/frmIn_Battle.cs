@@ -304,19 +304,28 @@ namespace NT106_BattleshipClient
 
             _battleHub.On<bool>("Turn", isHostTurn =>
             {
-                isYourTurn = (_isHost && isHostTurn) || (!_isHost && !isHostTurn);
+                // Marshal về UI thread
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        isYourTurn = (_isHost && isHostTurn) || (!_isHost && !isHostTurn);
 
-                if (isYourTurn)
-                {
-                    isRightTimerRunning = false;
-                    isLeftTimerRunning = true;
-                    using (var p = new frmTurnPopUp("Your Turn!")) p.ShowDialog(this);
-                }
-                else
-                {
-                    isLeftTimerRunning = false;
-                    isRightTimerRunning = true;
-                    using (var p = new frmTurnPopUp("Opponent Turn!")) p.ShowDialog(this);
+                        if (isYourTurn)
+                        {
+                            isRightTimerRunning = false;
+                            isLeftTimerRunning = true;
+                            using (var p = new frmTurnPopUp("Your Turn!"))
+                                p.ShowDialog(this);
+                        }
+                        else
+                        {
+                            isLeftTimerRunning = false;
+                            isRightTimerRunning = true;
+                            using (var p = new frmTurnPopUp("Opponent Turn!"))
+                                p.ShowDialog(this);
+                        }
+                    }));
                 }
             });
         }

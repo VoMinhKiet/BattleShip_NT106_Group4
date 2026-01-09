@@ -22,8 +22,6 @@ namespace NT106_BattleshipClient
 
                 client.BaseAddress = new Uri(url);
 
-                MessageBox.Show("Đang kết nối tới: " + url);
-
                 var body = new
                 {
                     tenDangNhap = tenDangNhap,
