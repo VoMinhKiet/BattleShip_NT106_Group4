@@ -28,7 +28,10 @@ namespace NT106_BattleshipClient
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string url = $"http://localhost:5074/api/User/get/{_viewUserId}";
+                    // Lấy IP động + ghép chuỗi
+                    string baseUrl = ConfigHelper.GetServerUrl();
+                    string url = $"{baseUrl}/api/User/get/{_viewUserId}";
+
                     var res = await client.GetAsync(url);
                     var json = await res.Content.ReadAsStringAsync();
 
@@ -54,7 +57,10 @@ namespace NT106_BattleshipClient
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    string url = $"http://localhost:5074/api/battle-ranking/user/{_viewUserId}";
+                    // Lấy IP động + ghép chuỗi
+                    string baseUrl = ConfigHelper.GetServerUrl();
+                    string url = $"{baseUrl}/api/battle-ranking/user/{_viewUserId}";
+
                     var res = await client.GetAsync(url);
                     var json = await res.Content.ReadAsStringAsync();
 

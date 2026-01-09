@@ -35,6 +35,13 @@ namespace NT106_BattleshipClient
             {
                 try
                 {
+                    // 1. Lấy URL động từ ConfigHelper
+                    string url = ConfigHelper.GetServerUrl();
+
+                    // 2. Đảm bảo có dấu / ở cuối
+                    if (!url.EndsWith("/")) url += "/";
+
+                    client.BaseAddress = new Uri(url);
                     var body = new
                     {
                         email = userEmail,
@@ -45,7 +52,7 @@ namespace NT106_BattleshipClient
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
                     // Đổi sang port API của bạn
-                    var response = await client.PostAsync("http://localhost:5074/api/Auth/verify-otp", content);
+                    var response = await client.PostAsync("api/Auth/verify-otp", content);
 
                     string apiResponse = await response.Content.ReadAsStringAsync();
 

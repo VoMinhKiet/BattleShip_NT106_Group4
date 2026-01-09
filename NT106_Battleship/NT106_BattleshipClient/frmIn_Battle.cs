@@ -206,10 +206,14 @@ namespace NT106_BattleshipClient
             _idPhongCho = room.Id;
             _idTranDau = currentMatch.Id;
 
+            // Lấy IP từ ConfigHelper
+            string rankingUrl = ConfigHelper.GetServerUrl();
+            if (!rankingUrl.EndsWith("/")) rankingUrl += "/";
+
             _rankingHub = new HubConnectionBuilder()
-              .WithUrl("http://localhost:5074/battleRankingHub")
-              .WithAutomaticReconnect()
-              .Build();
+                .WithUrl(rankingUrl + "battleRankingHub")
+                .WithAutomaticReconnect()
+                .Build();
 
             RegisterBattleRankingHandler();
 
@@ -300,19 +304,28 @@ namespace NT106_BattleshipClient
 
             _battleHub.On<bool>("Turn", isHostTurn =>
             {
-                isYourTurn = (_isHost && isHostTurn) || (!_isHost && !isHostTurn);
+                // Marshal về UI thread
+                if (this.IsHandleCreated && !this.IsDisposed)
+                {
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        isYourTurn = (_isHost && isHostTurn) || (!_isHost && !isHostTurn);
 
-                if (isYourTurn)
-                {
-                    isRightTimerRunning = false;
-                    isLeftTimerRunning = true;
-                    using (var p = new frmTurnPopUp("Your Turn!")) p.ShowDialog(this);
-                }
-                else
-                {
-                    isLeftTimerRunning = false;
-                    isRightTimerRunning = true;
-                    using (var p = new frmTurnPopUp("Opponent Turn!")) p.ShowDialog(this);
+                        if (isYourTurn)
+                        {
+                            isRightTimerRunning = false;
+                            isLeftTimerRunning = true;
+                            using (var p = new frmTurnPopUp("Your Turn!"))
+                                p.ShowDialog(this);
+                        }
+                        else
+                        {
+                            isLeftTimerRunning = false;
+                            isRightTimerRunning = true;
+                            using (var p = new frmTurnPopUp("Opponent Turn!"))
+                                p.ShowDialog(this);
+                        }
+                    }));
                 }
             });
         }
@@ -1226,8 +1239,12 @@ namespace NT106_BattleshipClient
             // ====== ONLINE BATTLE HUB ======
             if (!_isPvE)
             {
+                // Lấy IP từ ConfigHelper
+                string battleUrl = ConfigHelper.GetServerUrl();
+                if (!battleUrl.EndsWith("/")) battleUrl += "/";
+
                 _battleHub = new HubConnectionBuilder()
-                    .WithUrl("http://localhost:5074/tranDauHub")
+                    .WithUrl(battleUrl + "tranDauHub")
                     .WithAutomaticReconnect()
                     .Build();
 

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NT106_BattleshipClient.Models;
 using NT106_BattleshipClient.Services;
+using NT106_BattleshipClient;
 using System;
 using System.Drawing;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace NT106_BattleshipClient
         // Biến này để đánh dấu khi nào Code đang tự cập nhật UI
         private bool _isUpdatingUI = false;
         private bool _isGoingToGame = false; // Cờ đánh dấu đang vào game
+        private bool _shipSortingOpened = false;
 
         private HubConnection _hub;
         public int mapsize;
@@ -80,7 +82,7 @@ namespace NT106_BattleshipClient
 
             try
             {
-                SignalRClient.Init("http://localhost:5074/roomHub");
+                SignalRClient.Init("roomHub");
                 await SignalRClient.StartAsync();
 
                 SetupSignalREvents();
@@ -228,6 +230,8 @@ namespace NT106_BattleshipClient
             {
                 cbKichThuoc.Items.AddRange(new object[] { "8x8", "9x9", "10x10" });
                 cbKichThuoc.SelectedIndex = 0;
+
+                mapsize = 8;
             }
         }
 
@@ -584,7 +588,7 @@ namespace NT106_BattleshipClient
                 return;
 
             _hub = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5074/xepTauHub")
+                .WithUrl(ConfigHelper.GetServerUrl() + "/xepTauHub")
                 .WithAutomaticReconnect()
                 .ConfigureLogging(logging =>
                 {
@@ -603,18 +607,26 @@ namespace NT106_BattleshipClient
 
             _hub.On("GameStarted", () =>
             {
+                // CHẶN NGAY TỪ THREAD CALLBACK (tránh bắn 2 lần trước khi BeginInvoke chạy)
+                if (_shipSortingOpened) return;
+                _shipSortingOpened = true;
+
                 this.BeginInvoke(new Action(() =>
                 {
-                    _isGoingToGame = true;
+                    // CHẶN LẦN NỮA TRONG UI THREAD cho chắc
+                    if (_isGoingToGame) return;
 
+                    _isGoingToGame = true;
                     this.Hide();
-                    frmShip_Sorting frmShip_Sorting = new frmShip_Sorting(_room, _currentMatch, mapsize, _hub);
-                    frmShip_Sorting.FormClosed += (s, args) =>
+
+                    var frmSort = new frmShip_Sorting(_room, _currentMatch, mapsize, _hub);
+                    frmSort.FormClosed += (s, args) =>
                     {
                         _isGoingToGame = false;
+                        _shipSortingOpened = false; // cho phép mở lại nếu cần
                         this.Close();
                     };
-                    frmShip_Sorting.Show();
+                    frmSort.Show();
                 }));
             });
         }

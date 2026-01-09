@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using NT106_BattleshipClient.Models;
+using NT106_BattleshipClient;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -11,7 +12,15 @@ namespace NT106_BattleshipClient.Services
     public class FriendApiService
     {
         private readonly HttpClient _http;
-        public FriendApiService(HttpClient http) => _http = http;
+        public FriendApiService()
+        {
+            _http = new HttpClient();
+
+            string url = ConfigHelper.GetServerUrl();
+
+            if (!url.EndsWith("/")) url += "/";
+            _http.BaseAddress = new Uri(url);
+        }
 
         public async Task<List<FriendDto>> GetFriendsAsync(int userId)
         { 

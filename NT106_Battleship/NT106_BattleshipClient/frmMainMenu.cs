@@ -39,9 +39,9 @@ namespace NT106_BattleshipClient
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
 
-            //MusicManager.PlayMenuMusic();
+            MusicManager.PlayMenuMusic();
 
-            InviteSignalRClient.Init("http://localhost:5074/", GlobalData.UserId);
+            InviteSignalRClient.Init(GlobalData.UserId);
             await InviteSignalRClient.StartAsync();
             InviteSignalRClient.Connection.On<NT106_BattleshipClient.Models.InvitePayload>(
     "ReceiveRoomInvite",

@@ -1,8 +1,9 @@
 using Newtonsoft.Json;
 using NT106_BattleshipClient.Models;
-
+using NT106_BattleshipClient;
 using System;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace NT106_BattleshipClient.Services
@@ -16,9 +17,11 @@ namespace NT106_BattleshipClient.Services
         public RoomApiService()
         {
             _http = new HttpClient();
+            // Lấy URL động từ ConfigHelper
+            string url = ConfigHelper.GetServerUrl();
+            if (!url.EndsWith("/")) url += "/";
 
-            // Thiết lập URL gốc cho toàn bộ request
-            _http.BaseAddress = new Uri("http://localhost:5074/");
+            _http.BaseAddress = new Uri(url);
         }
 
         // LẤY DANH SÁCH PHÒNG
@@ -110,10 +113,15 @@ namespace NT106_BattleshipClient.Services
             var response = await _http.PostAsync($"api/room/start?roomId={roomId}", null);
             return response.IsSuccessStatusCode;
         }
-        private readonly string _baseUrl = "http://localhost:5074/";
+
         public async Task<RoomDto> JoinRoomAndGetRoomAsync(int roomId, int userId)
         {
-            using (var http = new HttpClient { BaseAddress = new Uri(_baseUrl) })
+            // Lấy URL động từ ConfigHelper
+            string dynamicUrl = ConfigHelper.GetServerUrl();
+            if (!dynamicUrl.EndsWith("/")) dynamicUrl += "/";
+
+            // Thay thế _baseUrl cũ bằng dynamicUrl
+            using (var http = new HttpClient { BaseAddress = new Uri(dynamicUrl) })
             {
                 var res = await http.PostAsync($"api/Room/join?roomId={roomId}&userId={userId}", null);
                 var json = await res.Content.ReadAsStringAsync();
@@ -121,7 +129,6 @@ namespace NT106_BattleshipClient.Services
                 if (!res.IsSuccessStatusCode)
                     throw new Exception(json);
 
-                // response dạng: { message: "...", room: { ... } }
                 var wrapper = JsonConvert.DeserializeObject<JoinRoomResponse>(json);
                 if (wrapper?.room == null) throw new Exception("JoinRoomResponse.room is null");
 

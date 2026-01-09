@@ -15,7 +15,6 @@ namespace NT106_BattleshipClient
         private FriendApiService _friendApi;
         private List<FriendDto> _cache = new List<FriendDto>();
 
-        private readonly string _baseUrl = "http://localhost:5074/";
         private bool _isLoaded = false;
 
         private int? _inviteRoomId;
@@ -56,8 +55,7 @@ namespace NT106_BattleshipClient
 
             SetupListViewColumns();
 
-            var http = new HttpClient { BaseAddress = new Uri(_baseUrl) };
-            _friendApi = new FriendApiService(http);
+            _friendApi = new FriendApiService();
 
             _isLoaded = true;
 

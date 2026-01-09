@@ -92,6 +92,14 @@ namespace NT106_BattleshipClient
             {
                 using (HttpClient client = new HttpClient())
                 {
+                    // 1. Lấy URL động từ ConfigHelper
+                    string url = ConfigHelper.GetServerUrl();
+
+                    // 2. Đảm bảo có dấu / ở cuối
+                    if (!url.EndsWith("/")) url += "/";
+
+                    client.BaseAddress = new Uri(url);
+
                     var request = new
                     {
                         email = userEmail,
@@ -102,7 +110,7 @@ namespace NT106_BattleshipClient
                     string json = JsonConvert.SerializeObject(request);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                    var response = await client.PostAsync("http://localhost:5074/api/Auth/reset-password", content);
+                    var response = await client.PostAsync("api/Auth/reset-password", content);
                     string result = await response.Content.ReadAsStringAsync();
 
                     if (response.IsSuccessStatusCode)

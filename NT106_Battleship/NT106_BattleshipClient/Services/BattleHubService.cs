@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Logging;
+using NT106_BattleshipClient; // Thêm dòng này để dùng ConfigHelper
 using System.Threading.Tasks;
 
 namespace NT106_BattleshipClient.Services
@@ -8,10 +9,12 @@ namespace NT106_BattleshipClient.Services
     {
         public HubConnection Connection { get; }
 
-        public BattleHubService(string baseUrl)
+        public BattleHubService()
         {
+            string baseUrl = ConfigHelper.GetServerUrl();
+
             Connection = new HubConnectionBuilder()
-                .WithUrl($"{baseUrl}/tranDauHub")
+                .WithUrl($"{baseUrl}/tranDauHub") // Tự động nối chuỗi
                 .WithAutomaticReconnect()
                 .ConfigureLogging(logging =>
                 {

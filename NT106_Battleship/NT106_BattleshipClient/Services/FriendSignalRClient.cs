@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
+using NT106_BattleshipClient;
 using System;
 using System.Threading.Tasks;
 
@@ -10,10 +11,12 @@ namespace NT106_BattleshipClient.Services
 
         public event Action<int, string> OnInviteReceived;
 
-        public async Task StartAsync(string baseUrl, int userId)
+        public async Task StartAsync(int userId)
         {
+            string baseUrl = ConfigHelper.GetServerUrl();
+
             _connection = new HubConnectionBuilder()
-                .WithUrl(string.Format("{0}/friendHub?userId={1}", baseUrl.TrimEnd('/'), userId))
+                .WithUrl($"{baseUrl.TrimEnd('/')}/friendHub?userId={userId}")
                 .WithAutomaticReconnect()
                 .Build();
 
@@ -22,8 +25,8 @@ namespace NT106_BattleshipClient.Services
                 int fromId = (int)data.fromUserId;
                 string message = (string)data.message;
 
-                var handler = OnInviteReceived;
-                if (handler != null) handler(fromId, message);
+                // Cách gọi event ngắn gọn an toàn hơn (Null check)
+                OnInviteReceived?.Invoke(fromId, message);
             });
 
             await _connection.StartAsync();

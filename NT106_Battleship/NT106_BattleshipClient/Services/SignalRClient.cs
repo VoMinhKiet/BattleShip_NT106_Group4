@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR.Client;
 using System.Threading.Tasks;
-
+using NT106_BattleshipClient;
 namespace NT106_BattleshipClient.Services
 {
     public static class SignalRClient
@@ -10,14 +10,20 @@ namespace NT106_BattleshipClient.Services
         private static bool _started = false;           // Tránh StartAsync nhiều lần
         private static bool _handlersRegistered = false; // Tránh đăng ký handler lặp lại
 
-        public static void Init(string hubUrl)
+        public static void Init(string hubPath)
         {
-            if (Connection != null) return;            // Nếu đã tạo → bỏ qua
+            if (Connection != null) return;
 
-            // Tạo connection đến Hub
+            // 1. Lấy Base URL từ ConfigHelper
+            string baseUrl = ConfigHelper.GetServerUrl();
+
+            // 2. Ghép chuỗi an toàn (xử lý dấu / thừa hoặc thiếu)
+            string fullUrl = $"{baseUrl.TrimEnd('/')}/{hubPath.TrimStart('/')}";
+
+            // Tạo connection
             Connection = new HubConnectionBuilder()
-                .WithUrl(hubUrl)
-                .WithAutomaticReconnect()              // Tự reconnect khi mất kết nối
+                .WithUrl(fullUrl)
+                .WithAutomaticReconnect()
                 .Build();
         }
 

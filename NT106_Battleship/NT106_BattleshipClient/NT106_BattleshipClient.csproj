@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatSession.cs" />
+    <Compile Include="ConfigHelper.cs" />
     <Compile Include="FormManager.cs" />
     <Compile Include="frmConnectionLost.cs">
       <SubType>Form</SubType>
@@ -467,6 +468,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Cursor\safeimagekit-cannon-removebg-preview-removebg-preview.png" />
+    <Content Include="server_ip.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="AxWMPLib">
