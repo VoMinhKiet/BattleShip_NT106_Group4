@@ -192,9 +192,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatSession.cs" />
-    <Compile Include="ConfigHelper.cs" />
-    <Compile Include="FormManager.cs" />
+    <Compile Include="FileHelper\ChatSession.cs" />
+    <Compile Include="FileHelper\ConfigHelper.cs" />
+    <Compile Include="FileHelper\FormManager.cs" />
     <Compile Include="Form\frmConnectionLost.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -329,7 +329,7 @@
     <Compile Include="Form\frmSurrender.Designer.cs">
       <DependentUpon>frmSurrender.cs</DependentUpon>
     </Compile>
-    <Compile Include="GlobalData.cs" />
+    <Compile Include="FileHelper\GlobalData.cs" />
     <Compile Include="Models\FriendDto.cs" />
     <Compile Include="Models\InvitePayload.cs" />
     <Compile Include="Models\LeaderBoardDto.cs" />
@@ -340,10 +340,10 @@
     <Compile Include="Models\TranDauDto.cs" />
     <Compile Include="Models\UserDto.cs" />
     <Compile Include="Models\UserRankingDto.cs" />
-    <Compile Include="ModernTrackBar.cs">
+    <Compile Include="FileHelper\ModernTrackBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="MusicManager.cs" />
+    <Compile Include="FileHelper\MusicManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form\frmConnectionLost.resx">
@@ -452,7 +452,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="FileHelper\App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Music\menu_theme.mp3">
@@ -468,7 +468,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\Cursor\safeimagekit-cannon-removebg-preview-removebg-preview.png" />
-    <Content Include="server_ip.txt">
+    <Content Include="FileHelper\server_ip.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
