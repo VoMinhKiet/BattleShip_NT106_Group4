@@ -29,7 +29,7 @@ namespace NT106_BattleshipClient
         {
             base.OnLoad(e);
 
-            // Kiểm tra design-time: chỉ load tài nguyên khi chạy app thực tế
+
             if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
                 LoadCustomCursorsAndSound();
@@ -124,7 +124,7 @@ namespace NT106_BattleshipClient
                 string clickSoundPath = Path.Combine(resourcesDir, "ClickSound.wav"); ;
 
 
-                // kiểm tra và load cursor mặc định (nếu có)
+                // kiểm tra và load cursor mặc định 
                 if (File.Exists(defaultCursorPath))
                 {
                     cursorDefault = new Cursor(defaultCursorPath);
@@ -135,7 +135,7 @@ namespace NT106_BattleshipClient
                     Debug.WriteLine($"Cursor default not found: {defaultCursorPath}");
                 }
 
-                // load cursor click (nếu có)
+                // load cursor click
                 if (File.Exists(clickCursorPath))
                 {
                     cursorClick = new Cursor(clickCursorPath);
@@ -145,11 +145,11 @@ namespace NT106_BattleshipClient
                     Debug.WriteLine($"Cursor click not found: {clickCursorPath}");
                 }
 
-                // load sound (nếu có)
+                // load sound
                 if (File.Exists(clickSoundPath))
                 {
                     clickSoundPlayer = new System.Media.SoundPlayer(clickSoundPath);
-                    // bạn có thể LoadAsync() nếu muốn
+
                     try { clickSoundPlayer.Load(); }
                     catch (Exception exLoad) { Debug.WriteLine("SoundPlayer load failed: " + exLoad.Message); clickSoundPlayer = null; }
                 }
@@ -160,7 +160,7 @@ namespace NT106_BattleshipClient
             }
             catch (Exception ex)
             {
-                // KHÔNG show MessageBox trên lỗi load tài nguyên (sẽ gây annoying khi lỗi)
+
                 Debug.WriteLine("Lỗi tải tài nguyên con trỏ/âm thanh: " + ex);
                 // nếu muốn hiển thị cho dev khi debug:
 #if DEBUG

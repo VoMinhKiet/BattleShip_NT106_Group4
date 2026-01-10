@@ -18,6 +18,7 @@ namespace NT106_BattleshipClient
             ControlStyles.AllPaintingInWmPaint, true);
             InitializeComponent();
             FormManager.frmMainMenu = this;
+            this.FormBorderStyle = FormBorderStyle.None;
 
             EnableFormDoubleBuffering();//test
 
@@ -33,8 +34,7 @@ namespace NT106_BattleshipClient
 
             // Áp dụng kích thước đó cho Form
             this.Size = screen.Size;
-            this.Location = new Point(0, 0); // Đặt Form ở góc trên bên trái
-                                             // Đường dẫn tương đối từ thư mục bin/Debug đến file
+            this.Location = new Point(0, 0);
 
             //Ẩn thanh tiêu đề nếu cần
             this.FormBorderStyle = FormBorderStyle.None;
@@ -143,7 +143,7 @@ namespace NT106_BattleshipClient
         {
             try
             {
-                // 1. Tìm ID của Bot nếu chưa có
+
                 if (GlobalData.BotId == null)
                 {
                     var botId = await _roomApi.GetUserIdByUsernameAsync(GlobalData.BOT_NAME);
@@ -155,16 +155,14 @@ namespace NT106_BattleshipClient
                     GlobalData.BotId = botId;
                 }
 
-                // 2. Tạo phòng
                 var room = await _roomApi.CreateRoomAsync(GlobalData.UserId);
 
                 if (room != null)
                 {
-                    // 3. Add Bot vào phòng
-                    // IDKhach = BotId, TrangThai = Full
+
                     var roomWithBot = await _roomApi.JoinRoomAsync(room.Id, GlobalData.BotId.Value);
 
-                    // 4. Mở form Room
+
                     frmRoom roomForm = new frmRoom(roomWithBot, GlobalData.UserId, GlobalData.Username);
 
                     roomForm.RoomReadyToShow += () => this.Hide();
@@ -203,7 +201,11 @@ namespace NT106_BattleshipClient
         MessageBoxButtons.YesNo,
         MessageBoxIcon.Question);
 
-            this.Close();
+            if (ask == DialogResult.Yes)
+            {
+                
+                this.Close();   
+            }
         }
 
         private void frmMainMenu_FormClosed(object sender, FormClosedEventArgs e)

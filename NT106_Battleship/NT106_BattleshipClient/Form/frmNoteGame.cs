@@ -12,6 +12,7 @@ namespace NT106_BattleshipClient
             // chống nháy form
             EnableFormDoubleBuffering();
             SetUseComposited(true);
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void frmNoteGame_Load(object sender, EventArgs e)

@@ -15,6 +15,7 @@ namespace NT106_BattleshipClient
 
             // chống nháy form
             EnableFormDoubleBuffering();
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private async void frmLeaderBoard_Load(object sender, EventArgs e)
@@ -26,10 +27,10 @@ namespace NT106_BattleshipClient
             {
                 using (HttpClient http = new HttpClient())
                 {
-                    // 1. Lấy URL động từ ConfigHelper
+
                     string url = ConfigHelper.GetServerUrl();
 
-                    // 2. Đảm bảo có dấu / ở cuối
+
                     if (!url.EndsWith("/")) url += "/";
 
                     http.BaseAddress = new Uri(url);

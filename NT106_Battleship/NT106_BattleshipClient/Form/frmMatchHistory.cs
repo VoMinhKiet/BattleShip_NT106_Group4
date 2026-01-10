@@ -11,14 +11,14 @@ namespace NT106_BattleshipClient
         private readonly TranDauApiService _tranDauService = new TranDauApiService();
         private readonly int _viewUserId;
 
-        public frmMatchHistory() : this(GlobalData.UserId) { }   // vẫn dùng được cho “xem của mình”
+        public frmMatchHistory() : this(GlobalData.UserId) { }  
 
         public frmMatchHistory(int userId)
         {
             InitializeComponent();
             EnableFormDoubleBuffering();
             SetUseComposited(true);
-
+            this.FormBorderStyle = FormBorderStyle.None;
             _viewUserId = userId;
         }
 
@@ -28,31 +28,23 @@ namespace NT106_BattleshipClient
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
 
-            // Tắt thanh cuộn mặc định của DataGridView để dùng Guna Scrollbar
+
             dgvLichSuDau.ScrollBars = ScrollBars.None;
 
-            // Đồng bộ scrollbar
+
             guna2VScrollBar1.Scroll += (s, E) =>
             {
                 if (dgvLichSuDau.RowCount > 0)
                 {
                     int maxIndex = dgvLichSuDau.RowCount - 1;
                     int scrollValue = Math.Min(guna2VScrollBar1.Value, maxIndex);
-                    // Kiểm tra an toàn để tránh crash
+
                     if (scrollValue >= 0 && scrollValue < dgvLichSuDau.RowCount)
                         dgvLichSuDau.FirstDisplayedScrollingRowIndex = scrollValue;
                 }
             };
 
-            //// Tính số dòng hiển thị
-            //int visibleRows = dgvLichSuDau.DisplayedRowCount(true);
-            //int totalRows = dgvLichSuDau.RowCount;
 
-            //// Chỉ hiện scrollbar nếu cần
-            //guna2VScrollBar1.Visible = totalRows >= visibleRows;
-            //guna2VScrollBar1.Maximum = totalRows;
-
-            // Tạm thời ẩn scrollbar lúc mới vào
             guna2VScrollBar1.Visible = false;
 
             await LoadMatchHistoryAsync();
@@ -75,30 +67,27 @@ namespace NT106_BattleshipClient
                 );
             }
 
-            // Cập nhật scrollbar sau khi đã có dữ liệu
+
             UpdateScrollbarState();
         }
 
-        // Hàm xử lý logic ẩn hiện thanh cuộn
         private void UpdateScrollbarState()
         {
-            // 1. Tính tổng chiều cao thực tế của nội dung (Header + Tất cả các dòng)
+
             int totalContentHeight = dgvLichSuDau.ColumnHeadersHeight +
                                      dgvLichSuDau.Rows.GetRowsHeight(DataGridViewElementStates.Visible);
 
-            // 2. Lấy chiều cao vùng hiển thị của bảng
+
             int visibleHeight = dgvLichSuDau.ClientSize.Height;
 
-            // 3. So sánh: Nếu nội dung dài hơn vùng hiển thị -> Hiện Scrollbar
             if (totalContentHeight > visibleHeight)
             {
                 guna2VScrollBar1.Visible = true;
 
-                // Cập nhật lại Maximum cho Guna Scrollbar khớp với số dòng
+
                 guna2VScrollBar1.Maximum = dgvLichSuDau.RowCount;
 
-                // (Tùy chọn) Tính toán ThumbSize để thanh cuộn nhìn chuẩn hơn
-                // guna2VScrollBar1.ThumbSize = ... 
+
             }
             else
             {
@@ -175,5 +164,9 @@ namespace NT106_BattleshipClient
             SetControlDoubleBuffered(dgvLichSuDau);
         }
 
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

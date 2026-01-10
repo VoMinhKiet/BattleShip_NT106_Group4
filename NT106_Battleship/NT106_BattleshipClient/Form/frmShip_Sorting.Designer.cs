@@ -48,6 +48,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmShip_Sorting";
             this.Text = "frmShip_Sorting";
+            this.Load += new System.EventHandler(this.frmShip_Sorting_Load_1);
             this.ResumeLayout(false);
 
         }

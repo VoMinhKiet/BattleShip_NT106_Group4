@@ -11,7 +11,7 @@ namespace NT106_BattleshipClient
         public frmSelectcharacter()
         {
             InitializeComponent();
-
+            this.FormBorderStyle = FormBorderStyle.None;
             // chống nháy form
             EnableFormDoubleBuffering();
         }
@@ -93,42 +93,45 @@ namespace NT106_BattleshipClient
 
         private void btnSelectES_Click(object sender, EventArgs e)
         {
-            // 1. Gán tên nhân vật
+
             this.TenNhanVatDaChon = "Elizabeth Swann";
 
-            // 2. Thiết lập kết quả và đóng Form
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void btnSelectHB_Click(object sender, EventArgs e)
         {
-            // 1. Gán tên nhân vật
+
             this.TenNhanVatDaChon = "Hector Barbossa";
 
-            // 2. Thiết lập kết quả và đóng Form
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void btnSelectWT_Click(object sender, EventArgs e)
         {
-            // 1. Gán tên nhân vật
+
             this.TenNhanVatDaChon = "Will Turner";
 
-            // 2. Thiết lập kết quả và đóng Form
+
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
         private void btnSelectJS_Click(object sender, EventArgs e)
         {
-            // 1. Gán tên nhân vật
             this.TenNhanVatDaChon = "Jack Sparrow";
 
-            // 2. Thiết lập kết quả và đóng Form
+
             this.DialogResult = DialogResult.OK;
             this.Close();
+        }
+
+        private void frmSelectcharacter_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -25,7 +25,7 @@ namespace NT106_BattleshipClient
             this.ShowInTaskbar = false;
             this.Size = new Size(400, 200);
 
-            // Title
+
             lbTitle = new Label()
             {
                 Text = resultText,
@@ -37,7 +37,7 @@ namespace NT106_BattleshipClient
             };
             this.Controls.Add(lbTitle);
 
-            // Point
+
             lbPoint = new Label()
             {
                 Text = "Point " + Point,
@@ -49,7 +49,7 @@ namespace NT106_BattleshipClient
             };
             this.Controls.Add(lbPoint);
 
-            // Buttons panel
+
             Panel buttonPanel = new Panel()
             {
                 Dock = DockStyle.Bottom,
@@ -101,7 +101,7 @@ namespace NT106_BattleshipClient
 
         private void frmResult_Load(object sender, EventArgs e)
         {
-            this.FormBorderStyle = FormBorderStyle.Sizable; // ← QUAN TRỌNG
+            this.FormBorderStyle = FormBorderStyle.Sizable; 
             this.ControlBox = true;
             this.MinimizeBox = true;
             this.MaximizeBox = true;

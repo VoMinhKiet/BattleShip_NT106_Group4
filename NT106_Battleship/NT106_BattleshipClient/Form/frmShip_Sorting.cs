@@ -68,6 +68,8 @@ namespace NT106_BattleshipClient
             // chống nháy form
             EnableFormDoubleBuffering();
 
+            this.FormBorderStyle = FormBorderStyle.None;
+
             pnlYourGrid.Top = (this.ClientSize.Height - pnlYourGrid.Bottom / 4);
             CreateTopPanel();
             CreateGrid(pnlYourGrid, playerGrid);
@@ -685,11 +687,9 @@ namespace NT106_BattleshipClient
             Point screenNearest = nearest.Parent.PointToScreen(nearest.Location);
             Point formNearest = this.PointToClient(screenNearest);
 
-            // snap, magic and stuffs
             ship.Left = formNearest.X - first.Left;
             ship.Top = formNearest.Y - first.Top;
 
-            //Phần này lấy vị trí từng tàu
             int size = ship.Controls.Count;
             if (size >= 2 && size <= 5)
             {
@@ -707,7 +707,7 @@ namespace NT106_BattleshipClient
 
             ShipOrientation current = shipOrientation[ship];
 
-            // Toggle orientation
+
             if (current == ShipOrientation.Vertical)
                 shipOrientation[ship] = ShipOrientation.Horizontal;
             else
@@ -717,13 +717,13 @@ namespace NT106_BattleshipClient
 
             int count = ship.Controls.Count;
 
-            // Resize ship panel
+
             if (newOri == ShipOrientation.Horizontal)
                 ship.Size = new Size(count * size, size);
             else
                 ship.Size = new Size(size, count * size);
 
-            // Reposition buttons
+
             for (int i = 0; i < count; i++)
             {
                 Button btn = ship.Controls[i] as Button;
@@ -792,6 +792,11 @@ namespace NT106_BattleshipClient
                     }
                 }));
             });
+        }
+
+        private void frmShip_Sorting_Load_1(object sender, EventArgs e)
+        {
+
         }
     }
 }

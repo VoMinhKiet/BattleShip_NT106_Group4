@@ -68,6 +68,10 @@ namespace NT106_BattleshipClient
 
             // chống nháy form
             EnableFormDoubleBuffering();
+
+            this.FormBorderStyle = FormBorderStyle.None;
+
+
         }
         private async void btnLogin_Click(object sender, EventArgs e)
         {
@@ -125,5 +129,9 @@ namespace NT106_BattleshipClient
             this.Hide();
         }
 
+        private void pnlLogin_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

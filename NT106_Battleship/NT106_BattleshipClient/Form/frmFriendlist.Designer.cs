@@ -239,6 +239,7 @@
             this.pnlFriendlist.Name = "pnlFriendlist";
             this.pnlFriendlist.Size = new System.Drawing.Size(1010, 517);
             this.pnlFriendlist.TabIndex = 0;
+            this.pnlFriendlist.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlFriendlist_Paint);
             // 
             // btnRefresh
             // 

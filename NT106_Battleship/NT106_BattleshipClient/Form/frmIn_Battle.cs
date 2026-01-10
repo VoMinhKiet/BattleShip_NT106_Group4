@@ -57,7 +57,7 @@ namespace NT106_BattleshipClient
         {
             if (shots == null || shots.Count == 0) return;
 
-            // ===== PvE =====
+
             if (_isPvE)
             {
                 bool anyMiss = false;
@@ -82,7 +82,6 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // ===== Online =====
             _iAmBatchShooter = true;
             _batchHadMiss = false;
 
@@ -104,7 +103,6 @@ namespace NT106_BattleshipClient
 
             await _battleHub.InvokeAsync("SkillBatch", _room.Id, false);
 
-            // Batch xong: nếu có miss -> đổi lượt bằng Hub
             if (_batchHadMiss)
                 await EndTurnOnlineAsync();
 
@@ -169,8 +167,8 @@ namespace NT106_BattleshipClient
         private HubConnection _rankingHub;
         private bool _battleEnded = false;
 
-        private bool _isPvE = false; // Cờ nhận biết chơi với máy
-        private List<Point> _botTargets = new List<Point>(); // Danh sách các ô Bot dự định bắn tiếp theo (Khi trúng tàu)
+        private bool _isPvE = false; 
+        private List<Point> _botTargets = new List<Point>(); 
 
         private bool _turnPopupOpen = false;
         int random = new Random().Next(0, 2);
@@ -191,6 +189,7 @@ namespace NT106_BattleshipClient
             this.UpdateStyles();
             InitializeComponent();
 
+            this.FormBorderStyle = FormBorderStyle.None;
             this.KeyPreview = true;
             this.KeyDown += FrmIn_Battle_KeyDown;
 
@@ -227,7 +226,7 @@ namespace NT106_BattleshipClient
 
             CreateTopPanel();
 
-            // create yours panel and it settings
+            
             Panel pnlYourGrid = new Panel();
             pnlYourGrid.Width = 500;            // width of the panel
             pnlYourGrid.Height = 500;           // height of the panel
@@ -236,7 +235,7 @@ namespace NT106_BattleshipClient
             this.Controls.Add(pnlYourGrid);
             CreateGrid(pnlYourGrid, playerGrid, YourShipPos, true);
 
-            // create label for your ship
+           
             Label lblYourShip = new Label();
             lblYourShip.Text = "Your Ships";
             lblYourShip.BackColor = Color.Transparent;
@@ -246,7 +245,7 @@ namespace NT106_BattleshipClient
             lblYourShip.Top = pnlYourGrid.Top - lblYourShip.Height - 10;
             this.Controls.Add(lblYourShip);
 
-            // create enemy's panel and it settings
+            
             Panel pnlOpponentGrid = new Panel();
             pnlOpponentGrid.Width = 500;
             pnlOpponentGrid.Height = 500;
@@ -256,7 +255,7 @@ namespace NT106_BattleshipClient
             this.Controls.Add(pnlOpponentGrid);
             CreateGrid(pnlOpponentGrid, opponentGrid, OpponentShipPos, false);
 
-            //create label for enemy's ship
+            
             Label lblOpponentShip = new Label();
             lblOpponentShip.Text = "Opponent Ships";
             lblOpponentShip.BackColor = Color.Transparent;
@@ -277,7 +276,7 @@ namespace NT106_BattleshipClient
             btnSkill.Click += BtnSkill_Click;
             this.Controls.Add(btnSkill);
 
-            //ReceiveTurn();
+        
             if (_isPvE)
             {
                 isYourTurn = true;
@@ -290,7 +289,7 @@ namespace NT106_BattleshipClient
 
         private void FrmIn_Battle_KeyDown(object sender, KeyEventArgs e)
         {
-            // Toggle orientation when user presses 'R' (no UI indicator required)
+           
             if (e.KeyCode == Keys.R)
             {
                 _ElizabethSwannSkillOrientationRow = !_ElizabethSwannSkillOrientationRow;
@@ -304,7 +303,7 @@ namespace NT106_BattleshipClient
 
             _battleHub.On<bool>("Turn", isHostTurn =>
             {
-                // Marshal về UI thread
+
                 if (this.IsHandleCreated && !this.IsDisposed)
                 {
                     this.BeginInvoke(new Action(() =>
@@ -341,7 +340,7 @@ namespace NT106_BattleshipClient
 
         public void CreateTopPanel()
         {
-            // Create main top panel
+
             Panel topPanel = new Panel();
             topPanel.Height = 180; // adjust as needed
             topPanel.Dock = DockStyle.Top; // stick to the top
@@ -349,8 +348,7 @@ namespace NT106_BattleshipClient
             topPanel.BorderStyle = BorderStyle.FixedSingle;
             this.Controls.Add(topPanel);
 
-            // LEFT SIDE CONTROLS
-            // Timer box
+
             lblLeftTimer = new Label();
             lblLeftTimer.Text = "180";
             lblLeftTimer.Font = new Font("Arial", 20, FontStyle.Bold);
@@ -362,45 +360,42 @@ namespace NT106_BattleshipClient
             lblLeftTimer.Top = (topPanel.Height - lblLeftTimer.Height) / 2;
             topPanel.Controls.Add(lblLeftTimer);
 
-            // Circle (use Panel as circle)
+
             Panel leftCircle = new Panel();
             leftCircle.Width = 60;
             leftCircle.Height = 60;
             leftCircle.Left = lblLeftTimer.Right + 25;
             leftCircle.Top = (topPanel.Height - leftCircle.Height) / 2;
 
-            // Make panel circular
+
             System.Drawing.Drawing2D.GraphicsPath pathLeft = new System.Drawing.Drawing2D.GraphicsPath();
             pathLeft.AddEllipse(0, 0, leftCircle.Width, leftCircle.Height);
             leftCircle.Region = new Region(pathLeft);
 
-            //Add green overlay, using for now as no avatar yet
             leftCircle.Paint += (s, e) =>
             {
-                // Enable anti-aliasing for smoother edges
+
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-                // Draw a filled green ellipse covering the entire panel
+
                 using (Brush greenBrush = new SolidBrush(Color.LightGreen))
                 {
                     e.Graphics.FillEllipse(greenBrush, 0, 0, leftCircle.Width, leftCircle.Height);
                 }
 
-                // Optional: draw a green border
+
                 using (Pen borderPen = new Pen(Color.LightGreen, 2))
                 {
                     e.Graphics.DrawEllipse(borderPen, 0, 0, leftCircle.Width - 1, leftCircle.Height - 1);
                 }
             };
 
-            //This one input players avatar
-            //leftCircle.BackgroundImage = Image.FromFile("path"); // <-- put your image path here, will figure out later
-            //leftCircle.BackgroundImageLayout = ImageLayout.Stretch; // Fill the circle
+
 
 
             topPanel.Controls.Add(leftCircle);
 
-            // Name TextBox
+
             TextBox txtLeftName = new TextBox();
             txtLeftName.Width = 140;
             txtLeftName.Left = leftCircle.Right + 25;
@@ -411,8 +406,7 @@ namespace NT106_BattleshipClient
             txtLeftName.ReadOnly = true;
             topPanel.Controls.Add(txtLeftName);
 
-            // RIGHT SIDE CONTROLS
-            // Timer box
+
             lblRightTimer = new Label();
             lblRightTimer.Text = "180";
             lblRightTimer.Font = new Font("Arial", 20, FontStyle.Bold);
@@ -425,7 +419,7 @@ namespace NT106_BattleshipClient
             lblRightTimer.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             topPanel.Controls.Add(lblRightTimer);
 
-            // Circle
+
             Panel rightCircle = new Panel();
             rightCircle.Width = 60;
             rightCircle.Height = 60;
@@ -433,24 +427,22 @@ namespace NT106_BattleshipClient
             rightCircle.Top = (topPanel.Height - rightCircle.Height) / 2;
             rightCircle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 
-            // Make panel circular
+
             System.Drawing.Drawing2D.GraphicsPath pathRight = new System.Drawing.Drawing2D.GraphicsPath();
             pathRight.AddEllipse(0, 0, rightCircle.Width, rightCircle.Height);
             rightCircle.Region = new Region(pathRight);
 
-            //Add green overlay, using for now as no avatar yet
+
             rightCircle.Paint += (s, e) =>
             {
-                // Enable anti-aliasing for smoother edges
+
                 e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 
-                // Draw a filled green ellipse covering the entire panel
                 using (Brush redBrush = new SolidBrush(Color.Red))
                 {
                     e.Graphics.FillEllipse(redBrush, 0, 0, rightCircle.Width, rightCircle.Height);
                 }
 
-                // Optional: draw a green border
                 using (Pen borderPen = new Pen(Color.Red, 2))
                 {
                     e.Graphics.DrawEllipse(borderPen, 0, 0, rightCircle.Width - 1, rightCircle.Height - 1);
@@ -458,7 +450,7 @@ namespace NT106_BattleshipClient
             };
             topPanel.Controls.Add(rightCircle);
 
-            // Name TextBox
+
             TextBox txtRightName = new TextBox();
             txtRightName.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             txtRightName.Width = 140;
@@ -468,13 +460,13 @@ namespace NT106_BattleshipClient
             txtRightName.TextAlign = HorizontalAlignment.Center;
             if (GlobalData.Username == _room.TenKhach)
             {
-                txtRightName.Text = _room.TenChuPhong; //will be changed with a variable storing player's name
+                txtRightName.Text = _room.TenChuPhong; 
             }
             else txtRightName.Text = _room.TenKhach;
             txtRightName.ReadOnly = true; // fix later jesus
             topPanel.Controls.Add(txtRightName);
 
-            // --- THÊM NÚT ĐẦU HÀNG ---
+
             Button btnSurrender = new Button();
             btnSurrender.Text = "Đầu hàng";
             btnSurrender.Font = new Font("Arial", 12, FontStyle.Bold);
@@ -483,18 +475,18 @@ namespace NT106_BattleshipClient
             btnSurrender.Width = 100;
             btnSurrender.Height = 40;
 
-            // Canh vị trí (Góc trái trên cùng)
+
             btnSurrender.Left = 10;
             btnSurrender.Top = (topPanel.Height - btnSurrender.Height) / 2;
 
-            // Gắn sự kiện Click
+
             btnSurrender.Click += BtnSurrender_Click;
 
             topPanel.Controls.Add(btnSurrender);
         }
         public void CreateGrid(Panel container, Button[,] grid, int[,] ShipPos, bool Yours)
         {
-            int size = 500 / mapsize; // button size
+            int size = 500 / mapsize; 
             container.Controls.Clear();
 
             for (int row = 0; row < mapsize; row++)
@@ -517,7 +509,7 @@ namespace NT106_BattleshipClient
                     }
                     if (!Yours)
                     {
-                        btn.Click += GridButton_Click; // only opponent's grid is clickable
+                        btn.Click += GridButton_Click; 
                         btn.Cursor = Cursors.Hand;
                     }
                     container.Controls.Add(btn);
@@ -537,7 +529,7 @@ namespace NT106_BattleshipClient
 
             if (btn.BackColor == Color.Red || btn.BackColor == Color.Green) return;
 
-            // ===== JACK MODE =====
+
             if (_jackMode)
             {
                 bool hit = (OpponentShipPos[row, col] == 1);
@@ -584,7 +576,7 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // ===== ELIZA =====
+
             if (_ElizabethSwannSkillUse)
             {
                 _ElizabethSwannSkillUse = false;
@@ -592,7 +584,6 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // ===== WILL =====
             if (_WillTurnerSkillUse)
             {
                 _WillTurnerSkillUse = false;
@@ -600,7 +591,6 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // ===== NORMAL SHOOT =====
             if (_isPvE)
             {
                 bool hitPvE = (OpponentShipPos[row, col] == 1);
@@ -612,7 +602,7 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // Online normal
+
             bool hitOnline = (OpponentShipPos[row, col] == 1);
             btn.BackColor = hitOnline ? Color.Red : Color.Green;
 
@@ -663,14 +653,13 @@ namespace NT106_BattleshipClient
             _playerShipObjects.Clear();
             bool[,] visited = new bool[mapsize, mapsize];
 
-            // Duyệt toàn bộ bàn cờ để tìm các cụm tàu
             for (int r = 0; r < mapsize; r++)
             {
                 for (int c = 0; c < mapsize; c++)
                 {
                     if (YourShipPos[r, c] == 1 && !visited[r, c])
                     {
-                        // Tìm thấy 1 điểm tàu chưa duyệt -> Loang (BFS/DFS) để lấy cả con tàu
+     
                         List<Point> newShip = GetConnectedShip(r, c, visited);
                         _playerShipObjects.Add(newShip);
                     }
@@ -678,7 +667,6 @@ namespace NT106_BattleshipClient
             }
         }
 
-        // Hàm phụ: Thuật toán loang để lấy trọn vẹn 1 con tàu
         private List<Point> GetConnectedShip(int startR, int startC, bool[,] visited)
         {
             List<Point> ship = new List<Point>();
@@ -699,7 +687,7 @@ namespace NT106_BattleshipClient
                     int nr = p.X + dR[i];
                     int nc = p.Y + dC[i];
 
-                    // Nếu ô kề bên nằm trong map, là tàu (1) và chưa duyệt
+
                     if (nr >= 0 && nr < mapsize && nc >= 0 && nc < mapsize &&
                         YourShipPos[nr, nc] == 1 && !visited[nr, nc])
                     {
@@ -718,28 +706,25 @@ namespace NT106_BattleshipClient
 
             this.BeginInvoke(new Action(() =>
             {
-                // 1.Bot quyết định dùng skill hay bắn thường
-                // Lấy tên nhân vật của Bot
+
                 string botChar = _isHost ? _currentMatch.TenNV2 : _currentMatch.TenNV1;
 
                 if (_botSkillUsage > 0)
                 {
-                    // A. NHÓM (Jack/Hector):
-                    // Chỉ dùng khi không có mục tiêu để bắn (đang đi mò tàu) -> Xả skill để tìm
+
                     if ((botChar == "Jack Sparrow" || botChar == "Hector Barbossa") && _botTargets.Count == 0)
                     {
                         if (_rand.Next(0, 100) < 80)
                         {
-                            BotUseSkillRandom5(); // Bắn 5 phát ngẫu nhiên
+                            BotUseSkillRandom5();
                             return;
                         }
                     }
 
-                    // B. Nhóm (Will/Elizabeth):
-                    // Chỉ dùng khi đang có mục tiêu trong danh sách (đã tìm thấy tàu) -> Dùng skill dứt điểm
+
                     else if ((botChar == "Will Turner" || botChar == "Elizabeth Swann") && _botTargets.Count > 0)
                     {
-                        // Tỷ lệ dùng cao (80%)
+
                         if (_rand.Next(0, 100) < 80)
                         {
                             if (botChar == "Will Turner") BotUseSkillWill(_botTargets[0]);
@@ -749,10 +734,8 @@ namespace NT106_BattleshipClient
                     }
                 }
 
-                // 2. Bắn thường (Khi không dùng skill hoặc hết skill)
                 Point target = new Point(-1, -1);
 
-                // A. Chế độ Săn mồi (Hunt Mode)
                 while (_botTargets.Count > 0)
                 {
                     int lastIdx = _botTargets.Count - 1;
@@ -766,7 +749,6 @@ namespace NT106_BattleshipClient
                     }
                 }
 
-                // B. Chế độ Tìm kiếm (Search Mode - Bàn cờ vua)
                 if (target.X == -1)
                 {
                     int attempts = 0;
@@ -775,7 +757,6 @@ namespace NT106_BattleshipClient
                         int r = _rand.Next(0, mapsize);
                         int c = _rand.Next(0, mapsize);
 
-                        // Ưu tiên ô chẵn lẻ xen kẽ
                         if ((r + c) % 2 == 0 && IsValidShot(r, c)) target = new Point(r, c);
                         else if (attempts > 100 && IsValidShot(r, c)) target = new Point(r, c);
 
@@ -783,7 +764,6 @@ namespace NT106_BattleshipClient
                     } while (target.X == -1 && attempts < 500);
                 }
 
-                // 3. Thực hiện bắn
                 if (target.X != -1) ProcessBotHit(target.X, target.Y);
                 else TurnSwitch();
             }));
@@ -802,22 +782,20 @@ namespace NT106_BattleshipClient
 
                 CheckAndRemoveSunkShips();
 
-                // Thêm 4 ô xung quanh vào danh sách săn
                 AddTargetToBot(r - 1, c);
                 AddTargetToBot(r + 1, c);
                 AddTargetToBot(r, c - 1);
                 AddTargetToBot(r, c + 1);
 
-                // Luật: Bắn trúng được bắn tiếp
                 if (opponentScore < 14) Task.Delay(800).ContinueWith(_ => BotShootTurn());
             }
             else
             {
-                TurnSwitch(); // Trượt -> Đổi lượt
+                TurnSwitch();
             }
         }
 
-        // Skill: Bắn 5 phát ngẫu nhiên (Dùng cho cả Jack và Hector)
+
         private void BotUseSkillRandom5()
         {
             _botSkillUsage--;
@@ -834,7 +812,7 @@ namespace NT106_BattleshipClient
             FireBotSkillShots(shots);
         }
 
-        // Skill: Will Turner (3x3)
+
         private void BotUseSkillWill(Point center)
         {
             _botSkillUsage--;
@@ -851,12 +829,11 @@ namespace NT106_BattleshipClient
             FireBotSkillShots(shots);
         }
 
-        // Skill: Elizabeth Swann (Hàng ngang)
         private void BotUseSkillEliza(Point center)
         {
             _botSkillUsage--;
             List<Point> shots = new List<Point>();
-            int r = center.X; // Lấy hàng của mục tiêu đang nhắm
+            int r = center.X; 
             for (int c = 0; c < mapsize; c++)
             {
                 if (IsValidShot(r, c)) shots.Add(new Point(r, c));
@@ -864,7 +841,7 @@ namespace NT106_BattleshipClient
             FireBotSkillShots(shots);
         }
 
-        // Hàm xử lý bắn một danh sách các ô (Dùng chung cho Bot)
+
         private void FireBotSkillShots(List<Point> shots)
         {
             bool anyMiss = false;
@@ -877,7 +854,7 @@ namespace NT106_BattleshipClient
                 {
                     opponentScore++;
                     ScoreTracking();
-                    // Nếu trúng, thêm 4 ô xung quanh vào list săn mồi để lượt sau bắn tiếp
+
                     AddTargetToBot(p.X - 1, p.Y);
                     AddTargetToBot(p.X + 1, p.Y);
                     AddTargetToBot(p.X, p.Y - 1);
@@ -886,38 +863,34 @@ namespace NT106_BattleshipClient
                 else anyMiss = true;
             }
 
-            if (anyMiss) TurnSwitch(); // Có viên trượt -> Mất lượt
-            else Task.Delay(800).ContinueWith(_ => BotShootTurn()); // Trúng tất cả -> Bắn tiếp
+            if (anyMiss) TurnSwitch(); 
+            else Task.Delay(800).ContinueWith(_ => BotShootTurn()); 
         }
 
-        // Kiểm tra xem ô (r, c) có hợp lệ để bắn không
+
         private bool IsValidShot(int r, int c)
         {
-            // 1. Kiểm tra cơ bản (Trong map, chưa bắn)
+
             if (r < 0 || r >= mapsize || c < 0 || c >= mapsize) return false;
             Color color = playerGrid[r, c].BackColor;
             if (color == Color.Red || color == Color.Green) return false;
 
-            // 2. Kiểm tra độ dài quá khổ
-            if (_aliveShipLengths.Count == 0) return true; // Hết tàu (thắng rồi) thì sao cũng được
+            if (_aliveShipLengths.Count == 0) return true; 
 
             int maxLenAlive = 0;
             foreach (int l in _aliveShipLengths) if (l > maxLenAlive) maxLenAlive = l;
 
-            // Tính độ dài chuỗi liên tiếp nếu bắn vào ô (r,c)
-            // Hàng Ngang
+
             int horizontalLen = 1 + CountRedConsecutive(r, c, 0, -1) + CountRedConsecutive(r, c, 0, 1);
-            // Hàng Dọc
+
             int verticalLen = 1 + CountRedConsecutive(r, c, -1, 0) + CountRedConsecutive(r, c, 1, 0);
 
-            // Nếu bắn vào đây tạo thành dây dài hơn tàu to nhất còn sống -> VÔ LÝ -> KHÔNG BẮN
             if (horizontalLen > maxLenAlive) return false;
             if (verticalLen > maxLenAlive) return false;
 
             return true;
         }
 
-        // Hàm đếm số ô đỏ liên tiếp từ (r,c) theo hướng (dr, dc)
         private int CountRedConsecutive(int r, int c, int dr, int dc)
         {
             int count = 0;
@@ -940,12 +913,11 @@ namespace NT106_BattleshipClient
             return count;
         }
 
-        // Thêm mục tiêu vào danh sách
         private void AddTargetToBot(int r, int c)
         {
             if (IsValidShot(r, c))
             {
-                // Tránh thêm trùng lặp
+
                 if (!_botTargets.Contains(new Point(r, c)))
                 {
                     _botTargets.Add(new Point(r, c));
@@ -955,13 +927,12 @@ namespace NT106_BattleshipClient
 
         private void CheckAndRemoveSunkShips()
         {
-            // Duyệt ngược để xóa an toàn
+
             for (int i = _playerShipObjects.Count - 1; i >= 0; i--)
             {
                 var ship = _playerShipObjects[i];
                 bool isSunk = true;
 
-                // Kiểm tra tất cả các ô của tàu này đã bị bắn đỏ chưa
                 foreach (var p in ship)
                 {
                     if (playerGrid[p.X, p.Y].BackColor != Color.Red)
@@ -973,14 +944,12 @@ namespace NT106_BattleshipClient
 
                 if (isSunk)
                 {
-                    // Tàu đã chìm
+
                     int len = ship.Count;
 
-                    // Xóa độ dài này khỏi danh sách
-                    // Dùng Remove để xóa 1 phần tử đầu tiên gặp, phòng hờ có 2 tàu cùng size
                     _aliveShipLengths.Remove(len);
 
-                    // Xóa tàu khỏi danh sách quản lý để ko check lại
+
                     _playerShipObjects.RemoveAt(i);
                 }
             }
@@ -1002,7 +971,6 @@ namespace NT106_BattleshipClient
 
             string myChar = _isHost ? _currentMatch.TenNV1 : _currentMatch.TenNV2;
 
-            // ===== Hector: bấm nút là bắn ngay 5 ô random =====
             if (myChar == "Hector Barbossa")
             {
                 skillUsage--;
@@ -1011,7 +979,7 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // ===== Jack: bật chế độ chọn 5 phát =====
+
             if (myChar == "Jack Sparrow")
             {
                 if (_jackMode)
@@ -1035,7 +1003,7 @@ namespace NT106_BattleshipClient
                 return;
             }
 
-            // ===== Eliza: click 1 ô để bắn cả hàng =====
+
             if (myChar == "Elizabeth Swann")
             {
                 if (_ElizabethSwannSkillUse)
@@ -1080,7 +1048,6 @@ namespace NT106_BattleshipClient
                     isLeftTimerRunning = false;
                     isRightTimerRunning = false;
 
-                    // ÉP THUA
                     opponentScore = 14;
                     ScoreTracking();
                     return;
@@ -1098,7 +1065,7 @@ namespace NT106_BattleshipClient
                     isRightTimerRunning = false;
                     isLeftTimerRunning = false;
 
-                    // ÉP THẮNG
+
                     yourScore = 14;
                     ScoreTracking();
                     return;
@@ -1112,7 +1079,7 @@ namespace NT106_BattleshipClient
       
         private void TurnSwitch()
         {
-            // flip local flag
+
             isYourTurn = !isYourTurn;
 
             if (isYourTurn)
@@ -1134,7 +1101,6 @@ namespace NT106_BattleshipClient
                 }
             }
 
-            // NOTE: original did NOT call the hub to broadcast the change
         }
 
         private async void ScoreTracking()
@@ -1185,7 +1151,7 @@ namespace NT106_BattleshipClient
             {
                 isLeftTimerRunning = false; isRightTimerRunning = false;
 
-                // Lưu kết quả DB
+
                 if (_currentMatch.Id > 0)
                 {
                     int winnerId;
@@ -1195,7 +1161,7 @@ namespace NT106_BattleshipClient
                     await _tranDauApi.EndMatchAsync(_currentMatch.Id, winnerId);
                 }
 
-                // Chỉ gửi SignalR nếu Online
+
                 if (!_isPvE) await SendBattleResultAsync(yourScore == 14);
 
                 frmResult frm = new frmResult(yourScore == 14 ? "You WON!" : "You LOSE", yourScore == 14 ? 1 : -1);
@@ -1236,7 +1202,6 @@ namespace NT106_BattleshipClient
             timer.Tick += Timer_Tick;
             timer.Start();
 
-            // ====== ONLINE BATTLE HUB ======
             if (!_isPvE)
             {
                 // Lấy IP từ ConfigHelper
@@ -1248,7 +1213,6 @@ namespace NT106_BattleshipClient
                     .WithAutomaticReconnect()
                     .Build();
 
-                // register handlers TRƯỚC StartAsync
                 RegisterTurnHandler();
                 ReceiveSkillBatch();
                 ReceiveHit();
@@ -1257,7 +1221,7 @@ namespace NT106_BattleshipClient
                 await _battleHub.StartAsync();
                 await _battleHub.InvokeAsync("JoinBattle", _room.Id);
 
-                // Host phát lượt đầu (1 lần)
+
                 if (_isHost)
                     DecideTurn();
             }
@@ -1269,7 +1233,7 @@ namespace NT106_BattleshipClient
                 isRightTimerRunning = false;
             }
 
-            // ====== RANKING HUB ======
+
             if (_rankingHub.State == HubConnectionState.Disconnected)
             {
                 await _rankingHub.StartAsync();
@@ -1412,18 +1376,16 @@ namespace NT106_BattleshipClient
         // Hàm này để lắng nghe khi đối thủ đầu hàng
         private void ReceiveSurrender()
         {
-            // Lắng nghe sự kiện tên là "OpponentSurrender" từ Server
+  
             _battleHub.On("OpponentSurrender", () =>
             {
-                // Dùng BeginInvoke để thao tác với giao diện từ luồng khác
+
                 this.BeginInvoke(new Action(() =>
                 {
                     MessageBox.Show("Đối thủ đã đầu hàng! Bạn giành chiến thắng!", "Victory");
 
-                    // Ép điểm mình lên 14 (Thắng tuyệt đối)
                     yourScore = 14;
 
-                    // Gọi hàm tính điểm để kết thúc game
                     ScoreTracking();
                 }));
             });

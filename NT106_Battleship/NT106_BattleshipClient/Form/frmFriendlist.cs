@@ -26,6 +26,7 @@ namespace NT106_BattleshipClient
 
             EnableFormDoubleBuffering();
             SetUseComposited(true);
+            this.FormBorderStyle = FormBorderStyle.None;
         }
         private void lvFriendlist_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
@@ -41,6 +42,7 @@ namespace NT106_BattleshipClient
             // chống nháy form
             EnableFormDoubleBuffering();
             SetUseComposited(true);
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private async void frmFriendlist_Load(object sender, EventArgs e)
@@ -72,7 +74,7 @@ namespace NT106_BattleshipClient
 
             lvFriendlist.Columns.Clear();
 
-            // đúng thứ tự và đúng độ rộng bạn yêu cầu
+
             lvFriendlist.Columns.Add("ID", 50);
             lvFriendlist.Columns.Add("Username", 170);
             lvFriendlist.Columns.Add("Stars", 137);
@@ -83,7 +85,7 @@ namespace NT106_BattleshipClient
 
         private void RenderList(List<FriendDto> list)
         {
-            // nhớ userId đang chọn (nếu có)
+
             int? selectedId = null;
             if (lvFriendlist.SelectedItems.Count > 0)
             {
@@ -116,14 +118,13 @@ namespace NT106_BattleshipClient
                 item.Tag = f;
                 lvFriendlist.Items.Add(item);
 
-                // chọn lại item nếu trùng selectedId
                 if (selectedId.HasValue && f.UserId == selectedId.Value)
                     item.Selected = true;
             }
 
             lvFriendlist.EndUpdate();
 
-            // đảm bảo nhìn thấy selection + focus
+
             if (lvFriendlist.SelectedItems.Count > 0)
                 lvFriendlist.SelectedItems[0].Focused = true;
 
@@ -220,7 +221,7 @@ namespace NT106_BattleshipClient
 
                 var username = (txtUsername.Text ?? "").Trim();
 
-                // nếu không nhập gì -> quay về list friends/requests theo cbStatus
+
                 if (!id.HasValue && string.IsNullOrWhiteSpace(username))
                 {
                     ApplyFiltersAndRender();
@@ -230,7 +231,7 @@ namespace NT106_BattleshipClient
                 // Search toàn hệ thống
                 var list = await _friendApi.SearchUsersAsync(myId, id, username);
 
-                // Render ngay kết quả search (không dùng _cache)
+
                 RenderList(list);
             }
             catch (Exception ex)
@@ -246,7 +247,6 @@ namespace NT106_BattleshipClient
                 var mode = cbStatus.SelectedItem?.ToString() ?? "All";
                 int myId = GlobalData.UserId;
 
-                // ===== Requests: Accept =====
                 if (mode == "Requests")
                 {
                     var f = GetSelectedFriend();
@@ -262,7 +262,6 @@ namespace NT106_BattleshipClient
                     return;
                 }
 
-                // ===== Normal: Add friend (gửi lời mời) =====
                 if (!int.TryParse((txtID.Text ?? "").Trim(), out int targetId))
                 {
                     MessageBox.Show("Nhập ID hợp lệ ở ô ID.");
@@ -298,7 +297,6 @@ namespace NT106_BattleshipClient
                     return;
                 }
 
-                // ===== Requests: Reject =====
                 if (mode == "Requests")
                 {
                     var ok = await _friendApi.RejectAsync(myId, f.UserId);
@@ -307,7 +305,7 @@ namespace NT106_BattleshipClient
                     return;
                 }
 
-                // ===== Normal: Delete friend =====
+
                 var confirm = MessageBox.Show($"Xóa bạn: {f.Username} ?", "Confirm", MessageBoxButtons.YesNo);
                 if (confirm != DialogResult.Yes) return;
 
@@ -373,6 +371,9 @@ namespace NT106_BattleshipClient
             }
         }
 
+        private void pnlFriendlist_Paint(object sender, PaintEventArgs e)
+        {
 
+        }
     }
 }

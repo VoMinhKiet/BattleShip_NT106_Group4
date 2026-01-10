@@ -74,6 +74,7 @@ namespace NT106_BattleshipClient
             SetUseComposited(true);
             txtPassword.PasswordChar = '*';
             txtConfirmpassword.PasswordChar = '*';
+            this.FormBorderStyle = FormBorderStyle.None;
         }
         private async void btnSignup_Click(object sender, EventArgs e)
         {

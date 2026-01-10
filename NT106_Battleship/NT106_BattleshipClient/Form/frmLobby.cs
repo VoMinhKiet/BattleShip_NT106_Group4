@@ -19,18 +19,17 @@ namespace NT106_BattleshipClient
 
         public frmLobby()
         {
-            // Tối ưu vẽ form
+
             this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint |
                           ControlStyles.AllPaintingInWmPaint, true);
 
             _currentUserId = GlobalData.UserId;
             InitializeComponent();
             FormManager.frmLobby = this;
-            //// chống nháy form
-            //EnableFormDoubleBuffering();
-            //SetUseComposited(true);
 
-            this.Opacity = 0; // ẨN FORM ĐI
+            this.FormBorderStyle = FormBorderStyle.None;
+
+            this.Opacity = 0;
         }
 
         private async void frmLobby_Load(object sender, EventArgs e)
@@ -40,7 +39,6 @@ namespace NT106_BattleshipClient
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Maximized;
 
-            // Kết nối SignalR
             if (!_signalRInitialized)
             {
                 try
@@ -64,7 +62,7 @@ namespace NT106_BattleshipClient
 
             label1.Focus();
 
-            // Cuộn scrollbar → cuộn dgv
+
             guna2VScrollBar1.Scroll += (s, E) =>
             {
                 if (dgvDanhSachPhong.RowCount == 0) return;
@@ -80,7 +78,7 @@ namespace NT106_BattleshipClient
             };
 
 
-            // Bỏ chọn ô
+
             dgvDanhSachPhong.ClearSelection();
             dgvDanhSachPhong.CurrentCell = null;
         }
@@ -89,11 +87,11 @@ namespace NT106_BattleshipClient
         {
             var conn = SignalRClient.Connection;
 
-            // Gỡ bỏ các handler cũ nếu có
+
             conn.Remove("RoomListUpdated");
             conn.Remove("RoomDeleted");
 
-            // Đăng ký các handler mới
+
             conn.On("RoomListUpdated", () =>
             {
                 if (IsDisposed || !IsHandleCreated) return;
@@ -153,7 +151,7 @@ namespace NT106_BattleshipClient
             {
                 string trangThaiHienThi = "";
 
-                // Map trạng thái từ Server sang Tiếng Việt hiển thị
+
                 switch (r.TrangThai)
                 {
                     case "waiting": trangThaiHienThi = "Đang chờ"; break;
@@ -191,24 +189,24 @@ namespace NT106_BattleshipClient
 
             int colJoin = dgvDanhSachPhong.Columns["colThamGia"].Index;
 
-            // Nhấn nút "Vào"
+
             if (e.ColumnIndex == colJoin)
             {
                 string trangThai = dgvDanhSachPhong.Rows[e.RowIndex].Cells["colTrangThai"].Value.ToString();
 
                 if (trangThai != "Đang chờ")
                 {
-                    // Nếu click vào phòng Đầy hoặc Đang chơi -> Không làm gì cả
+
                     return;
                 }
 
                 int roomId = Convert.ToInt32(dgvDanhSachPhong.Rows[e.RowIndex]
                                              .Cells["colID"].Value);
 
-                // Gọi API join
+
                 var room = await _roomApi.JoinRoomAsync(roomId, _currentUserId);
 
-                // Mở form phòng
+
                 frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
 
                 roomForm.RoomReadyToShow += () =>
@@ -232,9 +230,9 @@ namespace NT106_BattleshipClient
 
         private async void btnTaoPhong_Click(object sender, EventArgs e)
         {
-            // Tạo phòng mới → user là host
+
             var room = await _roomApi.CreateRoomAsync(_currentUserId);
-            // Mở form phòng
+
             frmRoom roomForm = new frmRoom(room, _currentUserId, GlobalData.Username);
 
             roomForm.RoomReadyToShow += () =>
@@ -254,11 +252,11 @@ namespace NT106_BattleshipClient
         {
             SetPlaceholder();
 
-            // Cho WinForms vẽ xong hết rồi mới hiện
+
             this.BeginInvoke(new Action(() =>
             {
-                LobbyReadyToShow?.Invoke(); // Báo hiệu cho bên gọi biết là Lobby đã sẵn sàng hiển thị
-                this.Opacity = 1; //HIỆN FORM
+                LobbyReadyToShow?.Invoke();
+                this.Opacity = 1;
             }));
         }
 
@@ -270,14 +268,14 @@ namespace NT106_BattleshipClient
 
         private void txtTimTaoPhong_Enter(object sender, EventArgs e)
         {
-            // Placeholder
+
             if (txtTimTaoPhong.Text == "Nhập ID hoặc tên chủ phòng")
                 txtTimTaoPhong.Text = "";
         }
 
         private void txtTimTaoPhong_Leave(object sender, EventArgs e)
         {
-            // Khôi phục placeholder
+
             if (string.IsNullOrWhiteSpace(txtTimTaoPhong.Text))
             {
                 txtTimTaoPhong.Text = "Nhập ID hoặc tên chủ phòng";
@@ -290,7 +288,6 @@ namespace NT106_BattleshipClient
             const int HORIZONTAL_PADDING = 30;
             const int VERTICAL_PADDING = 3;
 
-            // Vẽ nút "Vào" cho cột tham gia
             if (e.ColumnIndex == dgvDanhSachPhong.Columns["colThamGia"].Index && e.RowIndex >= 0)
             {
                 string trangThai = dgvDanhSachPhong.Rows[e.RowIndex]
@@ -318,7 +315,7 @@ namespace NT106_BattleshipClient
                 }
                 else
                 {
-                    // Phòng đầy → chỉ vẽ nền
+
                     e.Paint(e.ClipBounds, DataGridViewPaintParts.Background | DataGridViewPaintParts.Border);
                     e.Handled = true;
                 }
@@ -336,7 +333,7 @@ namespace NT106_BattleshipClient
             SetControlDoubleBuffered(panel3);
             SetControlDoubleBuffered(panel1);
 
-            //SetControlDoubleBuffered(ucChatBox1);
+
             SetDoubleBufferedForAllChildrenExceptTextBox(this);
         }
 
@@ -344,7 +341,7 @@ namespace NT106_BattleshipClient
         {
             foreach (Control c in parent.Controls)
             {
-                // BỎ QUA TextBox
+
                 if (c is TextBox) continue;
 
                 SetControlDoubleBuffered(c);
@@ -358,7 +355,6 @@ namespace NT106_BattleshipClient
         {
             string keyword = txtTimTaoPhong.Text.Trim().ToLower();
 
-            // Nếu chưa nhập gì hoặc còn placeholder → hiện lại tất cả
             if (string.IsNullOrWhiteSpace(keyword) || keyword == "nhập id hoặc tên chủ phòng")
             {
                 foreach (DataGridViewRow row in dgvDanhSachPhong.Rows)
@@ -384,6 +380,16 @@ namespace NT106_BattleshipClient
             }
 
             UpdateScrollBar();
+        }
+
+        private void pnlTimTaoPhong_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

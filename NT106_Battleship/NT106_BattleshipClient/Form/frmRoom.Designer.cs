@@ -598,6 +598,7 @@
             this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpTop.Size = new System.Drawing.Size(1481, 334);
             this.tlpTop.TabIndex = 0;
+            this.tlpTop.Paint += new System.Windows.Forms.PaintEventHandler(this.tlpTop_Paint);
             // 
             // tblTieuDe
             // 

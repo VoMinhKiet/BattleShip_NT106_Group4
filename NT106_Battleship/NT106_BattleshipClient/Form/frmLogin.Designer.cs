@@ -63,20 +63,21 @@
             this.pnlLogin.Controls.Add(this.txtUsername);
             this.pnlLogin.Controls.Add(this.lblLogin);
             this.pnlLogin.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.pnlLogin.Location = new System.Drawing.Point(43, 34);
-            this.pnlLogin.Margin = new System.Windows.Forms.Padding(2);
+            this.pnlLogin.Location = new System.Drawing.Point(57, 42);
+            this.pnlLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pnlLogin.Name = "pnlLogin";
-            this.pnlLogin.Size = new System.Drawing.Size(530, 470);
+            this.pnlLogin.Size = new System.Drawing.Size(707, 578);
             this.pnlLogin.TabIndex = 0;
+            this.pnlLogin.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLogin_Paint);
             // 
             // btnExit
             // 
             this.btnExit.BackColor = System.Drawing.Color.Tomato;
             this.btnExit.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnExit.Location = new System.Drawing.Point(278, 318);
-            this.btnExit.Margin = new System.Windows.Forms.Padding(2);
+            this.btnExit.Location = new System.Drawing.Point(371, 391);
+            this.btnExit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(158, 49);
+            this.btnExit.Size = new System.Drawing.Size(211, 60);
             this.btnExit.TabIndex = 11;
             this.btnExit.Text = "Thoát";
             this.btnExit.UseVisualStyleBackColor = false;
@@ -86,10 +87,10 @@
             // 
             this.picPassword.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("picPassword.BackgroundImage")));
             this.picPassword.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.picPassword.Location = new System.Drawing.Point(36, 162);
-            this.picPassword.Margin = new System.Windows.Forms.Padding(2);
+            this.picPassword.Location = new System.Drawing.Point(48, 199);
+            this.picPassword.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.picPassword.Name = "picPassword";
-            this.picPassword.Size = new System.Drawing.Size(44, 48);
+            this.picPassword.Size = new System.Drawing.Size(59, 59);
             this.picPassword.TabIndex = 10;
             this.picPassword.TabStop = false;
             // 
@@ -97,10 +98,10 @@
             // 
             this.picUser.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("picUser.BackgroundImage")));
             this.picUser.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.picUser.Location = new System.Drawing.Point(36, 98);
-            this.picUser.Margin = new System.Windows.Forms.Padding(2);
+            this.picUser.Location = new System.Drawing.Point(48, 121);
+            this.picUser.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.picUser.Name = "picUser";
-            this.picUser.Size = new System.Drawing.Size(44, 48);
+            this.picUser.Size = new System.Drawing.Size(59, 59);
             this.picUser.TabIndex = 9;
             this.picUser.TabStop = false;
             // 
@@ -110,10 +111,9 @@
             this.linkForgotPassword.Cursor = System.Windows.Forms.Cursors.Hand;
             this.linkForgotPassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkForgotPassword.LinkColor = System.Drawing.Color.DimGray;
-            this.linkForgotPassword.Location = new System.Drawing.Point(307, 369);
-            this.linkForgotPassword.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkForgotPassword.Location = new System.Drawing.Point(409, 454);
             this.linkForgotPassword.Name = "linkForgotPassword";
-            this.linkForgotPassword.Size = new System.Drawing.Size(109, 20);
+            this.linkForgotPassword.Size = new System.Drawing.Size(134, 25);
             this.linkForgotPassword.TabIndex = 8;
             this.linkForgotPassword.TabStop = true;
             this.linkForgotPassword.Text = "Quên mật khẩu";
@@ -125,10 +125,9 @@
             this.linkCreateAccount.Cursor = System.Windows.Forms.Cursors.Hand;
             this.linkCreateAccount.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkCreateAccount.LinkColor = System.Drawing.Color.DimGray;
-            this.linkCreateAccount.Location = new System.Drawing.Point(107, 369);
-            this.linkCreateAccount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.linkCreateAccount.Location = new System.Drawing.Point(143, 454);
             this.linkCreateAccount.Name = "linkCreateAccount";
-            this.linkCreateAccount.Size = new System.Drawing.Size(129, 20);
+            this.linkCreateAccount.Size = new System.Drawing.Size(155, 25);
             this.linkCreateAccount.TabIndex = 7;
             this.linkCreateAccount.TabStop = true;
             this.linkCreateAccount.Text = "Tạo tài khoản mới";
@@ -138,10 +137,10 @@
             // 
             this.btnLogin.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.btnLogin.Font = new System.Drawing.Font("Segoe UI", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnLogin.Location = new System.Drawing.Point(85, 318);
-            this.btnLogin.Margin = new System.Windows.Forms.Padding(2);
+            this.btnLogin.Location = new System.Drawing.Point(113, 391);
+            this.btnLogin.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnLogin.Name = "btnLogin";
-            this.btnLogin.Size = new System.Drawing.Size(158, 49);
+            this.btnLogin.Size = new System.Drawing.Size(211, 60);
             this.btnLogin.TabIndex = 6;
             this.btnLogin.Text = "Đăng nhập";
             this.btnLogin.UseVisualStyleBackColor = false;
@@ -152,10 +151,10 @@
             this.chkShowpassword.AutoSize = true;
             this.chkShowpassword.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkShowpassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkShowpassword.Location = new System.Drawing.Point(323, 214);
-            this.chkShowpassword.Margin = new System.Windows.Forms.Padding(2);
+            this.chkShowpassword.Location = new System.Drawing.Point(431, 263);
+            this.chkShowpassword.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.chkShowpassword.Name = "chkShowpassword";
-            this.chkShowpassword.Size = new System.Drawing.Size(124, 24);
+            this.chkShowpassword.Size = new System.Drawing.Size(149, 29);
             this.chkShowpassword.TabIndex = 5;
             this.chkShowpassword.Text = "Hiện mật khẩu";
             this.chkShowpassword.UseVisualStyleBackColor = true;
@@ -165,10 +164,9 @@
             // 
             this.lblPassword.AutoSize = true;
             this.lblPassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPassword.Location = new System.Drawing.Point(81, 162);
-            this.lblPassword.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblPassword.Location = new System.Drawing.Point(108, 199);
             this.lblPassword.Name = "lblPassword";
-            this.lblPassword.Size = new System.Drawing.Size(70, 20);
+            this.lblPassword.Size = new System.Drawing.Size(86, 25);
             this.lblPassword.TabIndex = 4;
             this.lblPassword.Text = "Mật khẩu";
             // 
@@ -176,10 +174,9 @@
             // 
             this.lblUsername.AutoSize = true;
             this.lblUsername.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUsername.Location = new System.Drawing.Point(81, 98);
-            this.lblUsername.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblUsername.Location = new System.Drawing.Point(108, 121);
             this.lblUsername.Name = "lblUsername";
-            this.lblUsername.Size = new System.Drawing.Size(113, 20);
+            this.lblUsername.Size = new System.Drawing.Size(137, 25);
             this.lblUsername.TabIndex = 3;
             this.lblUsername.Text = "Tên người dùng";
             // 
@@ -187,41 +184,41 @@
             // 
             this.txtPassword.BackColor = System.Drawing.SystemColors.Info;
             this.txtPassword.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPassword.Location = new System.Drawing.Point(85, 184);
-            this.txtPassword.Margin = new System.Windows.Forms.Padding(2);
+            this.txtPassword.Location = new System.Drawing.Point(113, 226);
+            this.txtPassword.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(351, 27);
+            this.txtPassword.Size = new System.Drawing.Size(467, 31);
             this.txtPassword.TabIndex = 2;
             // 
             // txtUsername
             // 
             this.txtUsername.BackColor = System.Drawing.SystemColors.Info;
             this.txtUsername.Font = new System.Drawing.Font("Segoe UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtUsername.Location = new System.Drawing.Point(85, 120);
-            this.txtUsername.Margin = new System.Windows.Forms.Padding(2);
+            this.txtUsername.Location = new System.Drawing.Point(113, 148);
+            this.txtUsername.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(351, 27);
+            this.txtUsername.Size = new System.Drawing.Size(467, 31);
             this.txtUsername.TabIndex = 1;
             // 
             // lblLogin
             // 
             this.lblLogin.AutoSize = true;
             this.lblLogin.Font = new System.Drawing.Font("Segoe UI", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblLogin.Location = new System.Drawing.Point(172, 24);
-            this.lblLogin.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblLogin.Location = new System.Drawing.Point(229, 30);
             this.lblLogin.Name = "lblLogin";
-            this.lblLogin.Size = new System.Drawing.Size(175, 45);
+            this.lblLogin.Size = new System.Drawing.Size(219, 54);
             this.lblLogin.TabIndex = 0;
             this.lblLogin.Text = "Đăng nhập";
             // 
             // frmLogin
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(883, 536);
+            this.ClientSize = new System.Drawing.Size(1177, 660);
             this.Controls.Add(this.pnlLogin);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "frmLogin";
             this.Text = "frmLogin";
             this.Load += new System.EventHandler(this.frmLogin_Load);

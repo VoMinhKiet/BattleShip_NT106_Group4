@@ -19,6 +19,7 @@ namespace NT106_BattleshipClient
         {
             InitializeComponent();
             EnableFormDoubleBuffering();
+            this.FormBorderStyle = FormBorderStyle.None;
             _viewUserId = userId;
         }
 

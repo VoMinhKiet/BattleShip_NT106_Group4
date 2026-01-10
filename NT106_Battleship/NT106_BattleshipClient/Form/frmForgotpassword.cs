@@ -16,6 +16,7 @@ namespace NT106_BattleshipClient
             // chống nháy form
             EnableFormDoubleBuffering();
             SetUseComposited(true);
+            this.FormBorderStyle = FormBorderStyle.None;
         }
 
         private void linkCreateAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -61,10 +62,10 @@ namespace NT106_BattleshipClient
             {
                 using (HttpClient client = new HttpClient())
                 {
-                    // 1. Lấy URL động từ ConfigHelper
+
                     string url = ConfigHelper.GetServerUrl();
 
-                    // 2. Đảm bảo có dấu / ở cuối để BaseAddress hoạt động đúng
+
                     if (!url.EndsWith("/")) url += "/";
 
                     client.BaseAddress = new Uri(url);

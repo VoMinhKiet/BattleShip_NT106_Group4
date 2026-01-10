@@ -27,9 +27,9 @@ namespace NT106_BattleshipClient
         private bool _isHost;
         private bool _isGuestReady;
 
-        // Biến này để đánh dấu khi nào Code đang tự cập nhật UI
+
         private bool _isUpdatingUI = false;
-        private bool _isGoingToGame = false; // Cờ đánh dấu đang vào game
+        private bool _isGoingToGame = false;
         private bool _shipSortingOpened = false;
 
         private HubConnection _hub;
@@ -40,17 +40,18 @@ namespace NT106_BattleshipClient
 
         public frmRoom(RoomDto room, int userId, string username)
         {
-            // Tối ưu vẽ form
+
             this.SetStyle(ControlStyles.DoubleBuffer | ControlStyles.UserPaint |
                           ControlStyles.AllPaintingInWmPaint, true);
 
             _currentUserId = GlobalData.UserId;
             InitializeComponent();
 
-            // chống nháy form
+
             EnableFormDoubleBuffering();
             SetUseComposited(true);
 
+            this.FormBorderStyle = FormBorderStyle.None;
 
             _room = room ?? throw new ArgumentNullException(nameof(room));
             _currentUserId = userId;
@@ -62,7 +63,7 @@ namespace NT106_BattleshipClient
             _isHost = (_currentUserId == room.IDChuPhong);
             _isGuestReady = false;
 
-            this.Opacity = 0; // ẨN FORM ĐI
+            this.Opacity = 0; 
         }
 
         private async void frmRoom_Load(object sender, EventArgs e)
@@ -70,7 +71,6 @@ namespace NT106_BattleshipClient
             ChatSession.Init(_room.Id);
             await ChatSession.ChatBox.ConnectAsync();
 
-            // Đảm bảo handle đã được tạo
             if (!this.IsHandleCreated)
                 this.CreateControl();
 
@@ -97,7 +97,7 @@ namespace NT106_BattleshipClient
 
                 if (!_isHost)
                 {
-                    // Gửi lệnh "REQUEST_INFO" (value để trống cũng được)
+                   
                     await SendUISyncCommand("REQUEST_INFO", "");
                 }
             }
@@ -105,17 +105,17 @@ namespace NT106_BattleshipClient
             await XepTauConnector();
             GameStartedHandler();
 
-            // KIỂM TRA BOT
+
             CheckIfBotIsHere();
         }
 
         private void frmRoom_Shown(object sender, EventArgs e)
         {
-            // Cho WinForms vẽ xong hết rồi mới hiện
+
             this.BeginInvoke(new Action(() =>
             {
-                RoomReadyToShow?.Invoke(); // Báo hiệu cho bên gọi biết là Room đã sẵn sàng hiển thị
-                this.Opacity = 1; //HIỆN FORM
+                RoomReadyToShow?.Invoke(); 
+                this.Opacity = 1; 
             }));
         }
 
@@ -124,13 +124,13 @@ namespace NT106_BattleshipClient
             bool isBotById = (GlobalData.BotId != null && _room.IDKhach == GlobalData.BotId);
             bool isBotByName = (_room.TenKhach == GlobalData.BOT_NAME);
 
-            // Chỉ khi nào đúng là Bot thật thì mới hiện
+
             if (isBotById || isBotByName)
             {
                 _isGuestReady = true;
                 pnlTieuDeKhach.Text = "KHÁCH đã sẵn sàng!";
 
-                // Nếu label đang trống thì điền tên Bot vào
+
                 if (lblTenKhach.Text.Contains("Chưa có khách") || lblTenKhach.Text.Contains("Tên:"))
                 {
                     lblTenKhach.Text = $"Tên: {GlobalData.BOT_NAME}";
@@ -156,7 +156,6 @@ namespace NT106_BattleshipClient
                 catch { }
             }
 
-            // ROOM UPDATED
             SignalRClient.Connection.On<RoomDto>("RoomUpdated", (roomDto) =>
             {
                 if (roomDto.Id != _room.Id) return;
@@ -203,7 +202,7 @@ namespace NT106_BattleshipClient
                 });
             });
 
-            // UI SYNC
+
             SignalRClient.Connection.On<string, string>("SynchronizeRoomUI", (command, value) =>
             {
                 SafeInvoke(() =>
@@ -212,7 +211,7 @@ namespace NT106_BattleshipClient
                 });
             });
 
-            // GUEST READY
+
             SignalRClient.Connection.On<bool>("GuestReadyStateChanged", (state) =>
             {
                 SafeInvoke(() =>
@@ -279,20 +278,19 @@ namespace NT106_BattleshipClient
                     if (int.TryParse(value, out int matchId))
                     {
                         _currentMatch.Id = matchId;
-                        // Guest đã nhận được ID trận đấu từ Host!
+
                     }
                     break;
                 case "REQUEST_INFO":
-                    // Chỉ có Host mới cần trả lời câu hỏi này
+
                     if (_isHost)
                     {
-                        // 1. Gửi lại kích thước bàn cờ hiện tại
+
                         if (cbKichThuoc.SelectedItem != null)
                         {
                             await SendUISyncCommand("SET_SIZE", cbKichThuoc.SelectedItem.ToString());
                         }
 
-                        // 2. Gửi lại nhân vật của Host (nếu đã chọn)
                         if (!string.IsNullOrEmpty(_myCharacterName))
                         {
                             await SendUISyncCommand("SET_HOST_CHAR", _myCharacterName);
@@ -306,7 +304,6 @@ namespace NT106_BattleshipClient
         {
             if (room == null) return;
 
-            // HOST
             if (room.IDChuPhong == _currentUserId)
             {
                 lblTenChuPhong.Text = $"Tên: {_currentUsername}";
@@ -323,7 +320,7 @@ namespace NT106_BattleshipClient
                 catch { lblTenChuPhong.Text = "Tên: (Không lấy được)"; }
             }
 
-            // GUEST
+
             if (!room.IDKhach.HasValue)
             {
                 lblTenKhach.Text = "Chưa có khách vào";
@@ -391,9 +388,7 @@ namespace NT106_BattleshipClient
             this.Close();
         }
 
-        // ============================
-        // Chat + chọn nhân vật
-        // ============================
+
         private ucChatBox _chatBox;
 
         private async void btnTinNhan_Click(object sender, EventArgs e)
@@ -431,7 +426,7 @@ namespace NT106_BattleshipClient
 
         private async void btnNVKhach_Click(object sender, EventArgs e)
         {
-            // Nếu là Host nhưng Khách là Bot -> Được phép chọn
+
             bool isBot = (_room.IDKhach == GlobalData.BotId);
 
             if (_isHost && !isBot)
@@ -447,7 +442,6 @@ namespace NT106_BattleshipClient
                 _currentMatch.TenNV2 = ten;
                 lblNhanVatKhach.Text = "Nhân vật: " + ten;
 
-                // Chỉ gửi Sync nếu là người thật
                 if (!isBot) await SendUISyncCommand("SET_GUEST_CHAR", ten);
             }
         }
@@ -542,29 +536,26 @@ namespace NT106_BattleshipClient
                     IdPhongCho = _room.Id
                 };
 
-                // Gọi Server tạo trận
+
                 var tranDauMoi = await _tranDauApi.CreateMatchAsync(req);
 
                 if (tranDauMoi != null)
                 {
-                    // 1. Host tự lưu ID trận đấu
+
                     _currentMatch.Id = tranDauMoi.Id;
 
-                    // 2. Gửi ID trận đấu cho Guest biết
                     await SendUISyncCommand("SET_MATCH_ID", tranDauMoi.Id.ToString());
                 }
 
-                // Thay đôỉ trạng thái phòng khi bắt đầu trận đấu
                 await _roomApi.StartGameAsync(_room.Id);
 
-                // QUYẾT ĐỊNH CHẾ ĐỘ CHƠI
-                // Nếu khách là Bot -> Chế độ Offline
+
                 if (_room.IDKhach == GlobalData.BotId)
                 {
                     _isGoingToGame = true;
                     this.Hide();
 
-                    // Truyền Hub = null để báo hiệu chế độ Offline/Bot
+
                     frmShip_Sorting frmSort = new frmShip_Sorting(_room, _currentMatch, mapsize, null);
 
                     frmSort.FormClosed += (s, args) => {
@@ -572,7 +563,7 @@ namespace NT106_BattleshipClient
                     };
                     frmSort.Show();
                 }
-                else // Nếu khách là người -> Chế độ Online (SignalR)
+                else 
                 {
                     await _hub.InvokeAsync("StartGame", _room.Id);
                 }
@@ -593,7 +584,7 @@ namespace NT106_BattleshipClient
                 .ConfigureLogging(logging =>
                 {
                     logging.SetMinimumLevel(LogLevel.Debug);
-                    //logging.AddDebug();
+
                 })
                 .Build();
 
@@ -607,13 +598,13 @@ namespace NT106_BattleshipClient
 
             _hub.On("GameStarted", () =>
             {
-                // CHẶN NGAY TỪ THREAD CALLBACK (tránh bắn 2 lần trước khi BeginInvoke chạy)
+
                 if (_shipSortingOpened) return;
                 _shipSortingOpened = true;
 
                 this.BeginInvoke(new Action(() =>
                 {
-                    // CHẶN LẦN NỮA TRONG UI THREAD cho chắc
+
                     if (_isGoingToGame) return;
 
                     _isGoingToGame = true;
@@ -623,7 +614,7 @@ namespace NT106_BattleshipClient
                     frmSort.FormClosed += (s, args) =>
                     {
                         _isGoingToGame = false;
-                        _shipSortingOpened = false; // cho phép mở lại nếu cần
+                        _shipSortingOpened = false; 
                         this.Close();
                     };
                     frmSort.Show();
@@ -662,6 +653,10 @@ namespace NT106_BattleshipClient
             f.ShowDialog();
         }
 
+        private void tlpTop_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 
 }
